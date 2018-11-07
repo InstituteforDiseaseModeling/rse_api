@@ -1,1 +1,2 @@
-# rse_api
+# rse-core
+
