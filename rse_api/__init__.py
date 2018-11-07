@@ -10,6 +10,9 @@ from rse_api.errors import register_common_error_handlers
 HAS_DRAMATIQ=importlib.find_loader('dramatiq') is not None
 HAS_RABBIT=importlib.find_loader('pika') is not None
 
+__author__ = """Clinton Collins"""
+__email__ = 'ccollins@idmod.org'
+__version__ = '1.0.0'
 
 @singleton_function
 def get_application(setting_object_path: str=None, setting_environment_variable: str=None, strict_slashes: bool=False,
