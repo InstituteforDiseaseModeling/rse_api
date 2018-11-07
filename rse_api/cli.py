@@ -11,7 +11,5 @@ def add_cli(app):
     def run(port):
         app.run(port=port)
 
-
-
     app.cli.add_command(manage_cli)
     

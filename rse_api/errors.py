@@ -48,3 +48,9 @@ def register_common_error_handlers(app):
                 e.messages = {field: e.messages for field in e.field_names}
             return jsonify({'messages': e.messages}), 400
 
+    @app.errorhandler(RSEApiException)
+    def rse_api_exceptionn(e):
+        app.logger.exception(e)
+        if isinstance(e.args, tuple):
+            e.message = ' '.join(e.args)
+        return jsonify({'message': e.message}), 400
