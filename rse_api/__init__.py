@@ -42,7 +42,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
         if rabbit_url:
             from dramatiq.brokers.rabbitmq import URLRabbitmqBroker
             import dramatiq
-            broker = URLRabbitmqBroker(app.config.get('RABBIT_URL', None))
+            broker = URLRabbitmqBroker(rabbit_url)
             dramatiq.set_broker(broker)
     return app
 
