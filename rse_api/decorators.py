@@ -11,7 +11,13 @@ from rse_api.errors import RSEApiException
 from rse_api.routing import register_api
 
 
-def json_only(func: Callable):
+def json_only(func: Callable) -> Callable:
+    """
+    Wraps a method to only support requests that are json
+
+    :param func: Function to wrap
+    :return: wrapped function
+    """
     @wraps(func)
     def wrapper(*args, **kwargs):
         from flask import request
@@ -21,13 +27,14 @@ def json_only(func: Callable):
     return wrapper
 
 
-def register_crud(endpoint, url=None):
+def register_crud(endpoint, url=None) -> Callable:
     if url is None:
         url = endpoint
 
-    def decorator_register(func: Callable):
+    def decorator_register(func: Callable) -> Callable:
         if not issubclass(func, MethodView):
             raise RSEApiException("You can only register MethodView derived classes using this decorator")
+
         @wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
@@ -37,7 +44,14 @@ def register_crud(endpoint, url=None):
     return decorator_register
 
 
-def schema_in(schema: Schema, many: bool=False):
+def schema_in(schema: Schema, many: bool=False) -> Callable:
+    """
+    Decorator that converts the flask json input data into a parsed data from a supplied schema object
+
+    :param schema: Marshmallow schema to parse flask request with. It is recommended to use strict mode schemas
+    :param many: Is the input expecting many objects?
+    :return: Wrapped function
+    """
 
     def decorate_schema_in(func: Callable):
         from flask import request
@@ -53,7 +67,15 @@ def schema_in(schema: Schema, many: bool=False):
     return decorate_schema_in
 
 
-def schema_out(schema: Schema, many=False):
+def schema_out(schema: Schema, many=False) -> Callable:
+    """
+    Decorator that attempts to convert the output of the wrapped function with a Flask JSON Response using the
+    supplied Marshmallow schema
+
+    :param schema: Marshmallow schema to convert output of function to
+    :param many: Is the output expecting many objects?
+    :return: Wrapped function
+    """
     def decorate_schema_out(func: Callable):
         @wraps(func)
         def wrapper_schema_out(*args, **kwargs):
@@ -63,8 +85,20 @@ def schema_out(schema: Schema, many=False):
     return decorate_schema_out
 
 
-def schema_in_out(schemaIn: Schema, schemaOut: Schema, schema_in_many=False,
-                  schema_out_many=False):
+def schema_in_out(schemaIn: Schema, schemaOut: Schema, schema_in_many=False, schema_out_many=False) -> Callable:
+    """
+    Decorator for methods that take a schema result and return a object that will be serialized to a specific schema
+
+    schemaIn is the source schema. The schema attempts to load data from flask.request. It is recommend you make this
+    schema strict to throw exceptions on errors
+
+    :param schemaIn: Marshmallow schema to parse flask request with. It is recommended to use strict mode schemas
+    :param schemaOut: Marshmallow schema to convert output of function to
+    :param schema_in_many: Is the input expecting many objects?
+    :param schema_out_many: Is the output expecting many objects?
+    :return: Wrapped function
+    :rtype: Callable
+    """
     def decorate_schema_in_out(func: Callable):
         @wraps(func)
         @schema_in(schemaIn, schema_in_many)
