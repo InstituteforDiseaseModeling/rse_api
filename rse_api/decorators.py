@@ -75,6 +75,7 @@ def schema_in_out(schemaIn: Schema, schemaOut: Schema, schema_in_many=False,
         return wrapper
     return decorate_schema_in_out
 
+
 def singleton_function(func: Callable) -> Callable:
     """
     Allows a function to run once then cache its results for later calls

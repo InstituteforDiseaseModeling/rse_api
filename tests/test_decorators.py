@@ -1,10 +1,11 @@
+import time
 import unittest
 
 from flask import Response, jsonify
 from marshmallow import Schema, validate
 from marshmallow.fields import String, Integer
 
-from rse_api.decorators import schema_in, schema_out, schema_in_out, json_only, schema_in_out
+from rse_api.decorators import schema_in, schema_out, schema_in_out, json_only, schema_in_out, singleton_function
 from rse_api import get_application
 from tests.utils import requires_fixture
 
@@ -19,6 +20,24 @@ class NameOnlySchema(Schema):
 
 
 class TestDecorator(unittest.TestCase):
+
+    def test_singleton_function(self):
+
+        @singleton_function
+        def one_time():
+            return time.time()
+
+        def changes_time():
+            return time.time()
+        x = one_time()
+        x2 = changes_time()
+        x3 = one_time()
+        x4=changes_time()
+        self.assertNotEqual(x, x2)
+        self.assertNotEqual(x2, x3)
+        self.assertNotEqual(x3, x4)
+        self.assertNotEqual(x2, x4)
+        self.assertEqual(x, x3)
 
     @requires_fixture('person')
     def test_schema_in(self, person):
