@@ -1,5 +1,7 @@
 import importlib
 import os
+from importlib import util
+
 from flask import Flask
 from flask.cli import AppGroup
 
@@ -7,12 +9,13 @@ from rse_api.cli import add_cli
 from rse_api.decorators import singleton_function
 from rse_api.errors import register_common_error_handlers
 
-HAS_DRAMATIQ=importlib.find_loader('dramatiq') is not None
-HAS_RABBIT=importlib.find_loader('pika') is not None
+HAS_DRAMATIQ = util.find_spec('dramatiq') is not None
+HAS_RABBIT = util.find_spec('pika') is not None
 
 __author__ = """Clinton Collins"""
 __email__ = 'ccollins@idmod.org'
 __version__ = '1.0.0'
+
 
 @singleton_function
 def get_application(setting_object_path: str=None, setting_environment_variable: str=None, strict_slashes: bool=False,
@@ -41,7 +44,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
         register_common_error_handlers(app)
 
     if HAS_DRAMATIQ and HAS_RABBIT:
-        rabbit_url =app.config.get('RABBIT_URL', None)
+        rabbit_url = app.config.get('RABBIT_URL', None)
         if rabbit_url:
             from dramatiq.brokers.rabbitmq import URLRabbitmqBroker
             import dramatiq

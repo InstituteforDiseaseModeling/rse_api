@@ -1,5 +1,4 @@
-import importlib
-
+from importlib import util
 from flask import jsonify
 
 
@@ -17,13 +16,13 @@ def register_common_error_handlers(app):
     :param app:
     :return: None
     """
-    if importlib.find_loader('sqlalchemy'):
+    if util.find_spec('sqlalchemy'):
         app.logger.debug('Registering sqlalchemy error handlers')
         from sqlalchemy.exc import IntegrityError
         from sqlalchemy.orm.exc import NoResultFound
 
         @app.errorhandler(IntegrityError)
-        def unhandled_exception(e):
+        def handle_integrity_error(e):
             app.logger.exception(e)
             err_msg = str(e.orig)
             message = 'Save Failed due to IntegrityError, most likely due to a missing relationship. See {}'.format(str(e.orig))
@@ -33,23 +32,23 @@ def register_common_error_handlers(app):
             return jsonify({'message': message}), 400
 
         @app.errorhandler(NoResultFound)
-        def unhandled_exception(e):
+        def handle_no_result_exception(e):
             app.logger.exception(e)
             return jsonify({'message': 'Cannot find the requested resource'}), 404
 
-    if importlib.find_loader('marshmallow'):
+    if util.find_spec('marshmallow'):
         app.logger.debug('Registering marshmallow error handlers')
         from marshmallow import ValidationError
 
         @app.errorhandler(ValidationError)
-        def unhandled_exception(e):
+        def handle_validation_error(e):
             app.logger.exception(e)
             if isinstance(e.messages, list) and len(e.field_names) > 0:
                 e.messages = {field: e.messages for field in e.field_names}
             return jsonify({'messages': e.messages}), 400
 
     @app.errorhandler(RSEApiException)
-    def rse_api_exceptionn(e):
+    def rse_api_exception(e):
         app.logger.exception(e)
         if isinstance(e.args, tuple):
             e.message = ' '.join(e.args)

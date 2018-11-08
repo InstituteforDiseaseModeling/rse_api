@@ -2,7 +2,6 @@ import importlib
 import os
 from logging import getLogger
 from typing import List
-from abc import ABCMeta
 
 
 default_exclude = ['__init__.py']
@@ -27,6 +26,7 @@ def dynamic_import_all(module):
     else:
         # otherwise we import all names that don't begin with _
         names = [x for x in mdl.__dict__ if not x.startswith("_")]
+    return names
 
 
 def load_modules(package_path: str, dir_path: str, exclude: List[str]=None, recurse: bool=False) -> List[str]:
@@ -54,7 +54,7 @@ def load_modules(package_path: str, dir_path: str, exclude: List[str]=None, recu
     logger = getLogger()
     modules = []
 
-    #TODO Add recursion
+    # TODO Add recursion
 
     if exclude is None:
         exclude = default_exclude.copy()

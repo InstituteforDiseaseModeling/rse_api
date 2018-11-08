@@ -1,5 +1,3 @@
-
-
 def register_api(view, endpoint, url=None, pk='id', pk_type='int', methods=['GET', 'PUT', 'DELETE', 'POST'], app=None):
     """
     Registers a class as an api endpoint
@@ -30,9 +28,9 @@ def register_api(view, endpoint, url=None, pk='id', pk_type='int', methods=['GET
     # these are the main listing methods
     if 'GET' in methods:
         app.add_url_rule(url, strict_slashes=False, defaults={pk: None},
-                         view_func=view_func, methods=['GET',])
+                         view_func=view_func, methods=['GET', ])
     if 'POST' in methods:
-        app.add_url_rule(url, strict_slashes=False, view_func=view_func, methods=['POST',])
+        app.add_url_rule(url, strict_slashes=False, view_func=view_func, methods=['POST', ])
     app.logger.info('Register URL %s/<%s:%s>' % (url, pk_type, pk))
     # ensure post is not a method at this point
     fm = [f for f in methods.copy() if f != 'POST']

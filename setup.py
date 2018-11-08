@@ -25,13 +25,23 @@ setup_requirements = ['pytest-runner']
 test_requirements = ['pytest']
 
 setup(
-    author="Clinton Collins",
-    author_email='ccollins@idmod.org',
+    author="Clinton Collins, "
+           "Benoit Raybaud, "
+           "Clark Kirkman IV,"
+           "Zhaowei Du"
+           "David Kong,"
+           "Qinghua Long",
+    author_email='ccollins@idmod.org, '
+                 'braybaud@idmod.org, '
+                 'ckirkman@idmod.org, '
+                 'zdu@idmod.org'
+                 'dkong@idmod.org, '
+                 'qlong@idmod.org',
     classifiers=[
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
-    description="{{ cookiecutter.project_short_description }}",
+    description="rse_api has common tool for standing up RESTful api services in python",
     install_requires=requirements,
     long_description=readme + '\n\n' + history,
     include_package_data=True,

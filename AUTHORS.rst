@@ -2,5 +2,4 @@
 Credits
 =======
 
-* Clinton Collins
-* Benoit Raybaud
+See setup.py

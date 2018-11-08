@@ -51,7 +51,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## check style with flake8
-	flake8 {{ cookiecutter.project_slug }} tests
+	flake8 --ignore=E501 rse_api tests
 
 test: ## run tests quickly with the default Python
 	py.test
@@ -66,8 +66,8 @@ coverage: ## check code coverage quickly with the default Python
 	$(BROWSER) htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/rse_api.rst
-	rm -f docs/modules.rst
+	rm -f docs_src/rse_api.rst
+	rm -f docs_src/modules.rst
 	sphinx-apidoc -o docs_src/ rse_api
 	$(MAKE) -C docs_src clean
 	$(MAKE) -C docs_src html

@@ -5,7 +5,7 @@ from flask import Response, jsonify
 from marshmallow import Schema, validate
 from marshmallow.fields import String, Integer
 
-from rse_api.decorators import schema_in, schema_out, schema_in_out, json_only, schema_in_out, singleton_function
+from rse_api.decorators import schema_in, schema_out, json_only, schema_in_out, singleton_function
 from rse_api import get_application
 from tests.utils import requires_fixture
 
@@ -32,7 +32,7 @@ class TestDecorator(unittest.TestCase):
         x = one_time()
         x2 = changes_time()
         x3 = one_time()
-        x4=changes_time()
+        x4 = changes_time()
         self.assertNotEqual(x, x2)
         self.assertNotEqual(x2, x3)
         self.assertNotEqual(x3, x4)

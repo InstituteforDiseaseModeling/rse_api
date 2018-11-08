@@ -33,21 +33,19 @@
           <div class="body" role="main">
             
   <h1>Source code for rse_api.cli</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">import</span> <span class="nn">click</span>
+<span></span><span class="kn">import</span> <span class="nn">click</span>
 <span class="kn">from</span> <span class="nn">flask.cli</span> <span class="k">import</span> <span class="n">AppGroup</span>
 
 
 <div class="viewcode-block" id="add_cli"><a class="viewcode-back" href="../../rse_api.html#rse_api.cli.add_cli">[docs]</a><span class="k">def</span> <span class="nf">add_cli</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
     <span class="n">manage_cli</span> <span class="o">=</span> <span class="n">AppGroup</span><span class="p">(</span><span class="s1">&#39;manage&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Commands related to running application&quot;</span><span class="p">)</span>
-    
+
     <span class="nd">@manage_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;run&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Runs the application&#39;</span><span class="p">)</span>
     <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--port&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;What port should the server run on?&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
         <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
 
     <span class="n">app</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">manage_cli</span><span class="p">)</span></div>
-    
 </pre></div>
 
           </div>
