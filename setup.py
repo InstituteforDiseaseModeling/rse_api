@@ -11,7 +11,16 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['flask>=1.0.x,<1.1']
+with open('requirements_dev.txt') as dev_requirement_file:
+    dev_requirements = dev_requirement_file.read().split("\n")
+
+extras_require={
+        'dev': dev_requirements
+    }
+requirements = [
+    'flask>=1.0.x,<1.1',
+    'marshmallow>2,<3'
+]
 setup_requirements = ['pytest-runner']
 test_requirements = ['pytest']
 
@@ -19,14 +28,6 @@ setup(
     author="Clinton Collins",
     author_email='ccollins@idmod.org',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
@@ -38,6 +39,7 @@ setup(
     name='rse_api',
     packages=find_packages(include=['rse_api']),
     setup_requires=setup_requirements,
+    extras_requires=extras_require,
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/InstituteforDiseaseModeling/rse_api',

@@ -16,7 +16,7 @@ rse_api
 
 Rse_APO
 
-* Documentation: https://{{ cookiecutter.project_slug | replace("_", "-") }}.readthedocs.io.
+* Documentation: https://..
 
 
 Features

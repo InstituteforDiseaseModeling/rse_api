@@ -1,0 +1,69 @@
+rse\_api package
+================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    rse_api.controllers
+
+Submodules
+----------
+
+rse\_api.cli module
+-------------------
+
+.. automodule:: rse_api.cli
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+rse\_api.decorators module
+--------------------------
+
+.. automodule:: rse_api.decorators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+rse\_api.errors module
+----------------------
+
+.. automodule:: rse_api.errors
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+rse\_api.query module
+---------------------
+
+.. automodule:: rse_api.query
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+rse\_api.routing module
+-----------------------
+
+.. automodule:: rse_api.routing
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+rse\_api.utils module
+---------------------
+
+.. automodule:: rse_api.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: rse_api
+    :members:
+    :undoc-members:
+    :show-inheritance:

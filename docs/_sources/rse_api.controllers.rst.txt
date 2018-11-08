@@ -1,0 +1,22 @@
+rse\_api.controllers package
+============================
+
+Submodules
+----------
+
+rse\_api.controllers.simple\_controller module
+----------------------------------------------
+
+.. automodule:: rse_api.controllers.simple_controller
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: rse_api.controllers
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,396 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>rse_api package &#8212; rse_api 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="rse_api.controllers package" href="rse_api.controllers.html" />
+    <link rel="prev" title="rse_api" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="rse-api-package">
+<h1>rse_api package<a class="headerlink" href="#rse-api-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rse_api.controllers.html">rse_api.controllers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#rse-api-controllers-simple-controller-module">rse_api.controllers.simple_controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#module-rse_api.controllers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-rse_api.cli">
+<span id="rse-api-cli-module"></span><h2>rse_api.cli module<a class="headerlink" href="#module-rse_api.cli" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="rse_api.cli.add_cli">
+<code class="descclassname">rse_api.cli.</code><code class="descname">add_cli</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/cli.html#add_cli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.cli.add_cli" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-rse_api.decorators">
+<span id="rse-api-decorators-module"></span><h2>rse_api.decorators module<a class="headerlink" href="#module-rse_api.decorators" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="rse_api.decorators.json_only">
+<code class="descclassname">rse_api.decorators.</code><code class="descname">json_only</code><span class="sig-paren">(</span><em>func: Callable</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#json_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.json_only" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps a method to only support requests that are json</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>func</strong> – Function to wrap</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">wrapped function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="rse_api.decorators.register_crud">
+<code class="descclassname">rse_api.decorators.</code><code class="descname">register_crud</code><span class="sig-paren">(</span><em>endpoint</em>, <em>url=None</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#register_crud"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.register_crud" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="rse_api.decorators.schema_in">
+<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_in</code><span class="sig-paren">(</span><em>schema: marshmallow.schema.Schema</em>, <em>many: bool = False</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator that converts the flask json input data into a parsed data from a supplied schema object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>schema</strong> – Marshmallow schema to parse flask request with. It is recommended to use strict mode schemas</li>
+<li><strong>many</strong> – Is the input expecting many objects?</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Wrapped function</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="rse_api.decorators.schema_in_out">
+<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_in_out</code><span class="sig-paren">(</span><em>schemaIn: marshmallow.schema.Schema</em>, <em>schemaOut: marshmallow.schema.Schema</em>, <em>schema_in_many=False</em>, <em>schema_out_many=False</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_in_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_in_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for methods that take a schema result and return a object that will be serialized to a specific schema</p>
+<p>schemaIn is the source schema. The schema attempts to load data from flask.request. It is recommend you make this
+schema strict to throw exceptions on errors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>schemaIn</strong> – Marshmallow schema to parse flask request with. It is recommended to use strict mode schemas</li>
+<li><strong>schemaOut</strong> – Marshmallow schema to convert output of function to</li>
+<li><strong>schema_in_many</strong> – Is the input expecting many objects?</li>
+<li><strong>schema_out_many</strong> – Is the output expecting many objects?</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Wrapped function</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Callable</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="rse_api.decorators.schema_out">
+<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_out</code><span class="sig-paren">(</span><em>schema: marshmallow.schema.Schema</em>, <em>many=False</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator that attempts to convert the output of the wrapped function with a Flask JSON Response using the
+supplied Marshmallow schema</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>schema</strong> – Marshmallow schema to convert output of function to</li>
+<li><strong>many</strong> – Is the output expecting many objects?</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Wrapped function</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="rse_api.decorators.singleton_function">
+<code class="descclassname">rse_api.decorators.</code><code class="descname">singleton_function</code><span class="sig-paren">(</span><em>func: Callable</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#singleton_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.singleton_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows a function to run once then cache its results for later calls
+:param func: Function to be cached
+:return: Wrapper function</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="rse_api.decorators.timeit_logged">
+<code class="descclassname">rse_api.decorators.</code><code class="descname">timeit_logged</code><span class="sig-paren">(</span><em>func: Callable</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#timeit_logged"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.timeit_logged" title="Permalink to this definition">¶</a></dt>
+<dd><p>Times the execution of a function and log to the Timed log
+:param func: Function that should be timed
+:return: Wrapped function</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-rse_api.errors">
+<span id="rse-api-errors-module"></span><h2>rse_api.errors module<a class="headerlink" href="#module-rse_api.errors" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="rse_api.errors.RSEApiException">
+<em class="property">exception </em><code class="descclassname">rse_api.errors.</code><code class="descname">RSEApiException</code><a class="reference internal" href="_modules/rse_api/errors.html#RSEApiException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.errors.RSEApiException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="rse_api.errors.register_common_error_handlers">
+<code class="descclassname">rse_api.errors.</code><code class="descname">register_common_error_handlers</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/errors.html#register_common_error_handlers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.errors.register_common_error_handlers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the common error handlers</p>
+<p>If sqlalchemy exists, error capturing for IntegrityError and NoResultFound will be defined</p>
+<p>If marshmallow exists, error capturing for ValidationError will be defined
+:param app:
+:return: None</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-rse_api.query">
+<span id="rse-api-query-module"></span><h2>rse_api.query module<a class="headerlink" href="#module-rse_api.query" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="rse_api.query.get_pagination_from_request">
+<code class="descclassname">rse_api.query.</code><code class="descname">get_pagination_from_request</code><span class="sig-paren">(</span><em>page_default: int = 1</em>, <em>per_page_default: int = 100</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="_modules/rse_api/query.html#get_pagination_from_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.query.get_pagination_from_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the pagination filter created from a request</p>
+<p>Page is assumed to be in the <cite>page</cite> query parameters
+The number of items per page is assumed to be in the per_page query option</p>
+<p>The turns will be a dictionary container the values for page and per_page. If no values were passed to the request
+the values will be defaults of page_default and per_page_default
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-rse_api.routing">
+<span id="rse-api-routing-module"></span><h2>rse_api.routing module<a class="headerlink" href="#module-rse_api.routing" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="rse_api.routing.register_api">
+<code class="descclassname">rse_api.routing.</code><code class="descname">register_api</code><span class="sig-paren">(</span><em>view, endpoint, url=None, pk='id', pk_type='int', methods=['GET', 'PUT', 'DELETE', 'POST'], app=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/routing.html#register_api"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.routing.register_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a class as an api endpoint</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>view</strong> – The Class to register as api controller</li>
+<li><strong>endpoint</strong> – Endpoint the class represents This will be used internally for naming the object</li>
+<li><strong>url</strong> – Optional. Will be</li>
+<li><strong>pk</strong> – Name of the id field for object in the url/ Defaults to id</li>
+<li><strong>pk_type</strong> – The type of the id field. Default to int</li>
+<li><strong>methods</strong> – HTTP Methods this controller supports. Default is GET, PUT, DELETE, POST. Get will be</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>registered for to sets of urls. The unique object versions, ie /objects/id and the listing of all objects,
+ie /objects. POST will only be registered at the top level url is specified, ie /objects
+:param app: App object to register url
+:return: None</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-rse_api.utils">
+<span id="rse-api-utils-module"></span><h2>rse_api.utils module<a class="headerlink" href="#module-rse_api.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rse_api.utils.abstractclassmethod">
+<em class="property">class </em><code class="descclassname">rse_api.utils.</code><code class="descname">abstractclassmethod</code><span class="sig-paren">(</span><em>callable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/utils.html#abstractclassmethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.utils.abstractclassmethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">classmethod</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="rse_api.utils.dynamic_import_all">
+<code class="descclassname">rse_api.utils.</code><code class="descname">dynamic_import_all</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/utils.html#dynamic_import_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.utils.dynamic_import_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="rse_api.utils.load_modules">
+<code class="descclassname">rse_api.utils.</code><code class="descname">load_modules</code><span class="sig-paren">(</span><em>package_path: str</em>, <em>dir_path: str</em>, <em>exclude: List[str] = None</em>, <em>recurse: bool = False</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="reference internal" href="_modules/rse_api/utils.html#load_modules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.utils.load_modules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scans a specific directory path for list of possible model files. It then will import each file as part of the
+specified package_path. For example, if a directory contains the following files</p>
+<p>__init__.py
+package.py
+contributor.py</p>
+<p>And the function is called with a package_path of “test.models”, load_modules will import test.models.package and
+test.models.contributor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>recurse</strong> – Should we recurse into other directories?</li>
+<li><strong>package_path</strong> (<em>str</em>) – Prefix to package path of directory we are scanning</li>
+<li><strong>dir_path</strong> (<em>str</em>) – Directory to scan</li>
+<li><strong>exclude</strong> – List of files to exclude. If value is None, the default list of ‘__init__.py’ will be used</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of models loaded</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">List[str]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-rse_api">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rse_api" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="rse_api.get_application">
+<code class="descclassname">rse_api.</code><code class="descname">get_application</code><span class="sig-paren">(</span><em>setting_object_path: str = None</em>, <em>setting_environment_variable: str = None</em>, <em>strict_slashes: bool = False</em>, <em>default_error_handlers: bool = True</em><span class="sig-paren">)</span> &#x2192; flask.app.Flask<a class="reference internal" href="_modules/rse_api.html#get_application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_application" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Flask Application object. This function is a singleton function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>default_error_handlers</strong> – Should the default error handlers for SQlAlchemy and Marshmallow be added?</li>
+<li><strong>setting_object_path</strong> – Optional Python import path to the default settings objects</li>
+<li><strong>setting_environment_variable</strong> – Optional environment variable that stores path to setting files</li>
+<li><strong>strict_slashes</strong> – Should we use strict slashes(Ie a call to /projects will fail but a call to /projects will
+succeed</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Flask app</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="rse_api.get_worker_cli">
+<code class="descclassname">rse_api.</code><code class="descname">get_worker_cli</code><span class="sig-paren">(</span><em>app</em>, <em>load_workers_func=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#get_worker_cli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_worker_cli" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">rse_api</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">rse_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">rse_api</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">rse_api package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">rse_api</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">rse_api</a></li>
+      <li>Next: <a href="rse_api.controllers.html" title="next chapter">rse_api.controllers package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/rse_api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -68,10 +68,11 @@ coverage: ## check code coverage quickly with the default Python
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/rse_api.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ rse_api
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
-	$(BROWSER) docs/_build/html/index.html
+	sphinx-apidoc -o docs_src/ rse_api
+	$(MAKE) -C docs_src clean
+	$(MAKE) -C docs_src html
+	cp -r docs_src/_build/html/* docs
+	$(BROWSER) docs_src/_build/html/index.html
 
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
