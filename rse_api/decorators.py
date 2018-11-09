@@ -1,15 +1,15 @@
 import time
 from functools import wraps
+from importlib import util
 from logging import getLogger
 from typing import Callable
-
 from flask import jsonify
 from flask.views import MethodView
 from marshmallow import Schema
-
 from rse_api.errors import RSEApiException
 from rse_api.routing import register_api
 
+HAS_APSCHEDULER = util.find_spec('apscheduler') is not None
 
 def json_only(func: Callable) -> Callable:
     """
@@ -142,3 +142,22 @@ def timeit_logged(func: Callable) -> Callable:
         logger.debug('%r  %2.2f ms' % (func.__name__, (end - start) * 1000))
         return result
     return timed
+
+
+if HAS_APSCHEDULER:
+    from apscheduler.triggers.cron import CronTrigger
+
+    CRON_JOBS = [] # Global Cron Jobs
+
+    def cron(crontab):
+        """Wrap a Dramatiq actor in a cron schedule.
+        """
+        trigger = CronTrigger.from_crontab(crontab)
+
+        def decorator(actor):
+            module_path = actor.fn.__module__
+            func_name = actor.fn.__name__
+            CRON_JOBS.append((trigger, module_path, func_name))
+            return actor
+
+        return decorator
