@@ -23,7 +23,6 @@ __email__ = 'ccollins@idmod.org'
 __version__ = '1.0.0'
 
 
-
 @singleton_function
 def default_dramatiq_setup_broker(app):
     if HAS_DRAMATIQ and (HAS_RABBIT or HAS_REDIS):
@@ -32,17 +31,20 @@ def default_dramatiq_setup_broker(app):
         from rse_api.tasks.app_context_middleware import AppContextMiddleware
 
         # if we are testing, setup stub broker
-        if os.environ.get('UNIT_TESTS', "0") == "1":
+        if app.config['TESTING']:
+            app.logging.info('Using Stub Broker')
             from dramatiq.brokers.stub import StubBroker
             broker = dramatiq.brokers.stub.StubBroker()
         else:
             if HAS_RABBIT:
                 broker_url = app.config.get('RABBIT_URI', None)
                 from dramatiq.brokers.rabbitmq import URLRabbitmqBroker
+                app.logging.info('Connecting to Rabbit MQ @ {}'.format(broker_url))
                 broker = URLRabbitmqBroker(broker_url)
             else:
                 broker_url = app.config.get('REDIS_URI', None)
                 from dramatiq.brokers.redis import URLRedisBroker
+                app.logging.info('Connecting to Redis @ {}'.format(broker_url))
                 broker = URLRedisBroker(broker_url)
             if broker_url:
                 dramatiq.set_broker(broker)
