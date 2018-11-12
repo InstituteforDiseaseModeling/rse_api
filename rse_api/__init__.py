@@ -30,26 +30,28 @@ def default_dramatiq_setup_broker(app):
         import dramatiq.brokers
         from rse_api.tasks.app_context_middleware import AppContextMiddleware
 
+        broker = None
         # if we are testing, setup stub broker
-        if app.config['TESTING']:
-            app.logging.info('Using Stub Broker')
+        if (app.config.get('TESTING', False) or app.config.get('FLASK_ENV', '') == 'development') and \
+                not app.config.get('DRAMATIQ_USE_PROD', False):
+            app.logger.info('Using Stub Broker')
             from dramatiq.brokers.stub import StubBroker
             broker = dramatiq.brokers.stub.StubBroker()
         else:
             if HAS_RABBIT:
                 broker_url = app.config.get('RABBIT_URI', None)
                 from dramatiq.brokers.rabbitmq import URLRabbitmqBroker
-                app.logging.info('Connecting to Rabbit MQ @ {}'.format(broker_url))
+                app.logger.info('Connecting to Rabbit MQ @ {}'.format(broker_url))
                 broker = URLRabbitmqBroker(broker_url)
             else:
                 broker_url = app.config.get('REDIS_URI', None)
                 from dramatiq.brokers.redis import URLRedisBroker
-                app.logging.info('Connecting to Redis @ {}'.format(broker_url))
+                app.logger.info('Connecting to Redis @ {}'.format(broker_url))
                 broker = URLRedisBroker(broker_url)
-            if broker_url:
-                dramatiq.set_broker(broker)
 
-        broker.add_middleware(AppContextMiddleware(app))
+        if broker is not None:
+            dramatiq.set_broker(broker)
+            broker.add_middleware(AppContextMiddleware(app))
         # add worker cli as well
         cli = get_worker_cli(app)
         return broker

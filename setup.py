@@ -15,7 +15,7 @@ with open('requirements_dev.txt') as dev_requirement_file:
     dev_requirements = dev_requirement_file.read().split("\n")
 
 extras_require={
-        'full': ['dramatiq'],
+        'full': ['dramatiq', 'apscheduler>=3.5.3'],
         'dev': dev_requirements
     }
 requirements = [

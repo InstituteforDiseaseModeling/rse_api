@@ -59,9 +59,13 @@ def load_modules(package_path: str, dir_path: str, exclude: List[str]=None, recu
     if exclude is None:
         exclude = default_exclude.copy()
     for root, dirs, files in os.walk(dir_path, topdown=True):
+        p_path = package_path
+        if root != dir_path:
+            # find relative difference
+            p_path +=  "." + os.path.relpath(root, dir_path).replace("/", ".")
         for f in files:
             if f.endswith('.py') and f not in exclude:
-                name = '{}.{}'.format(package_path, f.replace('.py', ''))
+                name = '{}.{}'.format(p_path, f.replace('.py', ''))
                 importlib.import_module(name)
                 modules.append(name)
 
