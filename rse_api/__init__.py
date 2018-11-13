@@ -60,7 +60,8 @@ def default_dramatiq_setup_broker(app):
 
 @singleton_function
 def get_application(setting_object_path: str=None, setting_environment_variable: str=None, strict_slashes: bool=False,
-                    default_error_handlers: bool=True, setup_broker_func: Callable = default_dramatiq_setup_broker) -> Flask:
+                    default_error_handlers: bool=True, setup_broker_func: Callable = default_dramatiq_setup_broker,
+                    template_folder='templates') -> Flask:
     """
     Returns a Flask Application object. This function is a singleton function
 
@@ -73,7 +74,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
       succeed
     :return: Flask app
     """
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder=template_folder)
     if setting_object_path:
         app.logger.debug('Loading Application settings from {}'.format(setting_object_path))
         app.config.from_object(setting_object_path)
