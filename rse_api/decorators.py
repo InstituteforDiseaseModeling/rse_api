@@ -119,10 +119,10 @@ def singleton_function(func: Callable) -> Callable:
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if not hasattr(wrapper, 'has_ran'):
-            setattr(wrapper, 'cache_value', func(*args, **kwargs))
-            setattr(wrapper, 'has_ran', True)
-        return getattr(wrapper, 'cache_value')
+        if not hasattr(func, 'has_ran'):
+            setattr(func, 'cache_value', func(*args, **kwargs))
+            setattr(func, 'has_ran', True)
+        return getattr(func, 'cache_value')
     return wrapper
 
 
