@@ -29,7 +29,7 @@ def dynamic_import_all(module):
     return names
 
 
-def load_modules(package_path: str, dir_path: str, exclude: List[str]=None, recurse: bool=False) -> List[str]:
+def load_modules(package_path: str, dir_path: str, exclude: List[str]=None) -> List[str]:
     """
     Scans a specific directory path for list of possible model files. It then will import each file as part of the
     specified package_path. For example, if a directory contains the following files
@@ -53,8 +53,6 @@ def load_modules(package_path: str, dir_path: str, exclude: List[str]=None, recu
     """
     logger = getLogger()
     modules = []
-
-    # TODO Add recursion
 
     if exclude is None:
         exclude = default_exclude.copy()

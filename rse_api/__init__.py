@@ -99,7 +99,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
     if default_error_handlers:
         register_common_error_handlers(app)
 
-    if callable(setup_broker_func):
+    if HAS_DRAMATIQ and callable(setup_broker_func):
         app.broker = setup_broker_func(app)
 
     return app
