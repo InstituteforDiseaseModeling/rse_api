@@ -35,8 +35,18 @@ def default_dramatiq_setup_broker(app):
         if (app.config.get('TESTING', False) or app.config.get('FLASK_ENV', '') == 'development') and \
                 not app.config.get('DRAMATIQ_USE_PROD', False):
             app.logger.info('Using Stub Broker')
-            from dramatiq.brokers.stub import StubBroker
-            broker = dramatiq.brokers.stub.StubBroker()
+            if os.name == 'nt':
+                # at moment, windows cannot use stub broker
+                if not HAS_RABBIT:
+                    raise NotImplementedError("Windows does not support StubBroker. Please use RabbitMQ")
+
+                broker_url = app.config.get('RABBIT_URI', None)
+                from dramatiq.brokers.rabbitmq import URLRabbitmqBroker
+                app.logger.info('Connecting to Rabbit MQ @ {}'.format(broker_url))
+                broker = URLRabbitmqBroker(broker_url)
+            else:
+                from dramatiq.brokers.stub import StubBroker
+                broker = StubBroker()
         else:
             if HAS_RABBIT:
                 broker_url = app.config.get('RABBIT_URI', None)
@@ -65,6 +75,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
     """
     Returns a Flask Application object. This function is a singleton function
 
+
     :param setup_broker_func: Function callback to setup brokers for queues. By default a function that checks for dramatiq
     is called and if deted
     :param default_error_handlers: Should the default error handlers for SQlAlchemy and Marshmallow be added?
@@ -72,6 +83,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
     :param setting_environment_variable: Optional environment variable that stores path to setting files
     :param strict_slashes: Should we use strict slashes(Ie a call to /projects will fail but a call to /projects will
       succeed
+    :param template_folder: Template folder
     :return: Flask app
     """
     app = Flask(__name__, template_folder=template_folder)
@@ -87,7 +99,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
     if default_error_handlers:
         register_common_error_handlers(app)
 
-    if callable(setup_broker_func):
+    if HAS_DRAMATIQ and callable(setup_broker_func):
         app.broker = setup_broker_func(app)
 
     return app
