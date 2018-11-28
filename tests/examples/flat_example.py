@@ -1,13 +1,13 @@
 from flask_restful import Resource, Api
 from marshmallow import fields, validate, ValidationError, validates_schema
 from marshmallow_sqlalchemy import ModelSchema
-from sqlalchemy.orm.
 from sqlalchemy import Column, String, Integer
 
 from rse_api.decorators import schema_out, register_resource, schema_in_out
 from rse_db.utils import get_declarative_base
 
 Base = get_declarative_base()
+
 
 # Our Database Model
 # This model handles all our interaction with DB

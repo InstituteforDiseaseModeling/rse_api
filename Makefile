@@ -74,6 +74,7 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	$(MAKE) -C docs_src clean
 	$(MAKE) -C docs_src html
 	cp -r docs_src/_build/html/* docs
+	touch docs/.nojekyll
 	$(BROWSER) docs_src/_build/html/index.html
 
 servedocs: docs ## compile the docs watching for changes
