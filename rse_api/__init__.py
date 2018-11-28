@@ -15,6 +15,7 @@ from rse_api.errors import register_common_error_handlers
 from rse_api.tasks import dramatiq_parse_arguments
 
 HAS_DRAMATIQ = util.find_spec('dramatiq') is not None
+HAS_RESTFUL = util.find_spec('flask_restful') is not None
 HAS_RABBIT = util.find_spec('pika') is not None
 HAS_REDIS = util.find_spec('redis') is not None
 HAS_APSCHEDULER = util.find_spec('apscheduler') is not None
@@ -72,6 +73,13 @@ def default_dramatiq_setup_broker(app):
 
 
 @singleton_function
+def get_restful_api():
+    from flask_restful import Api
+    api = Api(get_application())
+    return api
+
+
+@singleton_function
 def get_application(setting_object_path: str=None, setting_environment_variable: str=None, strict_slashes: bool=False,
                     default_error_handlers: bool=True, setup_broker_func: Callable = default_dramatiq_setup_broker,
                     template_folder='templates') -> Flask:
@@ -90,6 +98,8 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
     :return: Flask app
     """
     app = Flask(__name__, template_folder=template_folder)
+    if HAS_RESTFUL:
+        get_restful_api()
     if setting_object_path:
         app.logger.debug('Loading Application settings from {}'.format(setting_object_path))
         app.config.from_object(setting_object_path)

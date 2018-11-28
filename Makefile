@@ -79,8 +79,12 @@ docs: ## generate Sphinx HTML documentation, including API docs
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
-release: dist ## package and upload a release
-	twine upload --repository-url https://packages.idmod.org/api/pypi/idm-pypi-staging dist/*
+release-staging: dist ## package and upload a release
+	twine upload -r staging dist/*
+	twine upload -r staging dist/*
+
+release-production: dist ## package and upload a release
+	twine upload -r production dist/*
 
 dist: clean ## builds source and wheel package
 	python setup.py sdist

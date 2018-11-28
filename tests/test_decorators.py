@@ -19,6 +19,9 @@ class NameOnlySchema(Schema):
     name = String(required=True, validate=validate.Length(min=5))
 
 
+
+
+
 class TestDecorator(unittest.TestCase):
 
     def test_singleton_function(self):

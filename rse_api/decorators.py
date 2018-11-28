@@ -6,6 +6,8 @@ from typing import Callable
 from flask import jsonify
 from flask.views import MethodView
 from marshmallow import Schema
+
+
 from .errors import RSEApiException
 from .routing import register_api
 
@@ -44,6 +46,29 @@ def register_crud(endpoint, url=None) -> Callable:
         register_api(func, endpoint, url)
         return wrapper
     return decorator_register
+
+
+def register_resource(urls):
+    from rse_api import get_restful_api
+    from flask_restful import Resource
+    api = get_restful_api()
+    if type(urls) is tuple:
+        urls = list(urls)
+
+    elif type(urls) is str:
+        urls = [urls]
+
+    def decorator_register_resource(func: Callable) -> Callable:
+        if not issubclass(func, Resource):
+            raise RSEApiException("You can only register Resource derived classes using this decorator")
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            return func(*args, **kwargs)
+        resource_args = tuple([func] + [urls])
+        api.add_resource(*resource_args)
+        return wrapper
+    return decorator_register_resource
 
 
 def schema_in(schema: Schema, many: bool=False) -> Callable:

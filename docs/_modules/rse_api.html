@@ -33,39 +33,98 @@
           <div class="body" role="main">
             
   <h1>Source code for rse_api</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">importlib</span>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span>
 
+<span class="kn">import</span> <span class="nn">click</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span>
 <span class="kn">from</span> <span class="nn">flask.cli</span> <span class="k">import</span> <span class="n">AppGroup</span>
 
 <span class="kn">from</span> <span class="nn">rse_api.cli</span> <span class="k">import</span> <span class="n">add_cli</span>
-<span class="kn">from</span> <span class="nn">rse_api.decorators</span> <span class="k">import</span> <span class="n">singleton_function</span>
+<span class="kn">from</span> <span class="nn">rse_api.decorators</span> <span class="k">import</span> <span class="n">singleton_function</span><span class="p">,</span> <span class="n">CRON_JOBS</span>
 <span class="kn">from</span> <span class="nn">rse_api.errors</span> <span class="k">import</span> <span class="n">register_common_error_handlers</span>
+<span class="kn">from</span> <span class="nn">rse_api.tasks</span> <span class="k">import</span> <span class="n">dramatiq_parse_arguments</span>
 
 <span class="n">HAS_DRAMATIQ</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;dramatiq&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <span class="n">HAS_RABBIT</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;pika&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="n">HAS_REDIS</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;redis&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="n">HAS_APSCHEDULER</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;apscheduler&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Clinton Collins&quot;&quot;&quot;</span>
 <span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;ccollins@idmod.org&#39;</span>
 <span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;1.0.0&#39;</span>
 
 
+<div class="viewcode-block" id="default_dramatiq_setup_broker"><a class="viewcode-back" href="../rse_api.html#rse_api.default_dramatiq_setup_broker">[docs]</a><span class="nd">@singleton_function</span>
+<span class="k">def</span> <span class="nf">default_dramatiq_setup_broker</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">HAS_DRAMATIQ</span> <span class="ow">and</span> <span class="p">(</span><span class="n">HAS_RABBIT</span> <span class="ow">or</span> <span class="n">HAS_REDIS</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">dramatiq</span>
+        <span class="kn">import</span> <span class="nn">dramatiq.brokers</span>
+        <span class="kn">from</span> <span class="nn">rse_api.tasks.app_context_middleware</span> <span class="k">import</span> <span class="n">AppContextMiddleware</span>
+
+        <span class="n">broker</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># if we are testing, setup stub broker</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TESTING&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="n">app</span><span class="o">.</span><span class="n">env</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;development&#39;</span><span class="p">,</span> <span class="s1">&#39;testing&#39;</span><span class="p">])</span> <span class="ow">and</span> \
+                <span class="ow">not</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DRAMATIQ_USE_PROD&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using Stub Broker&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;nt&#39;</span><span class="p">:</span>
+                <span class="c1"># at moment, windows cannot use stub broker</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_RABBIT</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Windows does not support StubBroker. Please use RabbitMQ&quot;</span><span class="p">)</span>
+
+                <span class="n">broker_url</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RABBIT_URI&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="kn">from</span> <span class="nn">dramatiq.brokers.rabbitmq</span> <span class="k">import</span> <span class="n">URLRabbitmqBroker</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connecting to Rabbit MQ @ </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker_url</span><span class="p">))</span>
+                <span class="n">broker</span> <span class="o">=</span> <span class="n">URLRabbitmqBroker</span><span class="p">(</span><span class="n">broker_url</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">dramatiq.brokers.stub</span> <span class="k">import</span> <span class="n">StubBroker</span>
+                <span class="n">broker</span> <span class="o">=</span> <span class="n">StubBroker</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">HAS_RABBIT</span><span class="p">:</span>
+                <span class="n">broker_url</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RABBIT_URI&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="kn">from</span> <span class="nn">dramatiq.brokers.rabbitmq</span> <span class="k">import</span> <span class="n">URLRabbitmqBroker</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connecting to Rabbit MQ @ </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker_url</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">broker_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Broker URL Required&quot;</span><span class="p">)</span>
+                <span class="n">broker</span> <span class="o">=</span> <span class="n">URLRabbitmqBroker</span><span class="p">(</span><span class="n">broker_url</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">broker_url</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;REDIS_URI&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="kn">from</span> <span class="nn">dramatiq.brokers.redis</span> <span class="k">import</span> <span class="n">URLRedisBroker</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connecting to Redis @ </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker_url</span><span class="p">))</span>
+                <span class="n">broker</span> <span class="o">=</span> <span class="n">URLRedisBroker</span><span class="p">(</span><span class="n">broker_url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">broker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dramatiq</span><span class="o">.</span><span class="n">set_broker</span><span class="p">(</span><span class="n">broker</span><span class="p">)</span>
+            <span class="n">broker</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">AppContextMiddleware</span><span class="p">(</span><span class="n">app</span><span class="p">))</span>
+        <span class="c1"># add worker cli as well</span>
+        <span class="n">get_worker_cli</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">broker</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
 <div class="viewcode-block" id="get_application"><a class="viewcode-back" href="../rse_api.html#rse_api.get_application">[docs]</a><span class="nd">@singleton_function</span>
 <span class="k">def</span> <span class="nf">get_application</span><span class="p">(</span><span class="n">setting_object_path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">setting_environment_variable</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strict_slashes</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">default_error_handlers</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flask</span><span class="p">:</span>
+                    <span class="n">default_error_handlers</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">setup_broker_func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">default_dramatiq_setup_broker</span><span class="p">,</span>
+                    <span class="n">template_folder</span><span class="o">=</span><span class="s1">&#39;templates&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flask</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a Flask Application object. This function is a singleton function</span>
 
+
+<span class="sd">    :param setup_broker_func: Function callback to setup brokers for queues. By default a function that checks for dramatiq</span>
+<span class="sd">    is called and if deted</span>
 <span class="sd">    :param default_error_handlers: Should the default error handlers for SQlAlchemy and Marshmallow be added?</span>
 <span class="sd">    :param setting_object_path: Optional Python import path to the default settings objects</span>
 <span class="sd">    :param setting_environment_variable: Optional environment variable that stores path to setting files</span>
 <span class="sd">    :param strict_slashes: Should we use strict slashes(Ie a call to /projects will fail but a call to /projects will</span>
 <span class="sd">      succeed</span>
+<span class="sd">    :param template_folder: Template folder</span>
 <span class="sd">    :return: Flask app</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">template_folder</span><span class="o">=</span><span class="n">template_folder</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">setting_object_path</span><span class="p">:</span>
         <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Loading Application settings from </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">setting_object_path</span><span class="p">))</span>
         <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="n">setting_object_path</span><span class="p">)</span>
@@ -78,33 +137,81 @@
     <span class="k">if</span> <span class="n">default_error_handlers</span><span class="p">:</span>
         <span class="n">register_common_error_handlers</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">HAS_DRAMATIQ</span> <span class="ow">and</span> <span class="n">HAS_RABBIT</span><span class="p">:</span>
-        <span class="n">rabbit_url</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RABBIT_URL&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">rabbit_url</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">dramatiq.brokers.rabbitmq</span> <span class="k">import</span> <span class="n">URLRabbitmqBroker</span>
-            <span class="kn">import</span> <span class="nn">dramatiq</span>
-            <span class="n">broker</span> <span class="o">=</span> <span class="n">URLRabbitmqBroker</span><span class="p">(</span><span class="n">rabbit_url</span><span class="p">)</span>
-            <span class="n">dramatiq</span><span class="o">.</span><span class="n">set_broker</span><span class="p">(</span><span class="n">broker</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">HAS_DRAMATIQ</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="n">setup_broker_func</span><span class="p">):</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">broker</span> <span class="o">=</span> <span class="n">setup_broker_func</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">app</span></div>
 
 
+<span class="k">if</span> <span class="n">HAS_DRAMATIQ</span><span class="p">:</span>
+<div class="viewcode-block" id="start_dramatiq_workers"><a class="viewcode-back" href="../rse_api.html#rse_api.start_dramatiq_workers">[docs]</a>    <span class="k">def</span> <span class="nf">start_dramatiq_workers</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">dramatiq</span>
+        <span class="kn">from</span> <span class="nn">dramatiq</span> <span class="k">import</span> <span class="n">__main__</span> <span class="k">as</span> <span class="n">dm</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">dramatiq_parse_arguments</span><span class="p">()</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">modules</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dm</span><span class="o">.</span><span class="n">parse_arguments</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">args</span>
+        <span class="n">dm</span><span class="o">.</span><span class="n">import_broker</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;rse_api&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broker</span><span class="p">)</span>
+        <span class="n">dm</span><span class="o">.</span><span class="n">main</span><span class="p">()</span></div>
+
+<span class="k">if</span> <span class="n">HAS_APSCHEDULER</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">apscheduler.schedulers.blocking</span> <span class="k">import</span> <span class="n">BlockingScheduler</span>
+
+<div class="viewcode-block" id="run_cron_workers"><a class="viewcode-back" href="../rse_api.html#rse_api.run_cron_workers">[docs]</a>    <span class="k">def</span> <span class="nf">run_cron_workers</span><span class="p">(</span><span class="n">scheduler</span><span class="o">=</span><span class="n">BlockingScheduler</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2">] [PID </span><span class="si">%(process)d</span><span class="s2">] [</span><span class="si">%(threadName)s</span><span class="s2">] [</span><span class="si">%(name)s</span><span class="s2">] [</span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Pika is a bit noisy w/ Debug logging so we have to up its level.</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;pika&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+        <span class="n">scheduler</span> <span class="o">=</span> <span class="n">scheduler</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">trigger</span><span class="p">,</span> <span class="n">module_path</span><span class="p">,</span> <span class="n">func_name</span> <span class="ow">in</span> <span class="n">CRON_JOBS</span><span class="p">:</span>
+            <span class="n">job_path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{module_path}</span><span class="s2">:</span><span class="si">{func_name}</span><span class="s2">.send&quot;</span>
+            <span class="n">job_name</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{module_path}</span><span class="s2">.</span><span class="si">{func_name}</span><span class="s2">&quot;</span>
+            <span class="n">scheduler</span><span class="o">.</span><span class="n">add_job</span><span class="p">(</span><span class="n">job_path</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">job_name</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+            <span class="n">scheduler</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">shutdown</span><span class="p">)</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">shutdown</span><span class="p">)</span>
+
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="get_worker_cli"><a class="viewcode-back" href="../rse_api.html#rse_api.get_worker_cli">[docs]</a><span class="nd">@singleton_function</span>
-<span class="k">def</span> <span class="nf">get_worker_cli</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">load_workers_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_worker_cli</span><span class="p">(</span><span class="n">app</span><span class="p">,):</span>
     <span class="c1"># Get flask db should have been called before this with any setup needed</span>
     <span class="n">worker_cli</span> <span class="o">=</span> <span class="n">AppGroup</span><span class="p">(</span><span class="s1">&#39;workers&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Commands related to workers&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">HAS_DRAMATIQ</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">dramatiq</span>
 
-        <span class="n">workers</span> <span class="o">=</span> <span class="n">dramatiq</span><span class="o">.</span><span class="n">get_broker</span><span class="p">()</span><span class="o">.</span><span class="n">get_declared_actors</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">workers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="nd">@worker_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Starts all the workers&quot;</span><span class="p">)</span>
-            <span class="k">def</span> <span class="nf">start_workers</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">load_workers_func</span><span class="p">):</span>
-                    <span class="n">load_workers_func</span><span class="p">()</span>
-                <span class="n">dramatiq</span><span class="o">.</span><span class="n">get_broker</span><span class="p">()</span><span class="o">.</span><span class="n">get_declared_actors</span><span class="p">()</span>
+        <span class="nd">@worker_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Starts all the workers including corn&quot;</span><span class="p">)</span>
+        <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--cron&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Whether we want to run cron jobs as well&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">start_workers</span><span class="p">(</span><span class="n">cron</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">HAS_APSCHEDULER</span> <span class="ow">and</span> <span class="n">cron</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">apscheduler.schedulers.background</span> <span class="k">import</span> <span class="n">BackgroundScheduler</span>
+                <span class="n">run_cron_workers</span><span class="p">(</span><span class="n">scheduler</span><span class="o">=</span><span class="n">BackgroundScheduler</span><span class="p">)</span>
 
-        <span class="n">app</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">worker_cli</span><span class="p">)</span>
+            <span class="n">start_dramatiq_workers</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+        <span class="nd">@worker_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Lists all the workers&quot;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">list_workers</span><span class="p">():</span>
+            <span class="kn">import</span> <span class="nn">dramatiq</span>
+            <span class="n">workers</span> <span class="o">=</span> <span class="n">dramatiq</span><span class="o">.</span><span class="n">get_broker</span><span class="p">()</span><span class="o">.</span><span class="n">get_declared_actors</span><span class="p">()</span>
+            <span class="n">workers</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">workers</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Workers available: &#39;</span><span class="p">)</span>
+            <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="n">worker</span><span class="p">)</span> <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">HAS_APSCHEDULER</span><span class="p">:</span>
+
+        <span class="nd">@worker_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;cron&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Run any scheduled workers&quot;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">run_cron_only</span><span class="p">():</span>
+            <span class="n">run_cron_workers</span><span class="p">()</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">worker_cli</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">worker_cli</span></div>
 </pre></div>

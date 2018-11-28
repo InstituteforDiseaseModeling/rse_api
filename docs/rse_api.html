@@ -42,8 +42,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="rse_api.controllers.html">rse_api.controllers package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#module-rse_api.controllers.simple_controller">rse_api.controllers.simple_controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#rse-api-controllers-simple-controller-module">rse_api.controllers.simple_controller module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#module-rse_api.controllers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rse_api.tasks.html">rse_api.tasks package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.tasks.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.tasks.html#module-rse_api.tasks.app_context_middleware">rse_api.tasks.app_context_middleware module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.tasks.html#module-rse_api.tasks">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -62,6 +68,20 @@
 </div>
 <div class="section" id="module-rse_api.decorators">
 <span id="rse-api-decorators-module"></span><h2>rse_api.decorators module<a class="headerlink" href="#module-rse_api.decorators" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="rse_api.decorators.cron">
+<code class="descclassname">rse_api.decorators.</code><code class="descname">cron</code><span class="sig-paren">(</span><em>crontab: str</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#cron"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.cron" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a Dramatiq actor in a cron schedule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>crontab</strong> – Cron tab string - see <a class="reference external" href="https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html">https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="function">
 <dt id="rse_api.decorators.json_only">
 <code class="descclassname">rse_api.decorators.</code><code class="descname">json_only</code><span class="sig-paren">(</span><em>func: Callable</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#json_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.json_only" title="Permalink to this definition">¶</a></dt>
@@ -235,12 +255,6 @@ ie /objects. POST will only be registered at the top level url is specified, ie 
 </div>
 <div class="section" id="module-rse_api.utils">
 <span id="rse-api-utils-module"></span><h2>rse_api.utils module<a class="headerlink" href="#module-rse_api.utils" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="rse_api.utils.abstractclassmethod">
-<em class="property">class </em><code class="descclassname">rse_api.utils.</code><code class="descname">abstractclassmethod</code><span class="sig-paren">(</span><em>callable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/utils.html#abstractclassmethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.utils.abstractclassmethod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">classmethod</span></code></p>
-</dd></dl>
-
 <dl class="function">
 <dt id="rse_api.utils.dynamic_import_all">
 <code class="descclassname">rse_api.utils.</code><code class="descname">dynamic_import_all</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/utils.html#dynamic_import_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.utils.dynamic_import_all" title="Permalink to this definition">¶</a></dt>
@@ -248,7 +262,7 @@ ie /objects. POST will only be registered at the top level url is specified, ie 
 
 <dl class="function">
 <dt id="rse_api.utils.load_modules">
-<code class="descclassname">rse_api.utils.</code><code class="descname">load_modules</code><span class="sig-paren">(</span><em>package_path: str</em>, <em>dir_path: str</em>, <em>exclude: List[str] = None</em>, <em>recurse: bool = False</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="reference internal" href="_modules/rse_api/utils.html#load_modules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.utils.load_modules" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.utils.</code><code class="descname">load_modules</code><span class="sig-paren">(</span><em>package_path: str</em>, <em>dir_path: str</em>, <em>exclude: List[str] = None</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="reference internal" href="_modules/rse_api/utils.html#load_modules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.utils.load_modules" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scans a specific directory path for list of possible model files. It then will import each file as part of the
 specified package_path. For example, if a directory contains the following files</p>
 <p>__init__.py
@@ -282,24 +296,36 @@ test.models.contributor</p>
 <div class="section" id="module-rse_api">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rse_api" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="rse_api.default_dramatiq_setup_broker">
+<code class="descclassname">rse_api.</code><code class="descname">default_dramatiq_setup_broker</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#default_dramatiq_setup_broker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.default_dramatiq_setup_broker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="rse_api.get_application">
-<code class="descclassname">rse_api.</code><code class="descname">get_application</code><span class="sig-paren">(</span><em>setting_object_path: str = None</em>, <em>setting_environment_variable: str = None</em>, <em>strict_slashes: bool = False</em>, <em>default_error_handlers: bool = True</em><span class="sig-paren">)</span> &#x2192; flask.app.Flask<a class="reference internal" href="_modules/rse_api.html#get_application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_application" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.</code><code class="descname">get_application</code><span class="sig-paren">(</span><em>setting_object_path: str = None</em>, <em>setting_environment_variable: str = None</em>, <em>strict_slashes: bool = False</em>, <em>default_error_handlers: bool = True</em>, <em>setup_broker_func: Callable = &lt;function default_dramatiq_setup_broker&gt;</em>, <em>template_folder='templates'</em><span class="sig-paren">)</span> &#x2192; flask.app.Flask<a class="reference internal" href="_modules/rse_api.html#get_application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_application" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a Flask Application object. This function is a singleton function</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>default_error_handlers</strong> – Should the default error handlers for SQlAlchemy and Marshmallow be added?</li>
-<li><strong>setting_object_path</strong> – Optional Python import path to the default settings objects</li>
-<li><strong>setting_environment_variable</strong> – Optional environment variable that stores path to setting files</li>
-<li><strong>strict_slashes</strong> – Should we use strict slashes(Ie a call to /projects will fail but a call to /projects will
-succeed</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>setup_broker_func</strong> – Function callback to setup brokers for queues. By default a function that checks for dramatiq</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Flask app</p>
-</td>
+</tbody>
+</table>
+<p>is called and if deted
+:param default_error_handlers: Should the default error handlers for SQlAlchemy and Marshmallow be added?
+:param setting_object_path: Optional Python import path to the default settings objects
+:param setting_environment_variable: Optional environment variable that stores path to setting files
+:param strict_slashes: Should we use strict slashes(Ie a call to /projects will fail but a call to /projects will</p>
+<blockquote>
+<div>succeed</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>template_folder</strong> – Template folder</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Flask app</td>
 </tr>
 </tbody>
 </table>
@@ -307,7 +333,17 @@ succeed</li>
 
 <dl class="function">
 <dt id="rse_api.get_worker_cli">
-<code class="descclassname">rse_api.</code><code class="descname">get_worker_cli</code><span class="sig-paren">(</span><em>app</em>, <em>load_workers_func=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#get_worker_cli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_worker_cli" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.</code><code class="descname">get_worker_cli</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#get_worker_cli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_worker_cli" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="rse_api.run_cron_workers">
+<code class="descclassname">rse_api.</code><code class="descname">run_cron_workers</code><span class="sig-paren">(</span><em>scheduler=&lt;class 'apscheduler.schedulers.blocking.BlockingScheduler'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#run_cron_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.run_cron_workers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="rse_api.start_dramatiq_workers">
+<code class="descclassname">rse_api.</code><code class="descname">start_dramatiq_workers</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#start_dramatiq_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.start_dramatiq_workers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
