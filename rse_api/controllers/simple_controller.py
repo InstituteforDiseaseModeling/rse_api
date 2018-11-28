@@ -3,7 +3,7 @@ from typing import List, Union
 from flask import request, jsonify
 from flask.views import MethodView
 
-from rse_db.utils import get_flask_db
+from rse_db.utils import get_db
 from rse_api.query import get_pagination_from_request
 from rse_api.decorators import json_only
 from rse_api.errors import RSEApiException
@@ -28,7 +28,7 @@ class SimpleController(MethodView):
         super().__init__()
         # We assume that DB has been loaded before any controllers. Otherwise, some
         # application specific setup could be missed
-        self.db = get_flask_db()
+        self.db = get_db()
         self.model = model
         self.many_schema = many_schema
         self.single_schema = single_schema if single_schema else self.many_schema

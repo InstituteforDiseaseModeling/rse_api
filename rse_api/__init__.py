@@ -1,17 +1,18 @@
 import logging
 import os
 import signal
-import sys
+import threading
 from importlib import util
 from typing import Callable
 
+import click
 from flask import Flask
 from flask.cli import AppGroup
 
 from rse_api.cli import add_cli
 from rse_api.decorators import singleton_function, CRON_JOBS
 from rse_api.errors import register_common_error_handlers
-
+from rse_api.tasks import dramatiq_parse_arguments
 
 HAS_DRAMATIQ = util.find_spec('dramatiq') is not None
 HAS_RABBIT = util.find_spec('pika') is not None
@@ -32,7 +33,7 @@ def default_dramatiq_setup_broker(app):
 
         broker = None
         # if we are testing, setup stub broker
-        if (app.config.get('TESTING', False) or app.config.get('FLASK_ENV', '') == 'development') and \
+        if (app.config.get('TESTING', False) or app.env in ['development', 'testing']) and \
                 not app.config.get('DRAMATIQ_USE_PROD', False):
             app.logger.info('Using Stub Broker')
             if os.name == 'nt':
@@ -52,6 +53,8 @@ def default_dramatiq_setup_broker(app):
                 broker_url = app.config.get('RABBIT_URI', None)
                 from dramatiq.brokers.rabbitmq import URLRabbitmqBroker
                 app.logger.info('Connecting to Rabbit MQ @ {}'.format(broker_url))
+                if broker_url is None:
+                    raise ValueError("Broker URL Required")
                 broker = URLRabbitmqBroker(broker_url)
             else:
                 broker_url = app.config.get('REDIS_URI', None)
@@ -63,7 +66,7 @@ def default_dramatiq_setup_broker(app):
             dramatiq.set_broker(broker)
             broker.add_middleware(AppContextMiddleware(app))
         # add worker cli as well
-        cli = get_worker_cli(app)
+        get_worker_cli(app)
         return broker
     return None
 
@@ -105,57 +108,73 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
     return app
 
 
+if HAS_DRAMATIQ:
+    def start_dramatiq_workers(app):
+        import dramatiq
+        from dramatiq import __main__ as dm
+        args = dramatiq_parse_arguments()
+        args.module = None
+        args.modules = []
+        args.workers = []
+        dm.parse_arguments = lambda: args
+        dm.import_broker = lambda x: ('rse_api', app.broker)
+        dm.main()
+
+if HAS_APSCHEDULER:
+    from apscheduler.schedulers.blocking import BlockingScheduler
+
+    def run_cron_workers(scheduler=BlockingScheduler):
+        logging.basicConfig(
+            format="[%(asctime)s] [PID %(process)d] [%(threadName)s] [%(name)s] [%(levelname)s] %(message)s",
+            level=logging.DEBUG,
+        )
+
+        # Pika is a bit noisy w/ Debug logging so we have to up its level.
+        logging.getLogger("pika").setLevel(logging.WARNING)
+        scheduler = scheduler()
+        for trigger, module_path, func_name in CRON_JOBS:
+            job_path = f"{module_path}:{func_name}.send"
+            job_name = f"{module_path}.{func_name}"
+            scheduler.add_job(job_path, trigger=trigger, name=job_name)
+
+        def shutdown(signum, frame):
+            scheduler.shutdown()
+
+        signal.signal(signal.SIGINT, shutdown)
+        signal.signal(signal.SIGTERM, shutdown)
+
+        scheduler.start()
+
+
 @singleton_function
 def get_worker_cli(app,):
     # Get flask db should have been called before this with any setup needed
     worker_cli = AppGroup('workers', help="Commands related to workers")
 
     if HAS_DRAMATIQ:
-        import dramatiq
 
-        @worker_cli.command('start', help="Starts all the workers")
-        def start_workers():
-            from dramatiq import   __main__ as dm
-            args = dm.parse_arguments()
-            args.module = None
-            args.modules = []
-            args.workers = []
-            dm.parse_arguments = lambda : args
-            dm.import_broker = lambda x: ('rse_api', app.broker)
-            dm.main()
+        @worker_cli.command('start', help="Starts all the workers including corn")
+        @click.option('--cron', default=True, help='Whether we want to run cron jobs as well')
+        def start_workers(cron):
+            if HAS_APSCHEDULER and cron is True:
+                from apscheduler.schedulers.background import BackgroundScheduler
+                run_cron_workers(scheduler=BackgroundScheduler)
+
+            start_dramatiq_workers(app)
 
         @worker_cli.command('list', help="Lists all the workers")
         def list_workers():
+            import dramatiq
             workers = dramatiq.get_broker().get_declared_actors()
             workers = sorted(workers)
             print('Workers available: ')
             [print(worker) for worker in workers]
 
     if HAS_APSCHEDULER:
-        from apscheduler.schedulers.blocking import BlockingScheduler
 
         @worker_cli.command('cron', help="Run any scheduled workers")
-        def run_cron_workers():
-            logging.basicConfig(
-                format="[%(asctime)s] [PID %(process)d] [%(threadName)s] [%(name)s] [%(levelname)s] %(message)s",
-                level=logging.DEBUG,
-            )
-
-            # Pika is a bit noisy w/ Debug logging so we have to up its level.
-            logging.getLogger("pika").setLevel(logging.WARNING)
-            scheduler = BlockingScheduler()
-            for trigger, module_path, func_name in CRON_JOBS:
-                job_path = f"{module_path}:{func_name}.send"
-                job_name = f"{module_path}.{func_name}"
-                scheduler.add_job(job_path, trigger=trigger, name=job_name)
-
-            def shutdown(signum, frame):
-                scheduler.shutdown()
-
-            signal.signal(signal.SIGINT, shutdown)
-            signal.signal(signal.SIGTERM, shutdown)
-
-            scheduler.start()
+        def run_cron_only():
+            run_cron_workers()
 
     app.cli.add_command(worker_cli)
 

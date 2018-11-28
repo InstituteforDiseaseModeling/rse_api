@@ -6,10 +6,12 @@ from typing import Callable
 from flask import jsonify
 from flask.views import MethodView
 from marshmallow import Schema
-from rse_api.errors import RSEApiException
-from rse_api.routing import register_api
+from .errors import RSEApiException
+from .routing import register_api
 
 HAS_APSCHEDULER = util.find_spec('apscheduler') is not None
+HAS_DRAMATIQ = util.find_spec('dramatiq') is not None
+
 
 def json_only(func: Callable) -> Callable:
     """
@@ -144,17 +146,22 @@ def timeit_logged(func: Callable) -> Callable:
     return timed
 
 
-if HAS_APSCHEDULER:
+if HAS_APSCHEDULER and HAS_DRAMATIQ:
+    import dramatiq
     from apscheduler.triggers.cron import CronTrigger
 
-    CRON_JOBS = [] # Global Cron Jobs
+    CRON_JOBS = []  # Global Cron Jobs
 
-    def cron(crontab):
+    def cron(crontab: str) -> Callable:
         """Wrap a Dramatiq actor in a cron schedule.
+
+        :param crontab: Cron tab string - see https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html
         """
         trigger = CronTrigger.from_crontab(crontab)
 
-        def decorator(actor):
+        def decorator(actor: Callable) -> Callable:
+            if not hasattr(actor, 'fn') and callable(actor):
+                actor = dramatiq.actor(actor)
             module_path = actor.fn.__module__
             func_name = actor.fn.__name__
             CRON_JOBS.append((trigger, module_path, func_name))

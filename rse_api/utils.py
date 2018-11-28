@@ -7,15 +7,6 @@ from typing import List
 default_exclude = ['__init__.py']
 
 
-class abstractclassmethod(classmethod):
-
-    __isabstractmethod__ = True
-
-    def __init__(self, callable):
-        callable.__isabstractmethod__ = True
-        super(abstractclassmethod, self).__init__(callable)
-
-
 def dynamic_import_all(module):
     # get a handle on the module
     mdl = importlib.import_module(module)
@@ -60,7 +51,7 @@ def load_modules(package_path: str, dir_path: str, exclude: List[str]=None) -> L
         p_path = package_path
         if root != dir_path:
             # find relative difference
-            p_path +=  "." + os.path.relpath(root, dir_path).replace("/", ".")
+            p_path += "." + os.path.relpath(root, dir_path).replace("/", ".")
         for f in files:
             if f.endswith('.py') and f not in exclude:
                 name = '{}.{}'.format(p_path, f.replace('.py', ''))
