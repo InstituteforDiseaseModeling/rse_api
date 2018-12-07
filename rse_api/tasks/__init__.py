@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 from dramatiq.__main__ import cpus
 
@@ -40,4 +41,4 @@ def dramatiq_parse_arguments():
     )
 
     parser.add_argument("--verbose", "-v", action="count", default=0, help="turn on verbose log output")
-    return parser.parse_args()
+    return parser.parse_args(sys.argv[3:])
