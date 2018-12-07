@@ -10,9 +10,8 @@ from flask import Flask
 from flask.cli import AppGroup
 
 from rse_api.cli import add_cli
-from rse_api.decorators import singleton_function, CRON_JOBS
+from rse_api.decorators import singleton_function
 from rse_api.errors import register_common_error_handlers
-from rse_api.tasks import dramatiq_parse_arguments
 
 HAS_DRAMATIQ = util.find_spec('dramatiq') is not None
 HAS_RESTFUL = util.find_spec('flask_restful') is not None
@@ -73,9 +72,9 @@ def default_dramatiq_setup_broker(app):
 
 
 @singleton_function
-def get_restful_api():
+def get_restful_api(app):
     from flask_restful import Api
-    api = Api(get_application())
+    api = Api(app)
     return api
 
 
@@ -101,7 +100,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
     """
     app = Flask(__name__, template_folder=template_folder)
     if HAS_RESTFUL:
-        get_restful_api()
+        get_restful_api(app)
     if setting_object_path:
         app.logger.debug('Loading Application settings from {}'.format(setting_object_path))
         app.config.from_object(setting_object_path)
@@ -121,6 +120,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
 
 
 if HAS_DRAMATIQ:
+    from rse_api.tasks import dramatiq_parse_arguments
     def start_dramatiq_workers(app):
         import dramatiq
         from dramatiq import __main__ as dm
@@ -134,6 +134,7 @@ if HAS_DRAMATIQ:
 
 if HAS_APSCHEDULER:
     from apscheduler.schedulers.blocking import BlockingScheduler
+    from rse_api.decorators import singleton_function, CRON_JOBS
 
     def run_cron_workers(scheduler=BlockingScheduler):
         logging.basicConfig(
