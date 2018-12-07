@@ -3,7 +3,7 @@ import os
 import signal
 import threading
 from importlib import util
-from typing import Callable
+from typing import Callable, Optional
 
 import click
 from flask import Flask
@@ -80,8 +80,10 @@ def get_restful_api():
 
 
 @singleton_function
-def get_application(setting_object_path: str=None, setting_environment_variable: str=None, strict_slashes: bool=False,
-                    default_error_handlers: bool=True, setup_broker_func: Callable = default_dramatiq_setup_broker,
+def get_application(setting_object_path: str=None, setting_environment_variable: Optional[str]=None,
+                    strict_slashes: bool=False,
+                    default_error_handlers: bool=True,
+                    setup_broker_func: Optional[Callable] = default_dramatiq_setup_broker,
                     template_folder='templates') -> Flask:
     """
     Returns a Flask Application object. This function is a singleton function
