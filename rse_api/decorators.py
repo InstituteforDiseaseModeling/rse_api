@@ -65,7 +65,7 @@ def register_resource(urls):
         @wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
-        resource_args = tuple([func] + [urls])
+        resource_args = tuple([func] + urls)
         api.add_resource(*resource_args)
         return wrapper
     return decorator_register_resource
