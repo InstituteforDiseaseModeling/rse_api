@@ -60,7 +60,8 @@ def register_resource(urls):
 
     def decorator_register_resource(func: Callable) -> Callable:
         if not issubclass(func, Resource):
-            raise RSEApiException("You can only register Resource derived classes using this decorator")
+            raise RSEApiException(f"You can only register Resource derived classes using this decorator."
+                                  f" Please check {func.__name__}")
 
         @wraps(func)
         def wrapper(*args, **kwargs):
