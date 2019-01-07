@@ -82,7 +82,6 @@ servedocs: docs ## compile the docs watching for changes
 
 release-staging: dist ## package and upload a release
 	twine upload -r staging dist/*
-	twine upload -r staging dist/*
 
 release-production: dist ## package and upload a release
 	twine upload -r production dist/*

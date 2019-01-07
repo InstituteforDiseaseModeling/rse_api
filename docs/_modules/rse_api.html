@@ -38,18 +38,18 @@
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">util</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">click</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span>
 <span class="kn">from</span> <span class="nn">flask.cli</span> <span class="k">import</span> <span class="n">AppGroup</span>
 
 <span class="kn">from</span> <span class="nn">rse_api.cli</span> <span class="k">import</span> <span class="n">add_cli</span>
-<span class="kn">from</span> <span class="nn">rse_api.decorators</span> <span class="k">import</span> <span class="n">singleton_function</span><span class="p">,</span> <span class="n">CRON_JOBS</span>
+<span class="kn">from</span> <span class="nn">rse_api.decorators</span> <span class="k">import</span> <span class="n">singleton_function</span>
 <span class="kn">from</span> <span class="nn">rse_api.errors</span> <span class="k">import</span> <span class="n">register_common_error_handlers</span>
-<span class="kn">from</span> <span class="nn">rse_api.tasks</span> <span class="k">import</span> <span class="n">dramatiq_parse_arguments</span>
 
 <span class="n">HAS_DRAMATIQ</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;dramatiq&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="n">HAS_RESTFUL</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;flask_restful&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <span class="n">HAS_RABBIT</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;pika&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <span class="n">HAS_REDIS</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;redis&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <span class="n">HAS_APSCHEDULER</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;apscheduler&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -106,9 +106,18 @@
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
+<div class="viewcode-block" id="get_restful_api"><a class="viewcode-back" href="../rse_api.html#rse_api.get_restful_api">[docs]</a><span class="nd">@singleton_function</span>
+<span class="k">def</span> <span class="nf">get_restful_api</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">flask_restful</span> <span class="k">import</span> <span class="n">Api</span>
+    <span class="n">api</span> <span class="o">=</span> <span class="n">Api</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">api</span></div>
+
+
 <div class="viewcode-block" id="get_application"><a class="viewcode-back" href="../rse_api.html#rse_api.get_application">[docs]</a><span class="nd">@singleton_function</span>
-<span class="k">def</span> <span class="nf">get_application</span><span class="p">(</span><span class="n">setting_object_path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">setting_environment_variable</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strict_slashes</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">default_error_handlers</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">setup_broker_func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">default_dramatiq_setup_broker</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">get_application</span><span class="p">(</span><span class="n">setting_object_path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">setting_environment_variable</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">strict_slashes</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">default_error_handlers</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">setup_broker_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_dramatiq_setup_broker</span><span class="p">,</span>
                     <span class="n">template_folder</span><span class="o">=</span><span class="s1">&#39;templates&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flask</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a Flask Application object. This function is a singleton function</span>
@@ -125,6 +134,8 @@
 <span class="sd">    :return: Flask app</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">template_folder</span><span class="o">=</span><span class="n">template_folder</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">HAS_RESTFUL</span><span class="p">:</span>
+        <span class="n">get_restful_api</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">setting_object_path</span><span class="p">:</span>
         <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Loading Application settings from </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">setting_object_path</span><span class="p">))</span>
         <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="n">setting_object_path</span><span class="p">)</span>
@@ -144,6 +155,7 @@
 
 
 <span class="k">if</span> <span class="n">HAS_DRAMATIQ</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">rse_api.tasks</span> <span class="k">import</span> <span class="n">dramatiq_parse_arguments</span>
 <div class="viewcode-block" id="start_dramatiq_workers"><a class="viewcode-back" href="../rse_api.html#rse_api.start_dramatiq_workers">[docs]</a>    <span class="k">def</span> <span class="nf">start_dramatiq_workers</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">dramatiq</span>
         <span class="kn">from</span> <span class="nn">dramatiq</span> <span class="k">import</span> <span class="n">__main__</span> <span class="k">as</span> <span class="n">dm</span>
@@ -157,6 +169,7 @@
 
 <span class="k">if</span> <span class="n">HAS_APSCHEDULER</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">apscheduler.schedulers.blocking</span> <span class="k">import</span> <span class="n">BlockingScheduler</span>
+    <span class="kn">from</span> <span class="nn">rse_api.decorators</span> <span class="k">import</span> <span class="n">singleton_function</span><span class="p">,</span> <span class="n">CRON_JOBS</span>
 
 <div class="viewcode-block" id="run_cron_workers"><a class="viewcode-back" href="../rse_api.html#rse_api.run_cron_workers">[docs]</a>    <span class="k">def</span> <span class="nf">run_cron_workers</span><span class="p">(</span><span class="n">scheduler</span><span class="o">=</span><span class="n">BlockingScheduler</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>

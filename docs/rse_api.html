@@ -104,6 +104,11 @@
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="rse_api.decorators.register_resource">
+<code class="descclassname">rse_api.decorators.</code><code class="descname">register_resource</code><span class="sig-paren">(</span><em>urls</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/decorators.html#register_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.register_resource" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="rse_api.decorators.schema_in">
 <code class="descclassname">rse_api.decorators.</code><code class="descname">schema_in</code><span class="sig-paren">(</span><em>schema: marshmallow.schema.Schema</em>, <em>many: bool = False</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator that converts the flask json input data into a parsed data from a supplied schema object</p>
@@ -302,7 +307,7 @@ test.models.contributor</p>
 
 <dl class="function">
 <dt id="rse_api.get_application">
-<code class="descclassname">rse_api.</code><code class="descname">get_application</code><span class="sig-paren">(</span><em>setting_object_path: str = None</em>, <em>setting_environment_variable: str = None</em>, <em>strict_slashes: bool = False</em>, <em>default_error_handlers: bool = True</em>, <em>setup_broker_func: Callable = &lt;function default_dramatiq_setup_broker&gt;</em>, <em>template_folder='templates'</em><span class="sig-paren">)</span> &#x2192; flask.app.Flask<a class="reference internal" href="_modules/rse_api.html#get_application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_application" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.</code><code class="descname">get_application</code><span class="sig-paren">(</span><em>setting_object_path: str = None</em>, <em>setting_environment_variable: Optional[str] = None</em>, <em>strict_slashes: bool = False</em>, <em>default_error_handlers: bool = True</em>, <em>setup_broker_func: Optional[Callable] = &lt;function default_dramatiq_setup_broker&gt;</em>, <em>template_folder='templates'</em><span class="sig-paren">)</span> &#x2192; flask.app.Flask<a class="reference internal" href="_modules/rse_api.html#get_application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_application" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a Flask Application object. This function is a singleton function</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -330,6 +335,11 @@ test.models.contributor</p>
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="function">
+<dt id="rse_api.get_restful_api">
+<code class="descclassname">rse_api.</code><code class="descname">get_restful_api</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#get_restful_api"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_restful_api" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="rse_api.get_worker_cli">

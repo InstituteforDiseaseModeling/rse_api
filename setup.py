@@ -50,10 +50,10 @@ setup(
     name='rse_api',
     packages=find_packages(include=['rse_api']),
     setup_requires=setup_requirements,
-    extras_requires=extras_require,
+    extras_require=extras_require,
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/InstituteforDiseaseModeling/rse_api',
-    version='1.0.0',
+    version='1.0.1',
     zip_safe=False,
 )
