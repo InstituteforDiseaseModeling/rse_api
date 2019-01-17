@@ -83,8 +83,10 @@ servedocs: docs ## compile the docs watching for changes
 release-staging: dist ## package and upload a release
 	twine upload -r staging dist/*
 
-release-production: dist ## package and upload a release
+do-production-upload:
 	twine upload -r production dist/*
+
+release-production: dist do-production-upload tag-next## package and upload a release
 
 dist: clean ## builds source and wheel package
 	python setup.py sdist
@@ -97,4 +99,4 @@ tag-next:
 	sed -i -e 's|$(shell git describe --tags --abbrev=0)|$(VERSION)|g' setup.py
 	git add setup.py
 	git commit -m "Increment Version from $(shell git describe --tags --abbrev=0) to $(VERSION)"
-	#git tag -a $(VERSION) -m "New Version $(VERSION)"
+	git tag -a $(VERSION) -m "New Version $(VERSION)"
