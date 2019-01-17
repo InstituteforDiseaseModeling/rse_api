@@ -13,7 +13,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
    
@@ -41,6 +41,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">from</span> <span class="nn">dramatiq.results</span> <span class="k">import</span> <span class="n">Results</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span>
 <span class="kn">from</span> <span class="nn">flask.cli</span> <span class="k">import</span> <span class="n">AppGroup</span>
 
@@ -57,6 +58,19 @@
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Clinton Collins&quot;&quot;&quot;</span>
 <span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;ccollins@idmod.org&#39;</span>
 <span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;1.0.0&#39;</span>
+
+
+
+<div class="viewcode-block" id="default_dramatiq_setup_result_backend"><a class="viewcode-back" href="../rse_api.html#rse_api.default_dramatiq_setup_result_backend">[docs]</a><span class="nd">@singleton_function</span>
+<span class="k">def</span> <span class="nf">default_dramatiq_setup_result_backend</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">broker</span><span class="p">):</span>
+    <span class="n">result_backend</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">HAS_DRAMATIQ</span> <span class="ow">and</span> <span class="n">HAS_REDIS</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">dramatiq.results</span> <span class="k">import</span> <span class="n">Results</span>
+        <span class="kn">from</span> <span class="nn">dramatiq.results.backends</span> <span class="k">import</span> <span class="n">RedisBackend</span>
+        <span class="n">backend_url</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;REDIS_URI&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">result_backend</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">RedisBackend</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">backend_url</span><span class="p">))</span>
+        <span class="n">broker</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">result_backend</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result_backend</span></div>
 
 
 <div class="viewcode-block" id="default_dramatiq_setup_broker"><a class="viewcode-back" href="../rse_api.html#rse_api.default_dramatiq_setup_broker">[docs]</a><span class="nd">@singleton_function</span>
@@ -118,6 +132,7 @@
                     <span class="n">strict_slashes</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">default_error_handlers</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="n">setup_broker_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_dramatiq_setup_broker</span><span class="p">,</span>
+                    <span class="n">setup_results_backend_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">template_folder</span><span class="o">=</span><span class="s1">&#39;templates&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flask</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a Flask Application object. This function is a singleton function</span>
@@ -151,6 +166,9 @@
     <span class="k">if</span> <span class="n">HAS_DRAMATIQ</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="n">setup_broker_func</span><span class="p">):</span>
         <span class="n">app</span><span class="o">.</span><span class="n">broker</span> <span class="o">=</span> <span class="n">setup_broker_func</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">setup_results_backend_func</span><span class="p">):</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">results_backend</span> <span class="o">=</span> <span class="n">setup_results_backend_func</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broker</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">app</span></div>
 
 
@@ -158,20 +176,20 @@
     <span class="kn">from</span> <span class="nn">rse_api.tasks</span> <span class="k">import</span> <span class="n">dramatiq_parse_arguments</span>
 <div class="viewcode-block" id="start_dramatiq_workers"><a class="viewcode-back" href="../rse_api.html#rse_api.start_dramatiq_workers">[docs]</a>    <span class="k">def</span> <span class="nf">start_dramatiq_workers</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">dramatiq</span>
-        <span class="kn">from</span> <span class="nn">dramatiq</span> <span class="k">import</span> <span class="n">__main__</span> <span class="k">as</span> <span class="n">dm</span>
+        <span class="kn">from</span> <span class="nn">dramatiq</span> <span class="k">import</span> <span class="n">cli</span> <span class="k">as</span> <span class="n">dm</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">dramatiq_parse_arguments</span><span class="p">()</span>
         <span class="n">args</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">args</span><span class="o">.</span><span class="n">modules</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">args</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dm</span><span class="o">.</span><span class="n">parse_arguments</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">args</span>
         <span class="n">dm</span><span class="o">.</span><span class="n">import_broker</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;rse_api&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broker</span><span class="p">)</span>
-        <span class="n">dm</span><span class="o">.</span><span class="n">main</span><span class="p">()</span></div>
+        <span class="n">dm</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="n">HAS_APSCHEDULER</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">apscheduler.schedulers.blocking</span> <span class="k">import</span> <span class="n">BlockingScheduler</span>
     <span class="kn">from</span> <span class="nn">rse_api.decorators</span> <span class="k">import</span> <span class="n">singleton_function</span><span class="p">,</span> <span class="n">CRON_JOBS</span>
 
-<div class="viewcode-block" id="run_cron_workers"><a class="viewcode-back" href="../rse_api.html#rse_api.run_cron_workers">[docs]</a>    <span class="k">def</span> <span class="nf">run_cron_workers</span><span class="p">(</span><span class="n">scheduler</span><span class="o">=</span><span class="n">BlockingScheduler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run_cron_workers</span><span class="p">(</span><span class="n">scheduler</span><span class="o">=</span><span class="n">BlockingScheduler</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
             <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2">] [PID </span><span class="si">%(process)d</span><span class="s2">] [</span><span class="si">%(threadName)s</span><span class="s2">] [</span><span class="si">%(name)s</span><span class="s2">] [</span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
@@ -191,7 +209,7 @@
         <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">shutdown</span><span class="p">)</span>
         <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">shutdown</span><span class="p">)</span>
 
-        <span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="get_worker_cli"><a class="viewcode-back" href="../rse_api.html#rse_api.get_worker_cli">[docs]</a><span class="nd">@singleton_function</span>
@@ -252,6 +270,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">rse_api</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html#id1">1.0.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html#id2">1.0.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html#id3">1.0.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html#id4">1.0.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html#id5">1.0.0</a></li>
 </ul>
 
 <div class="relations">
@@ -291,7 +315,7 @@
       &copy;.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

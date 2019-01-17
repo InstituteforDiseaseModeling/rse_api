@@ -13,7 +13,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="rse_api.controllers package" href="rse_api.controllers.html" />
@@ -68,20 +68,6 @@
 </div>
 <div class="section" id="module-rse_api.decorators">
 <span id="rse-api-decorators-module"></span><h2>rse_api.decorators module<a class="headerlink" href="#module-rse_api.decorators" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="rse_api.decorators.cron">
-<code class="descclassname">rse_api.decorators.</code><code class="descname">cron</code><span class="sig-paren">(</span><em>crontab: str</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#cron"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.cron" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrap a Dramatiq actor in a cron schedule.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>crontab</strong> – Cron tab string - see <a class="reference external" href="https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html">https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="function">
 <dt id="rse_api.decorators.json_only">
 <code class="descclassname">rse_api.decorators.</code><code class="descname">json_only</code><span class="sig-paren">(</span><em>func: Callable</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#json_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.json_only" title="Permalink to this definition">¶</a></dt>
@@ -306,8 +292,13 @@ test.models.contributor</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="rse_api.default_dramatiq_setup_result_backend">
+<code class="descclassname">rse_api.</code><code class="descname">default_dramatiq_setup_result_backend</code><span class="sig-paren">(</span><em>app</em>, <em>broker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#default_dramatiq_setup_result_backend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.default_dramatiq_setup_result_backend" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="rse_api.get_application">
-<code class="descclassname">rse_api.</code><code class="descname">get_application</code><span class="sig-paren">(</span><em>setting_object_path: str = None</em>, <em>setting_environment_variable: Optional[str] = None</em>, <em>strict_slashes: bool = False</em>, <em>default_error_handlers: bool = True</em>, <em>setup_broker_func: Optional[Callable] = &lt;function default_dramatiq_setup_broker&gt;</em>, <em>template_folder='templates'</em><span class="sig-paren">)</span> &#x2192; flask.app.Flask<a class="reference internal" href="_modules/rse_api.html#get_application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_application" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.</code><code class="descname">get_application</code><span class="sig-paren">(</span><em>setting_object_path: str = None</em>, <em>setting_environment_variable: Optional[str] = None</em>, <em>strict_slashes: bool = False</em>, <em>default_error_handlers: bool = True</em>, <em>setup_broker_func: Optional[Callable] = &lt;function default_dramatiq_setup_broker&gt;</em>, <em>setup_results_backend_func: Optional[Callable] = None</em>, <em>template_folder='templates'</em><span class="sig-paren">)</span> &#x2192; flask.app.Flask<a class="reference internal" href="_modules/rse_api.html#get_application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_application" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a Flask Application object. This function is a singleton function</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -347,11 +338,6 @@ test.models.contributor</p>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="rse_api.run_cron_workers">
-<code class="descclassname">rse_api.</code><code class="descname">run_cron_workers</code><span class="sig-paren">(</span><em>scheduler=&lt;class 'apscheduler.schedulers.blocking.BlockingScheduler'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#run_cron_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.run_cron_workers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="rse_api.start_dramatiq_workers">
 <code class="descclassname">rse_api.</code><code class="descname">start_dramatiq_workers</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#start_dramatiq_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.start_dramatiq_workers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -386,6 +372,12 @@ test.models.contributor</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html#id1">1.0.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html#id2">1.0.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html#id3">1.0.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html#id4">1.0.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html#id5">1.0.0</a></li>
 </ul>
 
 <div class="relations">
@@ -427,7 +419,7 @@ test.models.contributor</p>
       &copy;.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

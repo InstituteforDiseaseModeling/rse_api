@@ -13,7 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -34,10 +34,10 @@
             
   <h1>Source code for rse_api.tasks</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">dramatiq.__main__</span> <span class="k">import</span> <span class="n">cpus</span>
-
+<span class="n">CPUS</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
 
 <div class="viewcode-block" id="dramatiq_parse_arguments"><a class="viewcode-back" href="../../rse_api.tasks.html#rse_api.tasks.dramatiq_parse_arguments">[docs]</a><span class="k">def</span> <span class="nf">dramatiq_parse_arguments</span><span class="p">():</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
@@ -51,8 +51,8 @@
     <span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--processes&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">cpus</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the number of worker processes to run (default: </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="n">cpus</span><span class="p">,</span>
+        <span class="s2">&quot;--processes&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">CPUS</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the number of worker processes to run (default: </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="n">CPUS</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;--threads&quot;</span><span class="p">,</span> <span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
@@ -102,6 +102,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">rse_api</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html#id1">1.0.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html#id2">1.0.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html#id3">1.0.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html#id4">1.0.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html#id5">1.0.0</a></li>
 </ul>
 
 <div class="relations">
@@ -143,7 +149,7 @@
       &copy;.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

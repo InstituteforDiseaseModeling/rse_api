@@ -1,3 +1,25 @@
 History
+=======
+
+1.0.4
+=====
+* Move to Dramatiq 1.4.3
+* Improve the release process
+* Add support for Results backend setup in `get_application`
+
+1.0.3
+=====
+* Allow setting host IP
+
+1.0.2
+=====
+* Fix issue with packaging not including all subfolders
+
+1.0.1
+=====
+* Fix bug with resource URLs
+* Add clearer error for rse_api flask_restful messages
+
 1.0.0
+=====
 First release on rse_api.
