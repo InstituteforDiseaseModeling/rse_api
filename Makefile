@@ -100,3 +100,5 @@ tag-next:
 	git add setup.py
 	git commit -m "Increment Version from $(shell git describe --tags --abbrev=0) to $(VERSION)"
 	git tag -a $(VERSION) -m "New Version $(VERSION)"
+	git push
+	git push --tags
