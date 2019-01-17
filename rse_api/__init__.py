@@ -6,6 +6,7 @@ from importlib import util
 from typing import Callable, Optional
 
 import click
+from dramatiq.results import Results
 from flask import Flask
 from flask.cli import AppGroup
 
@@ -22,6 +23,19 @@ HAS_APSCHEDULER = util.find_spec('apscheduler') is not None
 __author__ = """Clinton Collins"""
 __email__ = 'ccollins@idmod.org'
 __version__ = '1.0.0'
+
+
+
+@singleton_function
+def default_dramatiq_setup_result_backend(app, broker):
+    result_backend = None
+    if HAS_DRAMATIQ and HAS_REDIS:
+        from dramatiq.results import Results
+        from dramatiq.results.backends import RedisBackend
+        backend_url = app.config.get('REDIS_URI', None)
+        result_backend = Results(backend=RedisBackend(url=backend_url))
+        broker.add_middleware(result_backend)
+    return result_backend
 
 
 @singleton_function
@@ -83,6 +97,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
                     strict_slashes: bool=False,
                     default_error_handlers: bool=True,
                     setup_broker_func: Optional[Callable] = default_dramatiq_setup_broker,
+                    setup_results_backend_func: Optional[Callable] = None,
                     template_folder='templates') -> Flask:
     """
     Returns a Flask Application object. This function is a singleton function
@@ -116,6 +131,9 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
     if HAS_DRAMATIQ and callable(setup_broker_func):
         app.broker = setup_broker_func(app)
 
+        if callable(setup_results_backend_func):
+            app.results_backend = setup_results_backend_func(app, app.broker)
+
     return app
 
 
@@ -123,14 +141,14 @@ if HAS_DRAMATIQ:
     from rse_api.tasks import dramatiq_parse_arguments
     def start_dramatiq_workers(app):
         import dramatiq
-        from dramatiq import __main__ as dm
+        from dramatiq import cli as dm
         args = dramatiq_parse_arguments()
         args.module = None
         args.modules = []
         args.workers = []
         dm.parse_arguments = lambda: args
         dm.import_broker = lambda x: ('rse_api', app.broker)
-        dm.main()
+        dm.main(args)
 
 if HAS_APSCHEDULER:
     from apscheduler.schedulers.blocking import BlockingScheduler

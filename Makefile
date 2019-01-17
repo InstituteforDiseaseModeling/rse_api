@@ -91,3 +91,10 @@ dist: clean ## builds source and wheel package
 
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
+
+tag-next:
+	$(eval VERSION=$(shell git describe --tags --abbrev=0 | awk -F. -v OFS=. 'NF==1{print ++$$NF}; NF>1{if(length($$NF+1)>length($$NF))$$(NF-1)++; $$NF=sprintf("%0*d", length($$NF), ($$NF+1)%(10^length($$NF))); print}'))
+	sed -i -e 's|$(shell git describe --tags --abbrev=0)|$(VERSION)|g' setup.py
+	git add setup.py
+	git commit -m "Increment Version from $(shell git describe --tags --abbrev=0) to $(VERSION)"
+	#git tag -a $(VERSION) -m "New Version $(VERSION)"

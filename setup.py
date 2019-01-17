@@ -15,7 +15,7 @@ with open('requirements_dev.txt') as dev_requirement_file:
     dev_requirements = dev_requirement_file.read().split("\n")
 
 extras_require={
-        'full': ['dramatiq', 'apscheduler>=3.5.3'],
+        'full': ['dramatiq==1.4.3', 'apscheduler>=3.5.3'],
         'dev': dev_requirements
     }
 requirements = [
@@ -54,6 +54,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/InstituteforDiseaseModeling/rse_api',
-    version='1.0.3',
+    version='1.0.4',
     zip_safe=False,
 )

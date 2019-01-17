@@ -1,8 +1,8 @@
 import argparse
+import multiprocessing
 import sys
 
-from dramatiq.__main__ import cpus
-
+CPUS = multiprocessing.cpu_count()
 
 def dramatiq_parse_arguments():
     parser = argparse.ArgumentParser(
@@ -16,8 +16,8 @@ def dramatiq_parse_arguments():
     )
 
     parser.add_argument(
-        "--processes", "-p", default=cpus, type=int,
-        help="the number of worker processes to run (default: %s)" % cpus,
+        "--processes", "-p", default=CPUS, type=int,
+        help="the number of worker processes to run (default: %s)" % CPUS,
     )
     parser.add_argument(
         "--threads", "-t", default=8, type=int,
