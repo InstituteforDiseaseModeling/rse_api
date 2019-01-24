@@ -19,7 +19,7 @@ HAS_APSCHEDULER = util.find_spec('apscheduler') is not None
 
 __author__ = """Clinton Collins"""
 __email__ = 'ccollins@idmod.org'
-__version__ = '1.0.4'
+__version__ = '1.0.5'
 
 
 @singleton_function
