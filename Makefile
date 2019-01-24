@@ -1,4 +1,4 @@
-.PHONY: clean clean-test clean-pyc clean-build docs help
+.PHONY: clean clean-test clean-pyc clean-build docs help current-version next-version tag-version
 .DEFAULT_GOAL := help
 
 define BROWSER_PYSCRIPT
@@ -86,7 +86,14 @@ release-staging: dist ## package and upload a release
 do-production-upload:
 	twine upload -r production dist/*
 
-release-production: dist do-production-upload tag-next## package and upload a release
+prepare-version:
+	echo Version: $(VERSION)
+	sed -i -e 's|$(shell git describe --tags --abbrev=0)|$(VERSION)|g' setup.py
+	sed -i -e 's|$(shell git describe --tags --abbrev=0)|$(VERSION)|g' rse_api/__init__.py
+	git add setup.py
+	git commit -m "Increment Version from $(shell git describe --tags --abbrev=0) to $(VERSION)"
+
+release-production: docs next-version prepare-version dist do-production-upload tag-next## package and upload a release
 
 dist: clean ## builds source and wheel package
 	python setup.py sdist
@@ -94,10 +101,13 @@ dist: clean ## builds source and wheel package
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
 
-tag-next:
+current-version:
+	@echo Current version is $(shell git describe --tags --abbrev=0)
+
+next-version:
 	$(eval VERSION=$(shell git describe --tags --abbrev=0 | awk -F. -v OFS=. 'NF==1{print ++$$NF}; NF>1{if(length($$NF+1)>length($$NF))$$(NF-1)++; $$NF=sprintf("%0*d", length($$NF), ($$NF+1)%(10^length($$NF))); print}'))
-	sed -i -e 's|$(shell git describe --tags --abbrev=0)|$(VERSION)|g' setup.py
-	git add setup.py
+
+tag-next: next-version
 	git commit -m "Increment Version from $(shell git describe --tags --abbrev=0) to $(VERSION)"
 	git tag -a $(VERSION) -m "New Version $(VERSION)"
 	git push

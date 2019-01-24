@@ -1,3 +1,4 @@
+import os
 import time
 from functools import wraps
 from importlib import util
@@ -171,6 +172,27 @@ def timeit_logged(func: Callable) -> Callable:
         return result
     return timed
 
+
+def actor(*args, **kwargs) -> Callable:
+    """
+    Wrapper for dramtiq actor decorator to ensure we have stub broker during docuemntation
+    Args:
+        func:
+
+    Returns:
+
+    """
+    import dramatiq
+
+    def decorate_wrap_actor(func: Callable):
+
+        if os.environ.get('FLASK_ENV', 'production') == 'documentation':
+            from dramatiq.brokers.stub import StubBroker
+            broker = StubBroker()
+            dramatiq.set_broker(broker)
+
+        return dramatiq.actor(*args, **kwargs)(func)
+    return decorate_wrap_actor
 
 if HAS_APSCHEDULER and HAS_DRAMATIQ:
     import dramatiq

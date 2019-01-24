@@ -1,12 +1,9 @@
 import logging
 import os
 import signal
-import threading
 from importlib import util
 from typing import Callable, Optional
-
 import click
-from dramatiq.results import Results
 from flask import Flask
 from flask.cli import AppGroup
 
@@ -22,8 +19,7 @@ HAS_APSCHEDULER = util.find_spec('apscheduler') is not None
 
 __author__ = """Clinton Collins"""
 __email__ = 'ccollins@idmod.org'
-__version__ = '1.0.0'
-
+__version__ = '1.0.4'
 
 
 @singleton_function
@@ -40,6 +36,7 @@ def default_dramatiq_setup_result_backend(app, broker):
 
 @singleton_function
 def default_dramatiq_setup_broker(app):
+    # If we are generation documentation, don't try to setup dramatiq
     if HAS_DRAMATIQ and (HAS_RABBIT or HAS_REDIS):
         import dramatiq
         import dramatiq.brokers
@@ -47,7 +44,7 @@ def default_dramatiq_setup_broker(app):
 
         broker = None
         # if we are testing, setup stub broker
-        if (app.config.get('TESTING', False) or app.env in ['development', 'testing']) and \
+        if (app.config.get('TESTING', False) or app.env in ['development', 'testing', 'documentation']) and \
                 not app.config.get('DRAMATIQ_USE_PROD', False):
             app.logger.info('Using Stub Broker')
             if os.name == 'nt':
@@ -114,6 +111,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
     :return: Flask app
     """
     app = Flask(__name__, template_folder=template_folder)
+
     if HAS_RESTFUL:
         get_restful_api(app)
     if setting_object_path:
@@ -139,6 +137,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
 
 if HAS_DRAMATIQ:
     from rse_api.tasks import dramatiq_parse_arguments
+
     def start_dramatiq_workers(app):
         import dramatiq
         from dramatiq import cli as dm
