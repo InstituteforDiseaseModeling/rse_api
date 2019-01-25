@@ -13,7 +13,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="rse_api.tasks package" href="rse_api.tasks.html" />
@@ -39,49 +39,8 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-rse_api.controllers.simple_controller">
-<span id="rse-api-controllers-simple-controller-module"></span><h2>rse_api.controllers.simple_controller module<a class="headerlink" href="#module-rse_api.controllers.simple_controller" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="rse_api.controllers.simple_controller.SimpleController">
-<em class="property">class </em><code class="descclassname">rse_api.controllers.simple_controller.</code><code class="descname">SimpleController</code><span class="sig-paren">(</span><em>model, many_schema, single_schema=None, exclude_on_post: List[str] = ['id'], order_by: Union[str, sqlalchemy.sql.schema.Column] = 'id'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/controllers/simple_controller.html#SimpleController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.controllers.simple_controller.SimpleController" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask.views.MethodView</span></code></p>
-<dl class="method">
-<dt id="rse_api.controllers.simple_controller.SimpleController.delete">
-<code class="descname">delete</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/controllers/simple_controller.html#SimpleController.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.controllers.simple_controller.SimpleController.delete" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="rse_api.controllers.simple_controller.SimpleController.find_all">
-<code class="descname">find_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/controllers/simple_controller.html#SimpleController.find_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.controllers.simple_controller.SimpleController.find_all" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="rse_api.controllers.simple_controller.SimpleController.find_one">
-<code class="descname">find_one</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/controllers/simple_controller.html#SimpleController.find_one"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.controllers.simple_controller.SimpleController.find_one" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="rse_api.controllers.simple_controller.SimpleController.get">
-<code class="descname">get</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/controllers/simple_controller.html#SimpleController.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.controllers.simple_controller.SimpleController.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="rse_api.controllers.simple_controller.SimpleController.methods">
-<code class="descname">methods</code><em class="property"> = {'DELETE', 'GET', 'POST', 'PUT'}</em><a class="headerlink" href="#rse_api.controllers.simple_controller.SimpleController.methods" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="rse_api.controllers.simple_controller.SimpleController.post">
-<code class="descname">post</code><span class="sig-paren">(</span><em>id=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/controllers/simple_controller.html#SimpleController.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.controllers.simple_controller.SimpleController.post" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="rse_api.controllers.simple_controller.SimpleController.put">
-<code class="descname">put</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/controllers/simple_controller.html#SimpleController.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.controllers.simple_controller.SimpleController.put" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="rse-api-controllers-simple-controller-module">
+<h2>rse_api.controllers.simple_controller module<a class="headerlink" href="#rse-api-controllers-simple-controller-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-rse_api.controllers">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rse_api.controllers" title="Permalink to this headline">¶</a></h2>
@@ -160,7 +119,7 @@
       &copy;.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
