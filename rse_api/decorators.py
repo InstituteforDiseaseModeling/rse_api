@@ -116,7 +116,7 @@ def schema_out(schema: Schema, many=False) -> Callable:
             if hasattr(result, 'data'):
                 return jsonify(schema.dump(result, many=many).data)
             else:
-                return jsonify(schema.dump(result))
+                return jsonify(result)
         return wrapper_schema_out
     return decorate_schema_out
 
