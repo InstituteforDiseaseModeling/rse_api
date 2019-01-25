@@ -4,7 +4,7 @@ from functools import wraps
 from importlib import util
 from logging import getLogger
 from typing import Callable
-from flask import jsonify
+from flask import jsonify, Response
 from flask.views import MethodView
 from marshmallow import Schema
 
@@ -90,7 +90,10 @@ def schema_in(schema: Schema, many: bool=False) -> Callable:
         def wrapper_schema_in(*args, **kwargs):
             body = request.json
             result = schema.load(body, many=many)
-            args = tuple(list(args) + [result.data]) if args is not None else (result.data,)
+            if hasattr(result, 'data'):
+                args = tuple(list(args) + [result.data]) if args is not None else (result.data,)
+            else:
+                args = tuple(list(args) + [result]) if args is not None else (result,)
             return func(*args, **kwargs)
         return wrapper_schema_in
     return decorate_schema_in
@@ -109,7 +112,11 @@ def schema_out(schema: Schema, many=False) -> Callable:
         @wraps(func)
         def wrapper_schema_out(*args, **kwargs):
             result = func(*args, **kwargs)
-            return jsonify(schema.dump(result, many=many).data)
+            result = schema.dump(result, many=many)
+            if hasattr(result, 'data'):
+                return jsonify(schema.dump(result, many=many).data)
+            else:
+                return jsonify(schema.dump(result))
         return wrapper_schema_out
     return decorate_schema_out
 
