@@ -6,14 +6,14 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>rse_api package &#8212; rse_api 1.0.5 documentation</title>
+    <title>rse_api package &#8212; rse_api 1.0.6 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="rse_api.controllers package" href="rse_api.controllers.html" />
@@ -42,7 +42,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="rse_api.controllers.html">rse_api.controllers package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#module-rse_api.controllers.simple_controller">rse_api.controllers.simple_controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#rse-api-controllers-simple-controller-module">rse_api.controllers.simple_controller module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#module-rse_api.controllers">Module contents</a></li>
 </ul>
 </li>
@@ -76,6 +76,20 @@ Args:</p>
 <blockquote>
 <div>func:</div></blockquote>
 <p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="rse_api.decorators.cron">
+<code class="descclassname">rse_api.decorators.</code><code class="descname">cron</code><span class="sig-paren">(</span><em>crontab: str</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#cron"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.cron" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a Dramatiq actor in a cron schedule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>crontab</strong> – Cron tab string - see <a class="reference external" href="https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html">https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -348,6 +362,11 @@ test.models.contributor</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="rse_api.run_cron_workers">
+<code class="descclassname">rse_api.</code><code class="descname">run_cron_workers</code><span class="sig-paren">(</span><em>scheduler=&lt;class 'apscheduler.schedulers.blocking.BlockingScheduler'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#run_cron_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.run_cron_workers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="rse_api.start_dramatiq_workers">
 <code class="descclassname">rse_api.</code><code class="descname">start_dramatiq_workers</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#start_dramatiq_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.start_dramatiq_workers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -425,7 +444,7 @@ test.models.contributor</p>
       &copy;.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

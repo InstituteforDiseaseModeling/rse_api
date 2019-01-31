@@ -87,6 +87,7 @@ do-production-upload:
 	twine upload -r production dist/*
 
 prepare-version:
+	#TODO check for version info in HISTORY.rst and exit if not found
 	echo Version: $(VERSION)
 	sed -i -e 's|$(shell git describe --tags --abbrev=0)|$(VERSION)|g' setup.py
 	sed -i -e 's|$(shell git describe --tags --abbrev=0)|$(VERSION)|g' rse_api/__init__.py

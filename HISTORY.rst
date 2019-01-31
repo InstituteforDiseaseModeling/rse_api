@@ -1,6 +1,10 @@
 History
 =======
 
+1.0.6
+-----
+* Earlier fixes to support Marshmallow 3 while still supporting Marshmallow 2
+
 1.0.5
 -----
 * Add wrapper for dramatiq actors to make documentation behave
