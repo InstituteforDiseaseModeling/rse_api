@@ -1,0 +1,26 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "RSE App",
+    "description": "RSE Team Developed software",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "name": "RSE Team",
+      "email": "SWResearch@idmod.org"
+    },
+    "license": {
+      "name": "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 ",
+      "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://blah"
+    }
+  ],
+  "components": {
+    "schemas": {
+    }
+  }
+}
