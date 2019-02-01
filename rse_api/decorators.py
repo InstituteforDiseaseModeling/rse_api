@@ -95,7 +95,8 @@ def register_resource(urls):
     return decorator_register_resource
 
 
-def schema_in(schema: Schema, many: bool=False, instance_loader_func: Callable=None, partial: bool = False) -> Callable:
+def schema_in(schema: Schema, many: bool=False, instance_loader_func: Callable=None,
+              partial: bool = False, description=None, example=None) -> Callable:
     """
     Decorator that converts the flask json input data into a parsed data from a supplied schema object
 
@@ -204,7 +205,8 @@ def schema_in(schema: Schema, many: bool=False, instance_loader_func: Callable=N
 
         swagger = get_swagger()
         swagger_function = dict(function=func, partial=partial, many=many, in_schema=schema,
-                                has_instance_loader_func=callable(instance_loader_func))
+                                has_instance_loader_func=callable(instance_loader_func), description=description,
+                                example=example)
         swagger.add_schema_function(swagger_function)
 
         @wraps(func)
@@ -224,7 +226,7 @@ def schema_in(schema: Schema, many: bool=False, instance_loader_func: Callable=N
     return decorate_schema_in
 
 
-def schema_out(schema: Schema, detect_many=True, many=False) -> Callable:
+def schema_out(schema: Schema, detect_many=True, many=False, description=None, example=None) -> Callable:
     """
     Decorator that attempts to convert the output of the wrapped function with a Flask JSON Response using the
     supplied Marshmallow schema
@@ -238,7 +240,8 @@ def schema_out(schema: Schema, detect_many=True, many=False) -> Callable:
         from rse_api.swagger.swagger_spec import get_swagger
 
         swagger = get_swagger()
-        swagger_function = dict(function=func, detect_many=detect_many, many=many, out_schema=schema)
+        swagger_function = dict(function=func, detect_many=detect_many, many=many, out_schema=schema, example=example,
+                                description=description)
         swagger.add_schema_function(swagger_function)
 
         @wraps(func)
@@ -256,7 +259,7 @@ def schema_out(schema: Schema, detect_many=True, many=False) -> Callable:
 
 def schema_in_out(schemaIn: Schema, schemaOut: Schema, schema_in_many=False, schema_out_many=False,
                   schema_out_detect_many: bool=True, schema_in_loader_func: Callable = None,
-                  schema_in_partial: bool=False) -> Callable:
+                  schema_in_partial: bool=False, description=None, in_example=None, out_example=None) -> Callable:
     """
     Decorator for methods that take a schema result and return a object that will be serialized to a specific schema
 
@@ -278,6 +281,7 @@ def schema_in_out(schemaIn: Schema, schemaOut: Schema, schema_in_many=False, sch
         swagger_function = dict(function=func, detect_many=schema_out_detect_many, in_many=schema_in_many,
                                 many=schema_out_many, partial=schema_in_partial,
                                 instance_loader_func=callable(schema_in_loader_func), in_schema=schemaIn,
+                                description=description, in_example=in_example, out_example=out_example,
                                 out_schema=schemaOut)
         swagger.add_schema_function(swagger_function)
 

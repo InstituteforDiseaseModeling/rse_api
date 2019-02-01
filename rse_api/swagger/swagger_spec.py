@@ -103,13 +103,15 @@ class SwaggerSpec:
                 "in": "path",
                 "description": f'ID Of {obj_string}',
                 "required": True,
-                "type": "string"
+                "schema": {
+                    "type": "string"
+                }
             }
             if ":" in parameter:
                 parameter_type, parameter = parameter.split(":")
-                url_parameter['type'] = parameter_type
-                if url_parameter['type'] == "int":
-                    url_parameter['type'] = 'integer'
+                url_parameter['schema']['type'] = parameter_type
+                if url_parameter['schema']['type'] == "int":
+                    url_parameter['schema']['type'] = 'integer'
                 # Do this here so that we touch any without types
                 url_parameter['name'] = parameter
                 url_parameters.append(url_parameter)
@@ -171,8 +173,9 @@ class SwaggerSpec:
                         "type": "object" if field_type is fields.Nested else "array"
                     }
                     if field_schema:
-                        pr_field["schema"] = {
-                            "$ref": f"{REFERENCE_PATH}{field_schema}"
+                        pr_field['items'] = {
+                            'type': 'object',
+                            '$ref': f"{REFERENCE_PATH}{field_schema}"
                         }
                 else:
                     pr_field = {
@@ -213,8 +216,10 @@ class SwaggerSpec:
             if operation_id is None:
                 if method == "get" and out_schema and many:
                     operation_id = f"findAll{obj_string}s"
+                elif method == "get" and out_schema:
+                    operation_id = f"find{obj_string}sById"
                 elif method == "post":
-                    operation_id = f"find{obj_string}ById"
+                    operation_id = f"add{obj_string}ById"
                 elif method == "put" and in_schema and not many:
                     operation_id = f"update{obj_string} based on an id and user supplied input."
                 elif method == "delete" and not many:
@@ -271,12 +276,13 @@ class SwaggerSpec:
                 }
 
                 request_body = {
-                    "in": "body",
-                    "name": f"{obj_string.lower()}",
                     "description": f'{obj_string} to {action}',
                     "required": True,
-                    "type": "string",
-                    "schema": swagger_schema
+                    "content": {
+                        'application/json': {
+                            'schema': swagger_schema
+                        }
+                    }
                 }
 
                 if swagger_obj_name not in self.definitions:
@@ -286,12 +292,7 @@ class SwaggerSpec:
             # check url to make sure we shouldn't replace part of it
             url = re.sub(self.url_replace, r'{\2}', url)
 
-            path_method = dict(
-                description=description,
-                operationId=operation_id,
-                parameters=parameters,
-                responses=responses,
-                default=dict(description="unexpected error",
+            responses['default'] = dict(description="unexpected error",
                              content=dict(
                                  {
                                      'application/json': dict(
@@ -300,6 +301,11 @@ class SwaggerSpec:
                                  }
                              )
                              )
+            path_method = dict(
+                description=description,
+                operationId=operation_id,
+                parameters=parameters,
+                responses=responses
             )
             if request_body:
                 path_method['requestBody'] = request_body
@@ -321,6 +327,9 @@ class SwaggerSpec:
                             api_details = self.function_map[class_name][method]
                             if 'out_schema' in api_details and 'in_schema' in api_details:
                                 many = (api_details['detect_many'] and len(rule.arguments) == 0) or api_details['many']
+                                path_props = dict(in_schema=api_details['in_schema'],
+                                            out_schema=api_details['out_schema'],
+                                            many=many)
                                 self.add_path_method(rule.rule, method, in_schema=api_details['in_schema'],
                                                      out_schema=api_details['out_schema'], many=many)
                             elif 'out_schema' in api_details:
@@ -344,7 +353,7 @@ class SwaggerSpec:
         ))
         spec['components']['schemas']['Error'] = {
             'type': 'object',
-            'properties': dict(code='integer', message='string'),
+            'properties': dict(code={'type':'integer'}, message={'type':'string'}),
             'required': ['code', 'message']
         }
 
