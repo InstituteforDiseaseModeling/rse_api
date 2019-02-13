@@ -67,6 +67,22 @@
     <span class="k">return</span> <span class="n">wrapper</span></div>
 
 
+<div class="viewcode-block" id="singleton_function"><a class="viewcode-back" href="../../rse_api.html#rse_api.decorators.singleton_function">[docs]</a><span class="k">def</span> <span class="nf">singleton_function</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Allows a function to run once then cache its results for later calls</span>
+<span class="sd">    :param func: Function to be cached</span>
+<span class="sd">    :return: Wrapper function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s1">&#39;has_ran&#39;</span><span class="p">):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s1">&#39;cache_value&#39;</span><span class="p">,</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s1">&#39;has_ran&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s1">&#39;cache_value&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+
+
 <div class="viewcode-block" id="register_crud"><a class="viewcode-back" href="../../rse_api.html#rse_api.decorators.register_crud">[docs]</a><span class="k">def</span> <span class="nf">register_crud</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">endpoint</span>
@@ -94,6 +110,8 @@
     <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="n">urls</span><span class="p">]</span>
 
+    <span class="kn">from</span> <span class="nn">rse_api.swagger.swagger_spec</span> <span class="k">import</span> <span class="n">get_swagger</span>
+
     <span class="k">def</span> <span class="nf">decorator_register_resource</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">Resource</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">RSEApiException</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;You can only register Resource derived classes using this decorator.&quot;</span>
@@ -104,27 +122,136 @@
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">resource_args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">func</span><span class="p">]</span> <span class="o">+</span> <span class="n">urls</span><span class="p">)</span>
         <span class="n">api</span><span class="o">.</span><span class="n">add_resource</span><span class="p">(</span><span class="o">*</span><span class="n">resource_args</span><span class="p">)</span>
+
+        <span class="c1"># process swagger after so urls have been registered</span>
+        <span class="n">swagger</span> <span class="o">=</span> <span class="n">get_swagger</span><span class="p">()</span>
+        <span class="n">swagger</span><span class="o">.</span><span class="n">process_class</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wrapper</span>
     <span class="k">return</span> <span class="n">decorator_register_resource</span></div>
 
 
-<div class="viewcode-block" id="schema_in"><a class="viewcode-back" href="../../rse_api.html#rse_api.decorators.schema_in">[docs]</a><span class="k">def</span> <span class="nf">schema_in</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">many</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="schema_in"><a class="viewcode-back" href="../../rse_api.html#rse_api.decorators.schema_in">[docs]</a><span class="k">def</span> <span class="nf">schema_in</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">many</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">instance_loader_func</span><span class="p">:</span> <span class="n">Callable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">partial</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator that converts the flask json input data into a parsed data from a supplied schema object</span>
 
-<span class="sd">    :param schema: Marshmallow schema to parse flask request with. It is recommended to use strict mode schemas</span>
-<span class="sd">    :param many: Is the input expecting many objects?</span>
-<span class="sd">    :return: Wrapped function</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        schema: An instance of a Marshmallow Schema object that will be used to parse the input data&#39;s body</span>
+<span class="sd">        many: Controls whether input is expected to be an array of items or a single item of type Schena. Defaults to</span>
+<span class="sd">        *False*.</span>
+<span class="sd">        instance_loader_func: Function that takes the args for the endpoint and uses those to load an instance.</span>
+<span class="sd">    Usually this is used for PUTs to load and instance by id. See the PUT Example below</span>
+<span class="sd">        partial: To be used when a function is provided . If so, we support partial loads on puts. This means that the</span>
+<span class="sd">        user can supply single field updates since the db instance will be loaded.</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            from flask_restful import Resource</span>
+<span class="sd">            from marshmallow import fields, Schema</span>
+<span class="sd">            from rse_api.decorators import schema_in</span>
+<span class="sd">            from marshmallow_sqlalchemy import ModelSchema</span>
+<span class="sd">            from rse_db.utils import get_db, get_declarative_base</span>
+<span class="sd">            from rse_db.data_patterns import IdMixin, CreatedAndUpdatedAtMixin</span>
+
+<span class="sd">            Base = get_declarative_base()</span>
+
+<span class="sd">            # Our DB Model. It includes an autoincrementing id and Created/Updated timestamp fields</span>
+<span class="sd">            # We also add some basic Find, and Write functionality through RSEBasicReadWriteModel</span>
+<span class="sd">            class UserModel(IdMixin, CreatedAndUpdatedAtMixin, RSEBasicReadWriteModel, Base):</span>
+<span class="sd">                __tablename__ = &#39;users&#39;</span>
+<span class="sd">                username = Column(Text, nullable=False)</span>
+
+<span class="sd">            # Vanilla marshmallow schema</span>
+<span class="sd">            # that will allow ensure input data matches schema</span>
+<span class="sd">            class UserSchema(Schema):</span>
+<span class="sd">                username = fields.String(required=True)</span>
+
+<span class="sd">            # Smart schema that will load automatically convert schema parsed content</span>
+<span class="sd">            # into a specified db Model</span>
+<span class="sd">            class SmartUserSchema(ModelSchema):</span>
+<span class="sd">                username = fields.String(required=True)</span>
+
+<span class="sd">                class Meta:</span>
+<span class="sd">                    model = TaskTag</span>
+<span class="sd">                    # We use get_db here vs db to reduce the chance of import loops</span>
+<span class="sd">                    # see documentation on get_db</span>
+<span class="sd">                    sqla_session = get_db().session</span>
+
+<span class="sd">            default_in_schema = UserSchema(exclude=[id])</span>
+
+<span class="sd">            @register_resource([&#39;/users&#39;, &#39;/users/&lt;int:id&gt;&#39;])</span>
+<span class="sd">            class UserController(Resource):</span>
+
+<span class="sd">                # The below will dump a a parsed schema object</span>
+<span class="sd">                @schema_in(default_in_schema)</span>
+<span class="sd">                def post(self, data):</span>
+<span class="sd">                    # we should save our data and then return</span>
+<span class="sd">                    return data.data</span>
+
+<span class="sd">                # The below we dump the input data minus any id field passed through the body</span>
+<span class="sd">                @schema_in(default_in_schema)</span>
+<span class="sd">                def put(self, id, data):</span>
+<span class="sd">                    # we should load exiting data using id</span>
+<span class="sd">                    # then merge in the new data from our input</span>
+<span class="sd">                    # then save it</span>
+<span class="sd">                    return data.data</span>
+
+
+<span class="sd">            sm_in_schema = SmartUserSchema(exclude=[id])</span>
+<span class="sd">            sm_out_schema = SmartUserSchema()</span>
+
+<span class="sd">            @register_resource([&#39;/sm&#39;, &#39;/sm/&lt;int:id&gt;&#39;])</span>
+<span class="sd">            class SmartUserController(Resource):</span>
+
+<span class="sd">                @schema_out(sm_out_schema)</span>
+<span class="sd">                def get(self, id=None):</span>
+<span class="sd">                    if id is None:</span>
+<span class="sd">                        return UserModel.query.all()</span>
+<span class="sd">                    else:</span>
+<span class="sd">                        return UserModel.find_one(id)</span>
+
+<span class="sd">                # This will load our data as an instance of UserModel ready to be committed</span>
+<span class="sd">                @schema_in_out(sm_in_schema, sm_out_schema)</span>
+<span class="sd">                def post(self, data):</span>
+<span class="sd">                    # We get an instance of UserModel which has a commit function thanks to</span>
+<span class="sd">                    # RSEBasicReadWriteModel</span>
+<span class="sd">                    return data.commit()</span>
+
+<span class="sd">                # This will be load the data based on the input from the URL being based</span>
+<span class="sd">                # to UserModel.find_one, if that succeeds we should get a UserModel back</span>
+<span class="sd">                # with the updates ready to be saved</span>
+<span class="sd">                @schema_in_out(sm_in_schema, sm_out_schema, instance_loader_func=UserModel.find_one, partial=True)</span>
+<span class="sd">                def put(self, data):</span>
+<span class="sd">                    return data.commit()</span>
+
+<span class="sd">                def delete(self, id):</span>
+<span class="sd">                    UserModel.delete_by_pk(id)</span>
+<span class="sd">                    return &#39;&#39;, 204</span>
+
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Wrapped function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">decorate_schema_in</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">request</span>
+
+        <span class="kn">from</span> <span class="nn">rse_api.swagger.swagger_spec</span> <span class="k">import</span> <span class="n">get_swagger</span>
+
+        <span class="n">swagger</span> <span class="o">=</span> <span class="n">get_swagger</span><span class="p">()</span>
+        <span class="n">swagger_function</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">,</span> <span class="n">in_schema</span><span class="o">=</span><span class="n">schema</span><span class="p">,</span>
+                                <span class="n">has_instance_loader_func</span><span class="o">=</span><span class="n">callable</span><span class="p">(</span><span class="n">instance_loader_func</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+                                <span class="n">example</span><span class="o">=</span><span class="n">example</span><span class="p">)</span>
+        <span class="n">swagger</span><span class="o">.</span><span class="n">add_schema_function</span><span class="p">(</span><span class="n">swagger_function</span><span class="p">)</span>
 
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="nd">@json_only</span>
         <span class="k">def</span> <span class="nf">wrapper_schema_in</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="n">body</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">instance_loader_func</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">instance_loader_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
                 <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">])</span> <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">,)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -134,29 +261,40 @@
     <span class="k">return</span> <span class="n">decorate_schema_in</span></div>
 
 
-<div class="viewcode-block" id="schema_out"><a class="viewcode-back" href="../../rse_api.html#rse_api.decorators.schema_out">[docs]</a><span class="k">def</span> <span class="nf">schema_out</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="schema_out"><a class="viewcode-back" href="../../rse_api.html#rse_api.decorators.schema_out">[docs]</a><span class="k">def</span> <span class="nf">schema_out</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">detect_many</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator that attempts to convert the output of the wrapped function with a Flask JSON Response using the</span>
 <span class="sd">    supplied Marshmallow schema</span>
 
 <span class="sd">    :param schema: Marshmallow schema to convert output of function to</span>
-<span class="sd">    :param many: Is the output expecting many objects?</span>
+<span class="sd">    :param detect_many: Detect if output should be many(lists)</span>
+<span class="sd">    :param many: Only needed if detect many is False. Mainly set the except many output</span>
 <span class="sd">    :return: Wrapped function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">decorate_schema_out</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">rse_api.swagger.swagger_spec</span> <span class="k">import</span> <span class="n">get_swagger</span>
+
+        <span class="n">swagger</span> <span class="o">=</span> <span class="n">get_swagger</span><span class="p">()</span>
+        <span class="n">swagger_function</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="n">detect_many</span><span class="o">=</span><span class="n">detect_many</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">,</span> <span class="n">out_schema</span><span class="o">=</span><span class="n">schema</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="n">example</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">)</span>
+        <span class="n">swagger</span><span class="o">.</span><span class="n">add_schema_function</span><span class="p">(</span><span class="n">swagger_function</span><span class="p">)</span>
+
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper_schema_out</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">)</span>
+            <span class="n">imany</span> <span class="o">=</span> <span class="p">(</span><span class="n">detect_many</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="n">many</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">imany</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">schema</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wrapper_schema_out</span>
     <span class="k">return</span> <span class="n">decorate_schema_out</span></div>
 
 
-<div class="viewcode-block" id="schema_in_out"><a class="viewcode-back" href="../../rse_api.html#rse_api.decorators.schema_in_out">[docs]</a><span class="k">def</span> <span class="nf">schema_in_out</span><span class="p">(</span><span class="n">schemaIn</span><span class="p">:</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">schemaOut</span><span class="p">:</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">schema_in_many</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">schema_out_many</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="schema_in_out"><a class="viewcode-back" href="../../rse_api.html#rse_api.decorators.schema_in_out">[docs]</a><span class="k">def</span> <span class="nf">schema_in_out</span><span class="p">(</span><span class="n">schemaIn</span><span class="p">:</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">schemaOut</span><span class="p">:</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">schema_in_many</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">schema_out_many</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                  <span class="n">schema_out_detect_many</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">schema_in_loader_func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">schema_in_partial</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">in_example</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_example</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator for methods that take a schema result and return a object that will be serialized to a specific schema</span>
 
@@ -170,31 +308,26 @@
 <span class="sd">    :return: Wrapped function</span>
 <span class="sd">    :rtype: Callable</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">decorate_schema_in_out</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">rse_api.swagger.swagger_spec</span> <span class="k">import</span> <span class="n">get_swagger</span>
+
+        <span class="n">swagger</span> <span class="o">=</span> <span class="n">get_swagger</span><span class="p">()</span>
+        <span class="n">swagger_function</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="n">detect_many</span><span class="o">=</span><span class="n">schema_out_detect_many</span><span class="p">,</span> <span class="n">in_many</span><span class="o">=</span><span class="n">schema_in_many</span><span class="p">,</span>
+                                <span class="n">many</span><span class="o">=</span><span class="n">schema_out_many</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="n">schema_in_partial</span><span class="p">,</span>
+                                <span class="n">instance_loader_func</span><span class="o">=</span><span class="n">callable</span><span class="p">(</span><span class="n">schema_in_loader_func</span><span class="p">),</span> <span class="n">in_schema</span><span class="o">=</span><span class="n">schemaIn</span><span class="p">,</span>
+                                <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">in_example</span><span class="o">=</span><span class="n">in_example</span><span class="p">,</span> <span class="n">out_example</span><span class="o">=</span><span class="n">out_example</span><span class="p">,</span>
+                                <span class="n">out_schema</span><span class="o">=</span><span class="n">schemaOut</span><span class="p">)</span>
+        <span class="n">swagger</span><span class="o">.</span><span class="n">add_schema_function</span><span class="p">(</span><span class="n">swagger_function</span><span class="p">)</span>
+
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-        <span class="nd">@schema_in</span><span class="p">(</span><span class="n">schemaIn</span><span class="p">,</span> <span class="n">schema_in_many</span><span class="p">)</span>
-        <span class="nd">@schema_out</span><span class="p">(</span><span class="n">schemaOut</span><span class="p">,</span> <span class="n">schema_out_many</span><span class="p">)</span>
+        <span class="nd">@schema_in</span><span class="p">(</span><span class="n">schemaIn</span><span class="p">,</span> <span class="n">schema_in_many</span><span class="p">,</span> <span class="n">instance_loader_func</span><span class="o">=</span><span class="n">schema_in_loader_func</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="n">schema_in_partial</span><span class="p">)</span>
+        <span class="nd">@schema_out</span><span class="p">(</span><span class="n">schemaOut</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">schema_out_many</span><span class="p">,</span> <span class="n">detect_many</span><span class="o">=</span><span class="n">schema_out_detect_many</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">wrapper</span>
     <span class="k">return</span> <span class="n">decorate_schema_in_out</span></div>
-
-
-<div class="viewcode-block" id="singleton_function"><a class="viewcode-back" href="../../rse_api.html#rse_api.decorators.singleton_function">[docs]</a><span class="k">def</span> <span class="nf">singleton_function</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Allows a function to run once then cache its results for later calls</span>
-<span class="sd">    :param func: Function to be cached</span>
-<span class="sd">    :return: Wrapper function</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s1">&#39;has_ran&#39;</span><span class="p">):</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s1">&#39;cache_value&#39;</span><span class="p">,</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s1">&#39;has_ran&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s1">&#39;cache_value&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">wrapper</span></div>
 
 
 <div class="viewcode-block" id="timeit_logged"><a class="viewcode-back" href="../../rse_api.html#rse_api.decorators.timeit_logged">[docs]</a><span class="k">def</span> <span class="nf">timeit_logged</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>

@@ -167,20 +167,25 @@
         <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">setup_results_backend_func</span><span class="p">):</span>
             <span class="n">app</span><span class="o">.</span><span class="n">results_backend</span> <span class="o">=</span> <span class="n">setup_results_backend_func</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broker</span><span class="p">)</span>
 
+    <span class="c1">#register_swagger(app)</span>
+
     <span class="k">return</span> <span class="n">app</span></div>
 
 
 <span class="k">if</span> <span class="n">HAS_DRAMATIQ</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">rse_api.tasks</span> <span class="k">import</span> <span class="n">dramatiq_parse_arguments</span>
 
-<div class="viewcode-block" id="start_dramatiq_workers"><a class="viewcode-back" href="../rse_api.html#rse_api.start_dramatiq_workers">[docs]</a>    <span class="k">def</span> <span class="nf">start_dramatiq_workers</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+<div class="viewcode-block" id="start_dramatiq_workers"><a class="viewcode-back" href="../rse_api.html#rse_api.start_dramatiq_workers">[docs]</a>    <span class="k">def</span> <span class="nf">start_dramatiq_workers</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">processes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">dramatiq</span>
         <span class="kn">from</span> <span class="nn">dramatiq</span> <span class="k">import</span> <span class="n">cli</span> <span class="k">as</span> <span class="n">dm</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">dramatiq_parse_arguments</span><span class="p">()</span>
         <span class="n">args</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">args</span><span class="o">.</span><span class="n">modules</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">args</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">processes</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">processes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">processes</span><span class="p">)</span>
         <span class="n">dm</span><span class="o">.</span><span class="n">parse_arguments</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">args</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">broker</span> <span class="o">=</span> <span class="s1">&#39;rse_api&#39;</span>
         <span class="n">dm</span><span class="o">.</span><span class="n">import_broker</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;rse_api&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broker</span><span class="p">)</span>
         <span class="n">dm</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
 
@@ -220,12 +225,13 @@
 
         <span class="nd">@worker_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Starts all the workers including corn&quot;</span><span class="p">)</span>
         <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--cron&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Whether we want to run cron jobs as well&#39;</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">start_workers</span><span class="p">(</span><span class="n">cron</span><span class="p">):</span>
+        <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--processes&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Whether we want to run cron jobs as well&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">start_workers</span><span class="p">(</span><span class="n">cron</span><span class="p">,</span> <span class="n">processes</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">HAS_APSCHEDULER</span> <span class="ow">and</span> <span class="n">cron</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">apscheduler.schedulers.background</span> <span class="k">import</span> <span class="n">BackgroundScheduler</span>
                 <span class="n">run_cron_workers</span><span class="p">(</span><span class="n">scheduler</span><span class="o">=</span><span class="n">BackgroundScheduler</span><span class="p">)</span>
 
-            <span class="n">start_dramatiq_workers</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+            <span class="n">start_dramatiq_workers</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">processes</span><span class="p">)</span>
 
         <span class="nd">@worker_cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Lists all the workers&quot;</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">list_workers</span><span class="p">():</span>

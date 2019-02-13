@@ -10,7 +10,6 @@ from flask.cli import AppGroup
 from rse_api.cli import add_cli
 from rse_api.decorators import singleton_function
 from rse_api.errors import register_common_error_handlers
-from rse_api.swagger.swagger_spec import register_swagger
 
 HAS_DRAMATIQ = util.find_spec('dramatiq') is not None
 HAS_RESTFUL = util.find_spec('flask_restful') is not None
@@ -133,7 +132,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
         if callable(setup_results_backend_func):
             app.results_backend = setup_results_backend_func(app, app.broker)
 
-    register_swagger(app)
+    #register_swagger(app)
 
     return app
 

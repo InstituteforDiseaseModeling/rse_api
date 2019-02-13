@@ -46,6 +46,12 @@
 <li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#module-rse_api.controllers">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="rse_api.swagger.html">rse_api.swagger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.swagger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.swagger.html#module-rse_api.swagger.swagger_spec">rse_api.swagger.swagger_spec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.swagger.html#module-rse_api.swagger">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="rse_api.tasks.html">rse_api.tasks package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="rse_api.tasks.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rse_api.tasks.html#module-rse_api.tasks.app_context_middleware">rse_api.tasks.app_context_middleware module</a></li>
@@ -120,28 +126,110 @@ Args:</p>
 
 <dl class="function">
 <dt id="rse_api.decorators.schema_in">
-<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_in</code><span class="sig-paren">(</span><em>schema: marshmallow.schema.Schema</em>, <em>many: bool = False</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_in" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_in</code><span class="sig-paren">(</span><em>schema: marshmallow.schema.Schema</em>, <em>many: bool = False</em>, <em>instance_loader_func: Callable = None</em>, <em>partial: bool = False</em>, <em>description=None</em>, <em>example=None</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator that converts the flask json input data into a parsed data from a supplied schema object</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>schema</strong> – Marshmallow schema to parse flask request with. It is recommended to use strict mode schemas</li>
-<li><strong>many</strong> – Is the input expecting many objects?</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Wrapped function</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>schema: An instance of a Marshmallow Schema object that will be used to parse the input data’s body
+many: Controls whether input is expected to be an array of items or a single item of type Schena. Defaults to
+<em>False</em>.
+instance_loader_func: Function that takes the args for the endpoint and uses those to load an instance.</dd>
+<dt>Usually this is used for PUTs to load and instance by id. See the PUT Example below</dt>
+<dd>partial: To be used when a function is provided . If so, we support partial loads on puts. This means that the
+user can supply single field updates since the db instance will be loaded.</dd>
+<dt>Examples:</dt>
+<dd><div class="first last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_restful</span> <span class="kn">import</span> <span class="n">Resource</span>
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">fields</span><span class="p">,</span> <span class="n">Schema</span>
+<span class="kn">from</span> <span class="nn">rse_api.decorators</span> <span class="kn">import</span> <span class="n">schema_in</span>
+<span class="kn">from</span> <span class="nn">marshmallow_sqlalchemy</span> <span class="kn">import</span> <span class="n">ModelSchema</span>
+<span class="kn">from</span> <span class="nn">rse_db.utils</span> <span class="kn">import</span> <span class="n">get_db</span><span class="p">,</span> <span class="n">get_declarative_base</span>
+<span class="kn">from</span> <span class="nn">rse_db.data_patterns</span> <span class="kn">import</span> <span class="n">IdMixin</span><span class="p">,</span> <span class="n">CreatedAndUpdatedAtMixin</span>
+
+<span class="n">Base</span> <span class="o">=</span> <span class="n">get_declarative_base</span><span class="p">()</span>
+
+<span class="c1"># Our DB Model. It includes an autoincrementing id and Created/Updated timestamp fields</span>
+<span class="c1"># We also add some basic Find, and Write functionality through RSEBasicReadWriteModel</span>
+<span class="k">class</span> <span class="nc">UserModel</span><span class="p">(</span><span class="n">IdMixin</span><span class="p">,</span> <span class="n">CreatedAndUpdatedAtMixin</span><span class="p">,</span> <span class="n">RSEBasicReadWriteModel</span><span class="p">,</span> <span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;users&#39;</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Text</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c1"># Vanilla marshmallow schema</span>
+<span class="c1"># that will allow ensure input data matches schema</span>
+<span class="k">class</span> <span class="nc">UserSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># Smart schema that will load automatically convert schema parsed content</span>
+<span class="c1"># into a specified db Model</span>
+<span class="k">class</span> <span class="nc">SmartUserSchema</span><span class="p">(</span><span class="n">ModelSchema</span><span class="p">):</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">TaskTag</span>
+        <span class="c1"># We use get_db here vs db to reduce the chance of import loops</span>
+        <span class="c1"># see documentation on get_db</span>
+        <span class="n">sqla_session</span> <span class="o">=</span> <span class="n">get_db</span><span class="p">()</span><span class="o">.</span><span class="n">session</span>
+
+<span class="n">default_in_schema</span> <span class="o">=</span> <span class="n">UserSchema</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span>
+
+<span class="nd">@register_resource</span><span class="p">([</span><span class="s1">&#39;/users&#39;</span><span class="p">,</span> <span class="s1">&#39;/users/&lt;int:id&gt;&#39;</span><span class="p">])</span>
+<span class="k">class</span> <span class="nc">UserController</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+
+    <span class="c1"># The below will dump a a parsed schema object</span>
+    <span class="nd">@schema_in</span><span class="p">(</span><span class="n">default_in_schema</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># we should save our data and then return</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="c1"># The below we dump the input data minus any id field passed through the body</span>
+    <span class="nd">@schema_in</span><span class="p">(</span><span class="n">default_in_schema</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># we should load exiting data using id</span>
+        <span class="c1"># then merge in the new data from our input</span>
+        <span class="c1"># then save it</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+
+
+<span class="n">sm_in_schema</span> <span class="o">=</span> <span class="n">SmartUserSchema</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span>
+<span class="n">sm_out_schema</span> <span class="o">=</span> <span class="n">SmartUserSchema</span><span class="p">()</span>
+
+<span class="nd">@register_resource</span><span class="p">([</span><span class="s1">&#39;/sm&#39;</span><span class="p">,</span> <span class="s1">&#39;/sm/&lt;int:id&gt;&#39;</span><span class="p">])</span>
+<span class="k">class</span> <span class="nc">SmartUserController</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+
+    <span class="nd">@schema_out</span><span class="p">(</span><span class="n">sm_out_schema</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">UserModel</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">UserModel</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+
+    <span class="c1"># This will load our data as an instance of UserModel ready to be committed</span>
+    <span class="nd">@schema_in_out</span><span class="p">(</span><span class="n">sm_in_schema</span><span class="p">,</span> <span class="n">sm_out_schema</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># We get an instance of UserModel which has a commit function thanks to</span>
+        <span class="c1"># RSEBasicReadWriteModel</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c1"># This will be load the data based on the input from the URL being based</span>
+    <span class="c1"># to UserModel.find_one, if that succeeds we should get a UserModel back</span>
+    <span class="c1"># with the updates ready to be saved</span>
+    <span class="nd">@schema_in_out</span><span class="p">(</span><span class="n">sm_in_schema</span><span class="p">,</span> <span class="n">sm_out_schema</span><span class="p">,</span> <span class="n">instance_loader_func</span><span class="o">=</span><span class="n">UserModel</span><span class="o">.</span><span class="n">find_one</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="n">UserModel</span><span class="o">.</span><span class="n">delete_by_pk</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">204</span>
+</pre></div>
+</div>
+</dd>
+<dt>Returns:</dt>
+<dd>Wrapped function</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="rse_api.decorators.schema_in_out">
-<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_in_out</code><span class="sig-paren">(</span><em>schemaIn: marshmallow.schema.Schema</em>, <em>schemaOut: marshmallow.schema.Schema</em>, <em>schema_in_many=False</em>, <em>schema_out_many=False</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_in_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_in_out" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_in_out</code><span class="sig-paren">(</span><em>schemaIn: marshmallow.schema.Schema</em>, <em>schemaOut: marshmallow.schema.Schema</em>, <em>schema_in_many=False</em>, <em>schema_out_many=False</em>, <em>schema_out_detect_many: bool = True</em>, <em>schema_in_loader_func: Callable = None</em>, <em>schema_in_partial: bool = False</em>, <em>description=None</em>, <em>in_example=None</em>, <em>out_example=None</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_in_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_in_out" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator for methods that take a schema result and return a object that will be serialized to a specific schema</p>
 <p>schemaIn is the source schema. The schema attempts to load data from flask.request. It is recommend you make this
 schema strict to throw exceptions on errors</p>
@@ -169,7 +257,7 @@ schema strict to throw exceptions on errors</p>
 
 <dl class="function">
 <dt id="rse_api.decorators.schema_out">
-<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_out</code><span class="sig-paren">(</span><em>schema: marshmallow.schema.Schema</em>, <em>many=False</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_out" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_out</code><span class="sig-paren">(</span><em>schema: marshmallow.schema.Schema</em>, <em>detect_many=True</em>, <em>many=False</em>, <em>description=None</em>, <em>example=None</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_out" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator that attempts to convert the output of the wrapped function with a Flask JSON Response using the
 supplied Marshmallow schema</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -178,7 +266,8 @@ supplied Marshmallow schema</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>schema</strong> – Marshmallow schema to convert output of function to</li>
-<li><strong>many</strong> – Is the output expecting many objects?</li>
+<li><strong>detect_many</strong> – Detect if output should be many(lists)</li>
+<li><strong>many</strong> – Only needed if detect many is False. Mainly set the except many output</li>
 </ul>
 </td>
 </tr>
@@ -368,7 +457,7 @@ test.models.contributor</p>
 
 <dl class="function">
 <dt id="rse_api.start_dramatiq_workers">
-<code class="descclassname">rse_api.</code><code class="descname">start_dramatiq_workers</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#start_dramatiq_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.start_dramatiq_workers" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.</code><code class="descname">start_dramatiq_workers</code><span class="sig-paren">(</span><em>app</em>, <em>processes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#start_dramatiq_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.start_dramatiq_workers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
