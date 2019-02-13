@@ -75,7 +75,7 @@ def register_resource(urls):
     elif type(urls) is str:
         urls = [urls]
 
-    from rse_api.swagger.swagger_spec import get_swagger
+    #from rse_api.swagger.swagger_spec import get_swagger
 
     def decorator_register_resource(func: Callable) -> Callable:
         if not issubclass(func, Resource):
@@ -89,8 +89,8 @@ def register_resource(urls):
         api.add_resource(*resource_args)
 
         # process swagger after so urls have been registered
-        swagger = get_swagger()
-        swagger.process_class(func.__name__, urls)
+        #swagger = get_swagger()
+        #swagger.process_class(func.__name__, urls)
         return wrapper
     return decorator_register_resource
 
@@ -201,13 +201,13 @@ def schema_in(schema: Schema, many: bool=False, instance_loader_func: Callable=N
     def decorate_schema_in(func: Callable):
         from flask import request
 
-        from rse_api.swagger.swagger_spec import get_swagger
+        #from rse_api.swagger.swagger_spec import get_swagger
 
-        swagger = get_swagger()
-        swagger_function = dict(function=func, partial=partial, many=many, in_schema=schema,
-                                has_instance_loader_func=callable(instance_loader_func), description=description,
-                                example=example)
-        swagger.add_schema_function(swagger_function)
+        #swagger = get_swagger()
+        #swagger_function = dict(function=func, partial=partial, many=many, in_schema=schema,
+        #                        has_instance_loader_func=callable(instance_loader_func), description=description,
+        #                        example=example)
+        #swagger.add_schema_function(swagger_function)
 
         @wraps(func)
         @json_only
@@ -237,12 +237,12 @@ def schema_out(schema: Schema, detect_many=True, many=False, description=None, e
     :return: Wrapped function
     """
     def decorate_schema_out(func: Callable):
-        from rse_api.swagger.swagger_spec import get_swagger
+        #from rse_api.swagger.swagger_spec import get_swagger
 
-        swagger = get_swagger()
-        swagger_function = dict(function=func, detect_many=detect_many, many=many, out_schema=schema, example=example,
-                                description=description)
-        swagger.add_schema_function(swagger_function)
+        #swagger = get_swagger()
+        #swagger_function = dict(function=func, detect_many=detect_many, many=many, out_schema=schema, example=example,
+        #                        description=description)
+        #swagger.add_schema_function(swagger_function)
 
         @wraps(func)
         def wrapper_schema_out(*args, **kwargs):
@@ -275,15 +275,15 @@ def schema_in_out(schemaIn: Schema, schemaOut: Schema, schema_in_many=False, sch
     """
 
     def decorate_schema_in_out(func: Callable):
-        from rse_api.swagger.swagger_spec import get_swagger
+        #from rse_api.swagger.swagger_spec import get_swagger
 
-        swagger = get_swagger()
-        swagger_function = dict(function=func, detect_many=schema_out_detect_many, in_many=schema_in_many,
-                                many=schema_out_many, partial=schema_in_partial,
-                                instance_loader_func=callable(schema_in_loader_func), in_schema=schemaIn,
-                                description=description, in_example=in_example, out_example=out_example,
-                                out_schema=schemaOut)
-        swagger.add_schema_function(swagger_function)
+        #swagger = get_swagger()
+        #swagger_function = dict(function=func, detect_many=schema_out_detect_many, in_many=schema_in_many,
+        #                        many=schema_out_many, partial=schema_in_partial,
+        #                        instance_loader_func=callable(schema_in_loader_func), in_schema=schemaIn,
+        #                        description=description, in_example=in_example, out_example=out_example,
+        #                        out_schema=schemaOut)
+        #swagger.add_schema_function(swagger_function)
 
         @wraps(func)
         @schema_in(schemaIn, schema_in_many, instance_loader_func=schema_in_loader_func, partial=schema_in_partial)
