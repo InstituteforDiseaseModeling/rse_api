@@ -370,10 +370,3 @@ class SwaggerSpec:
 @singleton_function
 def get_swagger() -> SwaggerSpec:
     return SwaggerSpec()
-
-
-def register_swagger(app):
-    @app.before_first_request
-    def initialize_swagger():
-        swagger = get_swagger()
-        spec = swagger.generate_swagger_spec('test.yml')

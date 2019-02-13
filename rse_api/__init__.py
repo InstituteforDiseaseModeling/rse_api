@@ -141,14 +141,17 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
 if HAS_DRAMATIQ:
     from rse_api.tasks import dramatiq_parse_arguments
 
-    def start_dramatiq_workers(app):
+    def start_dramatiq_workers(app, processes = None):
         import dramatiq
         from dramatiq import cli as dm
         args = dramatiq_parse_arguments()
         args.module = None
         args.modules = []
         args.workers = []
+        if processes:
+            args.processes = int(processes)
         dm.parse_arguments = lambda: args
+        args.broker = 'rse_api'
         dm.import_broker = lambda x: ('rse_api', app.broker)
         dm.main(args)
 
@@ -188,12 +191,13 @@ def get_worker_cli(app,):
 
         @worker_cli.command('start', help="Starts all the workers including corn")
         @click.option('--cron', default=True, help='Whether we want to run cron jobs as well')
-        def start_workers(cron):
+        @click.option('--processes', default=None, help='Whether we want to run cron jobs as well')
+        def start_workers(cron, processes):
             if HAS_APSCHEDULER and cron is True:
                 from apscheduler.schedulers.background import BackgroundScheduler
                 run_cron_workers(scheduler=BackgroundScheduler)
 
-            start_dramatiq_workers(app)
+            start_dramatiq_workers(app, processes)
 
         @worker_cli.command('list', help="Lists all the workers")
         def list_workers():

@@ -1,6 +1,13 @@
 History
 =======
 
+
+1.0.7
+-----
+* Fix issues with Dramatiq workers start
+* Add preliminary support for swagger
+* Add support to control how many Dramatiq worker processs are started
+
 1.0.6
 -----
 * Earlier fixes to support Marshmallow 3 while still supporting Marshmallow 2
