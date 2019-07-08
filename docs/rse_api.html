@@ -42,8 +42,17 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="rse_api.controllers.html">rse_api.controllers package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#rse-api-controllers-simple-controller-module">rse_api.controllers.simple_controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#module-rse_api.controllers.simple_controller">rse_api.controllers.simple_controller module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rse_api.controllers.html#module-rse_api.controllers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rse_api.swagger.html">rse_api.swagger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.swagger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.swagger.html#module-rse_api.swagger.decorators">rse_api.swagger.decorators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.swagger.html#rse-api-swagger-swagger-controller-module">rse_api.swagger.swagger_controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.swagger.html#module-rse_api.swagger.swagger_registry">rse_api.swagger.swagger_registry module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.swagger.html#module-rse_api.swagger.swagger_spec">rse_api.swagger.swagger_spec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rse_api.swagger.html#module-rse_api.swagger">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="rse_api.tasks.html">rse_api.tasks package</a><ul>
@@ -62,8 +71,35 @@
 <span id="rse-api-cli-module"></span><h2>rse_api.cli module<a class="headerlink" href="#module-rse_api.cli" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="rse_api.cli.add_cli">
-<code class="descclassname">rse_api.cli.</code><code class="descname">add_cli</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/cli.html#add_cli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.cli.add_cli" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">rse_api.cli.</code><code class="descname">add_cli</code><span class="sig-paren">(</span><em>app: flask.app.Flask</em><span class="sig-paren">)</span> &#x2192; flask.cli.AppGroup<a class="reference internal" href="_modules/rse_api/cli.html#add_cli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.cli.add_cli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the manage cli commands</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>app</strong> – Flask app to add cli too</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Returns manage cli group</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="rse_api.cli.show_routes">
+<code class="descclassname">rse_api.cli.</code><code class="descname">show_routes</code><span class="sig-paren">(</span><em>app: flask.app.Flask = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/cli.html#show_routes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.cli.show_routes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function that will print out all the urls defined in the current application</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>app</strong> – Optional flask app to show routes for. If none is specified, None is returned</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-rse_api.decorators">
@@ -71,11 +107,75 @@
 <dl class="function">
 <dt id="rse_api.decorators.actor">
 <code class="descclassname">rse_api.decorators.</code><code class="descname">actor</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#actor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.actor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper for dramtiq actor decorator to ensure we have stub broker during docuemntation
-Args:</p>
-<blockquote>
-<div>func:</div></blockquote>
-<p>Returns:</p>
+<dd><p>Wrapper for dramtiq actor decorator to ensure we have stub broker during documentation
+:param *args: Arguments to pass to dramatiq.actor
+:param **kwargs: Key Word arguments to pass to dramatiq.actor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Wrapped function</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://dramatiq.io/_modules/dramatiq/actor.html">https://dramatiq.io/_modules/dramatiq/actor.html</a></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="rse_api.decorators.conditional_decorator">
+<code class="descclassname">rse_api.decorators.</code><code class="descname">conditional_decorator</code><span class="sig-paren">(</span><em>decorator: Callable, condition: Union[bool, Callable]</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#conditional_decorator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.conditional_decorator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only decorate function if condition is true. This is useful when allowing decorator based features such as OpenApi
+configurable by the user based on options.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>decorator</strong> – The decorator to run if condition is true</li>
+<li><strong>condition</strong> – Condition value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>In the below example, the get method will have Cross Origin applied to it if the flask current_app
+object’s env setting is either dev or development</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UserResource</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="nd">@conditional_decorator</span><span class="p">(</span><span class="n">cross_origin</span><span class="p">(),</span> <span class="n">current_app</span><span class="o">.</span><span class="n">env</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dev&#39;</span><span class="p">,</span> <span class="s1">&#39;development&#39;</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<p>Here is another example using a function. This will only enable the swagger operation update if we have another
+swagger definition before this one</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># returns true if we have swagger definitions before users</span>
+<span class="k">def</span> <span class="nf">get_swagger_config</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">current_app</span><span class="o">.</span><span class="n">env</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dev&#39;</span><span class="p">,</span> <span class="s1">&#39;development&#39;</span><span class="p">]:</span>
+        <span class="n">reg</span> <span class="o">=</span> <span class="n">get_swagger_registry</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">reg</span><span class="o">.</span><span class="n">paths</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="bp">False</span>
+
+<span class="k">class</span> <span class="nc">UserResource</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+
+    <span class="nd">@conditional_decorator</span><span class="p">(</span><span class="n">open_api_operation_props</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example&quot;</span><span class="p">),</span> <span class="n">get_swagger_config</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Wrapped function</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -86,54 +186,198 @@ Args:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>crontab</strong> – Cron tab string - see <a class="reference external" href="https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html">https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html</a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>crontab</strong> – Cron string</td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>see <a class="reference external" href="https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html">https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Wrapped actor</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://crontab.guru/">https://crontab.guru/</a></li>
+<li><a class="reference external" href="https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html">https://apscheduler.readthedocs.io/en/latest/modules/triggers/cron.html</a></li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="rse_api.decorators.json_only">
 <code class="descclassname">rse_api.decorators.</code><code class="descname">json_only</code><span class="sig-paren">(</span><em>func: Callable</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#json_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.json_only" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wraps a method to only support requests that are json</p>
+<dd><p>Decorator that validates that a request is JSON or otherwise errors</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>func</strong> – Function to wrap</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>func</strong> – Function to wrap</p>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">wrapped function</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first simple">
+<li>RSEApiException if the request is not of type json</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Wrapped function</p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="function">
-<dt id="rse_api.decorators.register_crud">
-<code class="descclassname">rse_api.decorators.</code><code class="descname">register_crud</code><span class="sig-paren">(</span><em>endpoint</em>, <em>url=None</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#register_crud"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.register_crud" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="rse_api.decorators.register_resource">
-<code class="descclassname">rse_api.decorators.</code><code class="descname">register_resource</code><span class="sig-paren">(</span><em>urls</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/decorators.html#register_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.register_resource" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">rse_api.decorators.</code><code class="descname">register_resource</code><span class="sig-paren">(</span><em>urls: Union[str, List[str]], generate_swagger: bool = True</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#register_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.register_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a Flask Restful Resource to listen on specified urls</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>urls</strong> – </li>
+<li><strong>generate_swagger</strong> – Should this resource be included in the OpenApi(Swagger) documentation</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://flask-restful.readthedocs.io/en/latest/quickstart.html#resourceful-routing">https://flask-restful.readthedocs.io/en/latest/quickstart.html#resourceful-routing</a></li>
+<li><a class="reference internal" href="#rse_api.decorators.schema_in" title="rse_api.decorators.schema_in"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rse_api.decorators.schema_in()</span></code></a></li>
+<li><a class="reference internal" href="#rse_api.decorators.schema_in_out" title="rse_api.decorators.schema_in_out"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rse_api.decorators.schema_in_out()</span></code></a></li>
+<li><a class="reference internal" href="#rse_api.decorators.schema_out" title="rse_api.decorators.schema_out"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rse_api.decorators.schema_out()</span></code></a></li>
+</ul>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Wrapped function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="rse_api.decorators.schema_in">
-<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_in</code><span class="sig-paren">(</span><em>schema: marshmallow.schema.Schema</em>, <em>many: bool = False</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_in" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_in</code><span class="sig-paren">(</span><em>schema: marshmallow.schema.Schema</em>, <em>many: bool = False</em>, <em>instance_loader_func: Callable = None</em>, <em>partial: bool = False</em>, <em>swagger: bool = True</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator that converts the flask json input data into a parsed data from a supplied schema object</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>schema</strong> – Marshmallow schema to parse flask request with. It is recommended to use strict mode schemas</li>
-<li><strong>many</strong> – Is the input expecting many objects?</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>schema</strong> – An instance of a Marshmallow Schema object that will be used to parse the input data’s body</li>
+<li><strong>many</strong> – Controls whether input is expected to be an array of items or a single item of type Schena. Defaults to
+<em>False</em>.</li>
+<li><strong>instance_loader_func</strong> – Function that takes the args for the endpoint and uses those to load an instance.
+Usually this is used for PUTs to load and instance by id. See the PUT Example below</li>
+<li><strong>partial</strong> – To be used when a function is provided . If so, we support partial loads on puts. This means that the
+user can supply single field updates since the db instance will be loaded.</li>
+<li><strong>swagger</strong> – Should this schema and request body be added to OpenApi Documentation?</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Wrapped function</p>
-</td>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_restful</span> <span class="kn">import</span> <span class="n">Resource</span>
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">fields</span><span class="p">,</span> <span class="n">Schema</span>
+<span class="kn">from</span> <span class="nn">rse_api.decorators</span> <span class="kn">import</span> <span class="n">schema_in</span>
+<span class="kn">from</span> <span class="nn">marshmallow_sqlalchemy</span> <span class="kn">import</span> <span class="n">ModelSchema</span>
+<span class="kn">from</span> <span class="nn">rse_db.utils</span> <span class="kn">import</span> <span class="n">get_db</span><span class="p">,</span> <span class="n">get_declarative_base</span>
+<span class="kn">from</span> <span class="nn">rse_db.data_patterns</span> <span class="kn">import</span> <span class="n">IdMixin</span><span class="p">,</span> <span class="n">CreatedAndUpdatedAtMixin</span>
+
+<span class="n">Base</span> <span class="o">=</span> <span class="n">get_declarative_base</span><span class="p">()</span>
+
+<span class="c1"># Our DB Model. It includes an autoincrementing id and Created/Updated timestamp fields</span>
+<span class="c1"># We also add some basic Find, and Write functionality through RSEBasicReadWriteModel</span>
+<span class="k">class</span> <span class="nc">UserModel</span><span class="p">(</span><span class="n">IdMixin</span><span class="p">,</span> <span class="n">CreatedAndUpdatedAtMixin</span><span class="p">,</span> <span class="n">RSEBasicReadWriteModel</span><span class="p">,</span> <span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;users&#39;</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Text</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c1"># Vanilla marshmallow schema</span>
+<span class="c1"># that will allow ensure input data matches schema</span>
+<span class="k">class</span> <span class="nc">UserSchema</span><span class="p">(</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># Smart schema that will load automatically convert schema parsed content</span>
+<span class="c1"># into a specified db Model</span>
+<span class="k">class</span> <span class="nc">SmartUserSchema</span><span class="p">(</span><span class="n">ModelSchema</span><span class="p">):</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">TaskTag</span>
+        <span class="c1"># We use get_db here vs db to reduce the chance of import loops</span>
+        <span class="c1"># see documentation on get_db</span>
+        <span class="n">sqla_session</span> <span class="o">=</span> <span class="n">get_db</span><span class="p">()</span><span class="o">.</span><span class="n">session</span>
+
+<span class="n">default_in_schema</span> <span class="o">=</span> <span class="n">UserSchema</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span>
+
+<span class="nd">@register_resource</span><span class="p">([</span><span class="s1">&#39;/users&#39;</span><span class="p">,</span> <span class="s1">&#39;/users/&lt;int:id&gt;&#39;</span><span class="p">])</span>
+<span class="k">class</span> <span class="nc">UserController</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+
+    <span class="c1"># The below will dump a a parsed schema object</span>
+    <span class="nd">@schema_in</span><span class="p">(</span><span class="n">default_in_schema</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># we should save our data and then return</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="c1"># The below we dump the input data minus any id field passed through the body</span>
+    <span class="nd">@schema_in</span><span class="p">(</span><span class="n">default_in_schema</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># we should load exiting data using id</span>
+        <span class="c1"># then merge in the new data from our input</span>
+        <span class="c1"># then save it</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+
+
+<span class="n">sm_in_schema</span> <span class="o">=</span> <span class="n">SmartUserSchema</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span>
+<span class="n">sm_out_schema</span> <span class="o">=</span> <span class="n">SmartUserSchema</span><span class="p">()</span>
+
+<span class="nd">@register_resource</span><span class="p">([</span><span class="s1">&#39;/sm&#39;</span><span class="p">,</span> <span class="s1">&#39;/sm/&lt;int:id&gt;&#39;</span><span class="p">])</span>
+<span class="k">class</span> <span class="nc">SmartUserController</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+
+    <span class="nd">@schema_out</span><span class="p">(</span><span class="n">sm_out_schema</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">UserModel</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">UserModel</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+
+    <span class="c1"># This will load our data as an instance of UserModel ready to be committed</span>
+    <span class="nd">@schema_in_out</span><span class="p">(</span><span class="n">sm_in_schema</span><span class="p">,</span> <span class="n">sm_out_schema</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># We get an instance of UserModel which has a commit function thanks to</span>
+        <span class="c1"># RSEBasicReadWriteModel</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c1"># This will be load the data based on the input from the URL being based</span>
+    <span class="c1"># to UserModel.find_one, if that succeeds we should get a UserModel back</span>
+    <span class="c1"># with the updates ready to be saved</span>
+    <span class="nd">@schema_in_out</span><span class="p">(</span><span class="n">sm_in_schema</span><span class="p">,</span> <span class="n">sm_out_schema</span><span class="p">,</span> <span class="n">instance_loader_func</span><span class="o">=</span><span class="n">UserModel</span><span class="o">.</span><span class="n">find_one</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="n">UserModel</span><span class="o">.</span><span class="n">delete_by_pk</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">204</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Wrapped function</td>
 </tr>
 </tbody>
 </table>
@@ -141,7 +385,7 @@ Args:</p>
 
 <dl class="function">
 <dt id="rse_api.decorators.schema_in_out">
-<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_in_out</code><span class="sig-paren">(</span><em>schemaIn: marshmallow.schema.Schema</em>, <em>schemaOut: marshmallow.schema.Schema</em>, <em>schema_in_many=False</em>, <em>schema_out_many=False</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_in_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_in_out" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_in_out</code><span class="sig-paren">(</span><em>schemaIn: marshmallow.schema.Schema</em>, <em>schemaOut: marshmallow.schema.Schema</em>, <em>schema_in_many=False</em>, <em>schema_out_many=False</em>, <em>schema_out_detect_many: bool = True</em>, <em>schema_in_loader_func: Callable = None</em>, <em>schema_in_partial: bool = False</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_in_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_in_out" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator for methods that take a schema result and return a object that will be serialized to a specific schema</p>
 <p>schemaIn is the source schema. The schema attempts to load data from flask.request. It is recommend you make this
 schema strict to throw exceptions on errors</p>
@@ -149,19 +393,31 @@ schema strict to throw exceptions on errors</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>schemaIn</strong> – Marshmallow schema to parse flask request with. It is recommended to use strict mode schemas</li>
 <li><strong>schemaOut</strong> – Marshmallow schema to convert output of function to</li>
 <li><strong>schema_in_many</strong> – Is the input expecting many objects?</li>
-<li><strong>schema_out_many</strong> – Is the output expecting many objects?</li>
+<li><strong>schema_out_many</strong> – Many option of schema_out</li>
+<li><strong>schema_out_detect_many</strong> – Detect many option of schema_out</li>
+<li><strong>schema_in_loader_func</strong> – in_loader_func of schema_in</li>
+<li><strong>schema_in_partial</strong> – Partial option on schema_in</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Wrapped function</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Callable</p>
-</td>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="#rse_api.decorators.schema_in" title="rse_api.decorators.schema_in"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rse_api.decorators.schema_in()</span></code></a></li>
+<li><a class="reference internal" href="#rse_api.decorators.schema_out" title="rse_api.decorators.schema_out"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rse_api.decorators.schema_out()</span></code></a></li>
+</ul>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Wrapped Function</td>
 </tr>
 </tbody>
 </table>
@@ -169,16 +425,21 @@ schema strict to throw exceptions on errors</p>
 
 <dl class="function">
 <dt id="rse_api.decorators.schema_out">
-<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_out</code><span class="sig-paren">(</span><em>schema: marshmallow.schema.Schema</em>, <em>many=False</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_out" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.decorators.</code><code class="descname">schema_out</code><span class="sig-paren">(</span><em>schema: marshmallow.schema.Schema</em>, <em>detect_many=True</em>, <em>many=False</em>, <em>generate_swagger=True</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#schema_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.schema_out" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator that attempts to convert the output of the wrapped function with a Flask JSON Response using the
-supplied Marshmallow schema</p>
+supplied Marshmallow schema. In addition, if generate_swagger is True, the schema will be added to the OpenApi
+schema for the app.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>schema</strong> – Marshmallow schema to convert output of function to</li>
-<li><strong>many</strong> – Is the output expecting many objects?</li>
+<li><strong>detect_many</strong> – Detect many will attempt to detect if the output is of type List or single item. Useful in
+endpoints that support both List[Type] and Type</li>
+<li><strong>many</strong> – Only needed if detect many is False. Mainly set the except many output</li>
+<li><strong>generate_swagger</strong> – Should we generate swagger documentation for this item. This will add a response to a
+specific OpenApiPathOperation</li>
 </ul>
 </td>
 </tr>
@@ -192,17 +453,32 @@ supplied Marshmallow schema</p>
 <dl class="function">
 <dt id="rse_api.decorators.singleton_function">
 <code class="descclassname">rse_api.decorators.</code><code class="descname">singleton_function</code><span class="sig-paren">(</span><em>func: Callable</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#singleton_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.singleton_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Allows a function to run once then cache its results for later calls
-:param func: Function to be cached
-:return: Wrapper function</p>
+<dd><p>Allows a function to run one then cache its result for later calls
+:param func:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Wrapped fimctopm</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="rse_api.decorators.timeit_logged">
 <code class="descclassname">rse_api.decorators.</code><code class="descname">timeit_logged</code><span class="sig-paren">(</span><em>func: Callable</em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="_modules/rse_api/decorators.html#timeit_logged"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.decorators.timeit_logged" title="Permalink to this definition">¶</a></dt>
-<dd><p>Times the execution of a function and log to the Timed log
-:param func: Function that should be timed
-:return: Wrapped function</p>
+<dd><p>Decorator that allows you to time a function. The timing will be printed to logger debug</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>func</strong> – Function to time</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Wrapped function</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -212,16 +488,26 @@ supplied Marshmallow schema</p>
 <dt id="rse_api.errors.RSEApiException">
 <em class="property">exception </em><code class="descclassname">rse_api.errors.</code><code class="descname">RSEApiException</code><a class="reference internal" href="_modules/rse_api/errors.html#RSEApiException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.errors.RSEApiException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Generic API Exception. We do this just to be able to track certain error types</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="rse_api.errors.register_common_error_handlers">
-<code class="descclassname">rse_api.errors.</code><code class="descname">register_common_error_handlers</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/errors.html#register_common_error_handlers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.errors.register_common_error_handlers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define the common error handlers</p>
-<p>If sqlalchemy exists, error capturing for IntegrityError and NoResultFound will be defined</p>
-<p>If marshmallow exists, error capturing for ValidationError will be defined
-:param app:
-:return: None</p>
+<code class="descclassname">rse_api.errors.</code><code class="descname">register_common_error_handlers</code><span class="sig-paren">(</span><em>app: flask.app.Flask</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/errors.html#register_common_error_handlers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.errors.register_common_error_handlers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a common set of error handlers including:
+- NoResultFound will be registered as a 404 error
+- Validation Errors will be registered as a 400
+- RSEApiException will be registered as 400s</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>app</strong> – Flask app to add errors to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -235,36 +521,9 @@ supplied Marshmallow schema</p>
 The number of items per page is assumed to be in the per_page query option</p>
 <p>The turns will be a dictionary container the values for page and per_page. If no values were passed to the request
 the values will be defaults of page_default and per_page_default
-:return:</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-rse_api.routing">
-<span id="rse-api-routing-module"></span><h2>rse_api.routing module<a class="headerlink" href="#module-rse_api.routing" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="rse_api.routing.register_api">
-<code class="descclassname">rse_api.routing.</code><code class="descname">register_api</code><span class="sig-paren">(</span><em>view, endpoint, url=None, pk='id', pk_type='int', methods=['GET', 'PUT', 'DELETE', 'POST'], app=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/routing.html#register_api"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.routing.register_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Registers a class as an api endpoint</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>view</strong> – The Class to register as api controller</li>
-<li><strong>endpoint</strong> – Endpoint the class represents This will be used internally for naming the object</li>
-<li><strong>url</strong> – Optional. Will be</li>
-<li><strong>pk</strong> – Name of the id field for object in the url/ Defaults to id</li>
-<li><strong>pk_type</strong> – The type of the id field. Default to int</li>
-<li><strong>methods</strong> – HTTP Methods this controller supports. Default is GET, PUT, DELETE, POST. Get will be</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>registered for to sets of urls. The unique object versions, ie /objects/id and the listing of all objects,
-ie /objects. POST will only be registered at the top level url is specified, ie /objects
-:param app: App object to register url
-:return: None</p>
+:param page_default: Page default if not present in request
+:param per_page_default: PerPage default if not present in request</p>
+<p>Returns:</p>
 </dd></dl>
 
 </div>
@@ -273,7 +532,17 @@ ie /objects. POST will only be registered at the top level url is specified, ie 
 <dl class="function">
 <dt id="rse_api.utils.dynamic_import_all">
 <code class="descclassname">rse_api.utils.</code><code class="descname">dynamic_import_all</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/utils.html#dynamic_import_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.utils.dynamic_import_all" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Equivalent of doing an from x import * at runtime</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module</strong> – Python module to import</td>
+</tr>
+</tbody>
+</table>
+<p>Returns:</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="rse_api.utils.load_modules">
@@ -290,17 +559,13 @@ test.models.contributor</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>recurse</strong> – Should we recurse into other directories?</li>
-<li><strong>package_path</strong> (<em>str</em>) – Prefix to package path of directory we are scanning</li>
-<li><strong>dir_path</strong> (<em>str</em>) – Directory to scan</li>
+<li><strong>package_path</strong> – Prefix to package path of directory we are scanning</li>
+<li><strong>dir_path</strong> – Directory to scan</li>
 <li><strong>exclude</strong> – List of files to exclude. If value is None, the default list of ‘__init__.py’ will be used</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of models loaded</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">List[str]</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of files loaded</p>
 </td>
 </tr>
 </tbody>
@@ -312,40 +577,73 @@ test.models.contributor</p>
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rse_api" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="rse_api.default_dramatiq_setup_broker">
-<code class="descclassname">rse_api.</code><code class="descname">default_dramatiq_setup_broker</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#default_dramatiq_setup_broker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.default_dramatiq_setup_broker" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">rse_api.</code><code class="descname">default_dramatiq_setup_broker</code><span class="sig-paren">(</span><em>app: Flask</em><span class="sig-paren">)</span> &#x2192; 'dramatiq.broker.Broker'<a class="reference internal" href="_modules/rse_api.html#default_dramatiq_setup_broker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.default_dramatiq_setup_broker" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default broker setup function. For the</p>
+<p>If either Dramatiq or Pika(RabbitMq Client) packages are missing from the environment, this will return None</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>app</strong> – </td>
+</tr>
+</tbody>
+</table>
+<p>Returns:</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="rse_api.default_dramatiq_setup_result_backend">
-<code class="descclassname">rse_api.</code><code class="descname">default_dramatiq_setup_result_backend</code><span class="sig-paren">(</span><em>app</em>, <em>broker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#default_dramatiq_setup_result_backend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.default_dramatiq_setup_result_backend" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">rse_api.</code><code class="descname">default_dramatiq_setup_result_backend</code><span class="sig-paren">(</span><em>app: Flask</em>, <em>broker: 'dramatiq.broker.Broker'</em><span class="sig-paren">)</span> &#x2192; 'dramatiq.results.backends.RedisBackend'<a class="reference internal" href="_modules/rse_api.html#default_dramatiq_setup_result_backend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.default_dramatiq_setup_result_backend" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default command used for setting up a Result Backend. By default we use Redis as our Result Backend.
+The connection string for Redis is from the Flask Config Key REDIS_URI</p>
+<p>If either Dramatiq or Redis packages are missing from the environment, this will return None</p>
+<p>We will also set the
+:param app: Flask app that this broker is part of
+:param broker: Broker to attach the result backend to</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A Result backend</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://dramatiq.io/advanced.html?highlight=results#message-results">https://dramatiq.io/advanced.html?highlight=results#message-results</a></li>
+</ul>
+</div>
+</dd></dl>
 
 <dl class="function">
 <dt id="rse_api.get_application">
-<code class="descclassname">rse_api.</code><code class="descname">get_application</code><span class="sig-paren">(</span><em>setting_object_path: str = None</em>, <em>setting_environment_variable: Optional[str] = None</em>, <em>strict_slashes: bool = False</em>, <em>default_error_handlers: bool = True</em>, <em>setup_broker_func: Optional[Callable] = &lt;function default_dramatiq_setup_broker&gt;</em>, <em>setup_results_backend_func: Optional[Callable] = None</em>, <em>template_folder='templates'</em><span class="sig-paren">)</span> &#x2192; flask.app.Flask<a class="reference internal" href="_modules/rse_api.html#get_application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_application" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rse_api.</code><code class="descname">get_application</code><span class="sig-paren">(</span><em>name: str</em>, <em>setting_object_path: str = None</em>, <em>setting_environment_variable: Optional[str] = None</em>, <em>strict_slashes: bool = False</em>, <em>default_error_handlers: bool = True</em>, <em>setup_broker_func: Optional[Callable] = &lt;function default_dramatiq_setup_broker&gt;</em>, <em>setup_results_backend_func: Optional[Callable] = None</em>, <em>template_folder='templates'</em>, <em>app_version: str = '0.1'</em>, <em>swagger: bool = True</em>, <em>swagger_cors: bool = True</em><span class="sig-paren">)</span> &#x2192; Flask<a class="reference internal" href="_modules/rse_api.html#get_application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_application" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a Flask Application object. This function is a singleton function</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>setup_broker_func</strong> – Function callback to setup brokers for queues. By default a function that checks for dramatiq</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – Name of application we are defining</li>
+<li><strong>setting_object_path</strong> – Optional Python import path to the default settings objects</li>
+<li><strong>setting_environment_variable</strong> – Optional environment variable that stores path to setting files</li>
+<li><strong>strict_slashes</strong> – Should we use strict slashes(Ie a call to /projects will fail but a call to /projects will
+succeed</li>
+<li><strong>default_error_handlers</strong> – </li>
+<li><strong>setup_broker_func</strong> – Default function to setup a broker. By default we attempt to use Rabbit. Set to None to
+disable</li>
+<li><strong>setup_results_backend_func</strong> – Function to call to setup the Results Backend. Default is None</li>
+<li><strong>template_folder</strong> – Template folder</li>
+<li><strong>app_version</strong> – Version of app to be used in Swagger definition</li>
+<li><strong>swagger</strong> – Should we host a swagger.json that is generated at runtime from schemas defined using the schema_in,
+schema_out, and openapi_* decorators?</li>
+<li><strong>swagger_cors</strong> – Should we enable CORS on that swagger.json endpoint?</li>
+</ul>
+</td>
 </tr>
-</tbody>
-</table>
-<p>is called and if deted
-:param default_error_handlers: Should the default error handlers for SQlAlchemy and Marshmallow be added?
-:param setting_object_path: Optional Python import path to the default settings objects
-:param setting_environment_variable: Optional environment variable that stores path to setting files
-:param strict_slashes: Should we use strict slashes(Ie a call to /projects will fail but a call to /projects will</p>
-<blockquote>
-<div>succeed</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>template_folder</strong> – Template folder</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Flask app</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Flask APP</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -358,18 +656,56 @@ test.models.contributor</p>
 
 <dl class="function">
 <dt id="rse_api.get_worker_cli">
-<code class="descclassname">rse_api.</code><code class="descname">get_worker_cli</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#get_worker_cli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_worker_cli" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">rse_api.</code><code class="descname">get_worker_cli</code><span class="sig-paren">(</span><em>app: Flask</em><span class="sig-paren">)</span> &#x2192; AppGroup<a class="reference internal" href="_modules/rse_api.html#get_worker_cli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.get_worker_cli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures the workers CLI command group. By default this includes the commands</p>
+<ul class="simple">
+<li>start –corn=True - Starts all workers(cron and actors)</li>
+<li>list - List all workers</li>
+<li>cron  - Run only cron workers</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>app</strong> – App to register cli on</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Worker CLI AppGroup</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="rse_api.run_cron_workers">
 <code class="descclassname">rse_api.</code><code class="descname">run_cron_workers</code><span class="sig-paren">(</span><em>scheduler=&lt;class 'apscheduler.schedulers.blocking.BlockingScheduler'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#run_cron_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.run_cron_workers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>CLI Function that runs only cron scheduled workers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scheduler</strong> – What scheduler to user. By default we use the BlockingScheduler</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="rse_api.start_dramatiq_workers">
 <code class="descclassname">rse_api.</code><code class="descname">start_dramatiq_workers</code><span class="sig-paren">(</span><em>app</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api.html#start_dramatiq_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.start_dramatiq_workers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Utility function to be used by cli to start workers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>app</strong> – Flask app continaing the workers</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 </div>

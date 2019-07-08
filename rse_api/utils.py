@@ -8,6 +8,15 @@ default_exclude = ['__init__.py']
 
 
 def dynamic_import_all(module):
+    """
+    Equivalent of doing an from x import * at runtime
+
+    Args:
+        module: Python module to import
+
+    Returns:
+
+    """
     # get a handle on the module
     mdl = importlib.import_module(module)
 
@@ -32,15 +41,13 @@ def load_modules(package_path: str, dir_path: str, exclude: List[str]=None) -> L
     And the function is called with a package_path of "test.models", load_modules will import test.models.package and
     test.models.contributor
 
+    Args:
+        package_path: Prefix to package path of directory we are scanning
+        dir_path: Directory to scan
+        exclude: List of files to exclude. If value is None, the default list of '__init__.py' will be used
 
-    :param recurse: Should we recurse into other directories?
-    :param package_path: Prefix to package path of directory we are scanning
-    :type package_path: str
-    :param dir_path: Directory to scan
-    :type dir_path: str
-    :param exclude: List of files to exclude. If value is None, the default list of '__init__.py' will be used
-    :return: List of models loaded
-    :rtype: List[str]
+    Returns:
+        List of files loaded
     """
     logger = getLogger()
     modules = []

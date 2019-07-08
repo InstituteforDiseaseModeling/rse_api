@@ -33,7 +33,8 @@
           <div class="body" role="main">
             
   <h1>Source code for rse_api</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">annotations</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">util</span>
@@ -41,7 +42,6 @@
 <span class="kn">import</span> <span class="nn">click</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span>
 <span class="kn">from</span> <span class="nn">flask.cli</span> <span class="k">import</span> <span class="n">AppGroup</span>
-
 <span class="kn">from</span> <span class="nn">rse_api.cli</span> <span class="k">import</span> <span class="n">add_cli</span>
 <span class="kn">from</span> <span class="nn">rse_api.decorators</span> <span class="k">import</span> <span class="n">singleton_function</span>
 <span class="kn">from</span> <span class="nn">rse_api.errors</span> <span class="k">import</span> <span class="n">register_common_error_handlers</span>
@@ -58,7 +58,25 @@
 
 
 <div class="viewcode-block" id="default_dramatiq_setup_result_backend"><a class="viewcode-back" href="../rse_api.html#rse_api.default_dramatiq_setup_result_backend">[docs]</a><span class="nd">@singleton_function</span>
-<span class="k">def</span> <span class="nf">default_dramatiq_setup_result_backend</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">broker</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">default_dramatiq_setup_result_backend</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">broker</span><span class="p">:</span> <span class="s1">&#39;dramatiq.broker.Broker&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> \
+        <span class="s1">&#39;dramatiq.results.backends.RedisBackend&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The default command used for setting up a Result Backend. By default we use Redis as our Result Backend.</span>
+<span class="sd">    The connection string for Redis is from the Flask Config Key REDIS_URI</span>
+
+<span class="sd">    If either Dramatiq or Redis packages are missing from the environment, this will return None</span>
+
+<span class="sd">    We will also set the</span>
+<span class="sd">    Args:</span>
+<span class="sd">        app: Flask app that this broker is part of</span>
+<span class="sd">        broker: Broker to attach the result backend to</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A Result backend</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        - https://dramatiq.io/advanced.html?highlight=results#message-results</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result_backend</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">HAS_DRAMATIQ</span> <span class="ow">and</span> <span class="n">HAS_REDIS</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">dramatiq.results</span> <span class="k">import</span> <span class="n">Results</span>
@@ -70,7 +88,19 @@
 
 
 <div class="viewcode-block" id="default_dramatiq_setup_broker"><a class="viewcode-back" href="../rse_api.html#rse_api.default_dramatiq_setup_broker">[docs]</a><span class="nd">@singleton_function</span>
-<span class="k">def</span> <span class="nf">default_dramatiq_setup_broker</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">default_dramatiq_setup_broker</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">Flask</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;dramatiq.broker.Broker&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The default broker setup function. For the</span>
+
+
+<span class="sd">    If either Dramatiq or Pika(RabbitMq Client) packages are missing from the environment, this will return None</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        app:</span>
+
+<span class="sd">    Returns:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># If we are generation documentation, don&#39;t try to setup dramatiq</span>
     <span class="k">if</span> <span class="n">HAS_DRAMATIQ</span> <span class="ow">and</span> <span class="p">(</span><span class="n">HAS_RABBIT</span> <span class="ow">or</span> <span class="n">HAS_REDIS</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">dramatiq</span>
@@ -97,6 +127,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">HAS_RABBIT</span><span class="p">:</span>
                 <span class="n">broker_url</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RABBIT_URI&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
                 <span class="kn">from</span> <span class="nn">dramatiq.brokers.rabbitmq</span> <span class="k">import</span> <span class="n">URLRabbitmqBroker</span>
                 <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connecting to Rabbit MQ @ </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker_url</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">broker_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -125,27 +156,37 @@
 
 
 <div class="viewcode-block" id="get_application"><a class="viewcode-back" href="../rse_api.html#rse_api.get_application">[docs]</a><span class="nd">@singleton_function</span>
-<span class="k">def</span> <span class="nf">get_application</span><span class="p">(</span><span class="n">setting_object_path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">setting_environment_variable</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">get_application</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">setting_object_path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">setting_environment_variable</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">strict_slashes</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">default_error_handlers</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="n">setup_broker_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_dramatiq_setup_broker</span><span class="p">,</span>
                     <span class="n">setup_results_backend_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="n">template_folder</span><span class="o">=</span><span class="s1">&#39;templates&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flask</span><span class="p">:</span>
+                    <span class="n">template_folder</span><span class="o">=</span><span class="s1">&#39;templates&#39;</span><span class="p">,</span> <span class="n">app_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;0.1&#39;</span><span class="p">,</span>
+                    <span class="n">swagger</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">swagger_cors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flask</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a Flask Application object. This function is a singleton function</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        name: Name of application we are defining</span>
+<span class="sd">        setting_object_path:  Optional Python import path to the default settings objects</span>
+<span class="sd">        setting_environment_variable: Optional environment variable that stores path to setting files</span>
+<span class="sd">        strict_slashes: Should we use strict slashes(Ie a call to /projects will fail but a call to /projects will</span>
+<span class="sd">            succeed</span>
+<span class="sd">        default_error_handlers:</span>
+<span class="sd">        setup_broker_func: Default function to setup a broker. By default we attempt to use Rabbit. Set to None to</span>
+<span class="sd">            disable</span>
+<span class="sd">        setup_results_backend_func: Function to call to setup the Results Backend. Default is None</span>
+<span class="sd">        template_folder: Template folder</span>
+<span class="sd">        app_version: Version of app to be used in Swagger definition</span>
+<span class="sd">        swagger: Should we host a swagger.json that is generated at runtime from schemas defined using the schema_in,</span>
+<span class="sd">            schema_out, and openapi_* decorators?</span>
+<span class="sd">        swagger_cors: Should we enable CORS on that swagger.json endpoint?</span>
 
-<span class="sd">    :param setup_broker_func: Function callback to setup brokers for queues. By default a function that checks for dramatiq</span>
-<span class="sd">    is called and if deted</span>
-<span class="sd">    :param default_error_handlers: Should the default error handlers for SQlAlchemy and Marshmallow be added?</span>
-<span class="sd">    :param setting_object_path: Optional Python import path to the default settings objects</span>
-<span class="sd">    :param setting_environment_variable: Optional environment variable that stores path to setting files</span>
-<span class="sd">    :param strict_slashes: Should we use strict slashes(Ie a call to /projects will fail but a call to /projects will</span>
-<span class="sd">      succeed</span>
-<span class="sd">    :param template_folder: Template folder</span>
-<span class="sd">    :return: Flask app</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Flask APP</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">template_folder</span><span class="o">=</span><span class="n">template_folder</span><span class="p">)</span>
+
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">template_folder</span><span class="o">=</span><span class="n">template_folder</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">HAS_RESTFUL</span><span class="p">:</span>
         <span class="n">get_restful_api</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
@@ -167,13 +208,36 @@
         <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">setup_results_backend_func</span><span class="p">):</span>
             <span class="n">app</span><span class="o">.</span><span class="n">results_backend</span> <span class="o">=</span> <span class="n">setup_results_backend_func</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">broker</span><span class="p">)</span>
 
+    <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">swagger</span><span class="p">:</span>
+
+            <span class="kn">from</span> <span class="nn">.swagger</span> <span class="k">import</span> <span class="n">register_swagger</span><span class="p">,</span> <span class="n">get_swagger_registry</span>
+
+            <span class="n">get_swagger_registry</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">app_version</span><span class="p">)</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;swagger_cors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">swagger_cors</span>
+            <span class="n">register_swagger</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+            <span class="c1">#if swagger_cors:</span>
+            <span class="c1">#    app.cors = CORS(app, resources={r&quot;/swagger.json&quot;: {&quot;origins&quot;: &quot;*&quot;}})</span>
+
+        <span class="c1"># register our helath check and show all our routes</span>
+        <span class="kn">from</span> <span class="nn">.controllers</span> <span class="k">import</span> <span class="n">health_check_controller</span>
     <span class="k">return</span> <span class="n">app</span></div>
 
 
 <span class="k">if</span> <span class="n">HAS_DRAMATIQ</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">rse_api.tasks</span> <span class="k">import</span> <span class="n">dramatiq_parse_arguments</span>
+    <span class="kn">from</span> <span class="nn">rse_api.tasks</span> <span class="k">import</span> <span class="n">dramatiq_parse_arguments</span><span class="p">,</span> <span class="n">CRON_JOBS</span>
+
 
 <div class="viewcode-block" id="start_dramatiq_workers"><a class="viewcode-back" href="../rse_api.html#rse_api.start_dramatiq_workers">[docs]</a>    <span class="k">def</span> <span class="nf">start_dramatiq_workers</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Utility function to be used by cli to start workers</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            app: Flask app continaing the workers</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">dramatiq</span>
         <span class="kn">from</span> <span class="nn">dramatiq</span> <span class="k">import</span> <span class="n">cli</span> <span class="k">as</span> <span class="n">dm</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">dramatiq_parse_arguments</span><span class="p">()</span>
@@ -186,9 +250,18 @@
 
 <span class="k">if</span> <span class="n">HAS_APSCHEDULER</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">apscheduler.schedulers.blocking</span> <span class="k">import</span> <span class="n">BlockingScheduler</span>
-    <span class="kn">from</span> <span class="nn">rse_api.decorators</span> <span class="k">import</span> <span class="n">singleton_function</span><span class="p">,</span> <span class="n">CRON_JOBS</span>
+    <span class="kn">from</span> <span class="nn">rse_api.decorators</span> <span class="k">import</span> <span class="n">singleton_function</span>
 
 <div class="viewcode-block" id="run_cron_workers"><a class="viewcode-back" href="../rse_api.html#rse_api.run_cron_workers">[docs]</a>    <span class="k">def</span> <span class="nf">run_cron_workers</span><span class="p">(</span><span class="n">scheduler</span><span class="o">=</span><span class="n">BlockingScheduler</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        CLI Function that runs only cron scheduled workers</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            scheduler: What scheduler to user. By default we use the BlockingScheduler</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
             <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2">] [PID </span><span class="si">%(process)d</span><span class="s2">] [</span><span class="si">%(threadName)s</span><span class="s2">] [</span><span class="si">%(name)s</span><span class="s2">] [</span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
@@ -212,7 +285,20 @@
 
 
 <div class="viewcode-block" id="get_worker_cli"><a class="viewcode-back" href="../rse_api.html#rse_api.get_worker_cli">[docs]</a><span class="nd">@singleton_function</span>
-<span class="k">def</span> <span class="nf">get_worker_cli</span><span class="p">(</span><span class="n">app</span><span class="p">,):</span>
+<span class="k">def</span> <span class="nf">get_worker_cli</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">Flask</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AppGroup</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configures the workers CLI command group. By default this includes the commands</span>
+
+<span class="sd">    - start --corn=True - Starts all workers(cron and actors)</span>
+<span class="sd">    - list - List all workers</span>
+<span class="sd">    - cron  - Run only cron workers</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        app: App to register cli on</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Worker CLI AppGroup</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get flask db should have been called before this with any setup needed</span>
     <span class="n">worker_cli</span> <span class="o">=</span> <span class="n">AppGroup</span><span class="p">(</span><span class="s1">&#39;workers&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Commands related to workers&quot;</span><span class="p">)</span>
 

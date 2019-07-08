@@ -1,0 +1,288 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>rse_api.swagger.decorators &#8212; rse_api 1.0.6 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for rse_api.swagger.decorators</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">marshmallow</span> <span class="k">import</span> <span class="n">Schema</span>
+
+<span class="kn">from</span> <span class="nn">rse_api.swagger</span> <span class="k">import</span> <span class="n">get_swagger_registry</span>
+<span class="kn">from</span> <span class="nn">rse_api.swagger.swagger_spec</span> <span class="k">import</span> <span class="n">OpenApiResponse</span><span class="p">,</span> <span class="n">OpenApiReference</span><span class="p">,</span> <span class="n">OpenApiSchema</span><span class="p">,</span> \
+    <span class="n">OpenApiMediaType</span><span class="p">,</span> <span class="n">OpenApiRequestBody</span>
+
+<span class="n">swagger</span> <span class="o">=</span> <span class="n">get_swagger_registry</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="openapi_response"><a class="viewcode-back" href="../../../rse_api.swagger.html#rse_api.swagger.decorators.openapi_response">[docs]</a><span class="k">def</span> <span class="nf">openapi_response</span><span class="p">(</span><span class="n">response_obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">OpenApiResponse</span><span class="p">,</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">OpenApiSchema</span><span class="p">,</span> <span class="n">OpenApiReference</span><span class="p">],</span>
+                     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">content_types</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">status_code</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">autodetect_http_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">from_marshmallow_options</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator that Adds an OpenAPI Response to a specific Path or Method</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        response_obj: Type of Response Object. This can be either an OpenApiResponse or a Reference. If it is an</span>
+<span class="sd">            OpenApiSchema or Marshmallow Schema, an Response object will be built including those</span>
+<span class="sd">        path: Optional path. If not included, this must be used on a Resource class method like get, post, etc</span>
+<span class="sd">        description: Optional Description for the response</span>
+<span class="sd">        content_types:  Optional list of content types this supports. By default, if this is None, application/json is</span>
+<span class="sd">            assumed. This content type along with either a OpenApiSchema, OpenApiReference or Marshmallow Schema are</span>
+<span class="sd">            using to build an OpenMediaType object</span>
+<span class="sd">        status_code: Status code for response. Not needed if autodetect_http_code is true</span>
+<span class="sd">        autodetect_http_code: Detect http status code from method name. If method is post, a 201 is assumed. For get</span>
+<span class="sd">            and put we return 200 and lastly for delete we return a 204</span>
+<span class="sd">        from_marshmallow_options: Optional dictionary set of arguments to pass to OpenApiSchema.from_marshmallow when</span>
+<span class="sd">            converting a Marshmallow Schema to an OpenApi schema</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Wrapped Functions</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        - :meth:`rse_api.swagger.OpenApiSchema.from_marshmallow`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">content_types</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">content_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;application/json&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">decorate_openapi_response</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+        <span class="n">target_class</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">:</span>
+            <span class="n">target_class</span><span class="p">,</span> <span class="n">method_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">method_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="n">media_types</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">status_code</span>
+        <span class="n">response_description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response_obj</span><span class="p">,</span> <span class="n">Schema</span><span class="p">):</span>
+            <span class="n">schema_name</span><span class="p">,</span> <span class="n">schema</span> <span class="o">=</span> <span class="n">swagger</span><span class="o">.</span><span class="n">add_marshmallow_schema</span><span class="p">(</span><span class="n">response_obj</span><span class="p">,</span>
+                                                                 <span class="n">from_marshmallow_options</span><span class="o">=</span><span class="n">from_marshmallow_options</span><span class="p">)</span>
+            <span class="n">schema_ref</span> <span class="o">=</span> <span class="n">OpenApiReference</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">schema_name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ct</span> <span class="ow">in</span> <span class="n">content_types</span><span class="p">:</span>
+                <span class="n">media_types</span><span class="p">[</span><span class="n">ct</span><span class="p">]</span> <span class="o">=</span> <span class="n">OpenApiMediaType</span><span class="p">(</span><span class="n">schema_ref</span><span class="p">)</span>
+
+            <span class="c1"># Build a description if we don&#39;t have one as input</span>
+            <span class="k">if</span> <span class="n">response_description</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">schema_proper_name</span> <span class="o">=</span> <span class="n">schema_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Schema&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">response_description</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{schema_proper_name}</span><span class="s2"> response&quot;</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">OpenApiResponse</span><span class="p">(</span><span class="n">response_description</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">media_types</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response_obj</span><span class="p">,</span> <span class="p">(</span><span class="n">OpenApiSchema</span><span class="p">,</span> <span class="n">OpenApiReference</span><span class="p">)):</span>
+            <span class="c1"># Build a description if we don&#39;t have one as input</span>
+            <span class="k">if</span> <span class="n">response_description</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">schema_proper_name</span> <span class="o">=</span> <span class="n">response_obj</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Schema&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">response_description</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{schema_proper_name}</span><span class="s2"> response&quot;</span>
+
+            <span class="k">for</span> <span class="n">ct</span> <span class="ow">in</span> <span class="n">content_types</span><span class="p">:</span>
+                <span class="n">media_types</span><span class="p">[</span><span class="n">ct</span><span class="p">]</span> <span class="o">=</span> <span class="n">OpenApiMediaType</span><span class="p">(</span><span class="n">response_obj</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">OpenApiResponse</span><span class="p">(</span><span class="n">response_description</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">media_types</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">response_obj</span>
+
+        <span class="c1"># build our status code if that option is set</span>
+        <span class="k">if</span> <span class="n">autodetect_http_code</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">method_name</span> <span class="o">==</span> <span class="s2">&quot;post&quot;</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="mi">201</span>
+            <span class="k">elif</span> <span class="n">method_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;get&quot;</span><span class="p">,</span> <span class="s2">&quot;put&quot;</span><span class="p">]:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="mi">200</span>
+            <span class="k">elif</span> <span class="n">method_name</span> <span class="o">==</span> <span class="s2">&quot;delete&quot;</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="mi">204</span>
+
+        <span class="c1"># if we know the target class, registry method there for later rendering</span>
+        <span class="k">if</span> <span class="n">target_class</span><span class="p">:</span>
+            <span class="n">swagger</span><span class="o">.</span><span class="n">add_class_response</span><span class="p">(</span><span class="n">target_class</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">path</span><span class="p">:</span>
+            <span class="n">swagger</span><span class="o">.</span><span class="n">add_path_response</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span>
+    <span class="k">return</span> <span class="n">decorate_openapi_response</span></div>
+
+
+<div class="viewcode-block" id="openapi_operation_props"><a class="viewcode-back" href="../../../rse_api.swagger.html#rse_api.swagger.decorators.openapi_operation_props">[docs]</a><span class="k">def</span> <span class="nf">openapi_operation_props</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update an OpenApiOperation properties that is part of a Resource Class</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        **kwargs:</span>
+
+<span class="sd">    Returns:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">decorate_openapi_operation</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+        <span class="n">target_class</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">:</span>
+            <span class="n">target_class</span><span class="p">,</span> <span class="n">method_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">method_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="n">swagger</span><span class="o">.</span><span class="n">update_class_method_props</span><span class="p">(</span><span class="n">target_class</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrapper</span>
+
+    <span class="k">return</span> <span class="n">decorate_openapi_operation</span></div>
+
+
+<div class="viewcode-block" id="openapi_request"><a class="viewcode-back" href="../../../rse_api.swagger.html#rse_api.swagger.decorators.openapi_request">[docs]</a><span class="k">def</span> <span class="nf">openapi_request</span><span class="p">(</span><span class="n">request_obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">OpenApiReference</span><span class="p">,</span> <span class="n">OpenApiRequestBody</span><span class="p">,</span> <span class="n">Schema</span><span class="p">],</span>
+                        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">content_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">content_types</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">content_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;application/json&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">decorate_openapi_request</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+        <span class="n">target_class</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">:</span>
+            <span class="n">target_class</span><span class="p">,</span> <span class="n">method_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">method_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="n">media_types</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">request_obj</span><span class="p">,</span> <span class="n">Schema</span><span class="p">):</span>
+            <span class="n">request_description</span> <span class="o">=</span> <span class="n">description</span>
+            <span class="n">schema_name</span><span class="p">,</span> <span class="n">schema</span> <span class="o">=</span> <span class="n">swagger</span><span class="o">.</span><span class="n">add_marshmallow_schema</span><span class="p">(</span><span class="n">request_obj</span><span class="p">)</span>
+            <span class="n">schema_ref</span> <span class="o">=</span> <span class="n">OpenApiReference</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">schema_name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ct</span> <span class="ow">in</span> <span class="n">content_types</span><span class="p">:</span>
+                <span class="n">media_types</span><span class="p">[</span><span class="n">ct</span><span class="p">]</span> <span class="o">=</span> <span class="n">OpenApiMediaType</span><span class="p">(</span><span class="n">schema_ref</span><span class="p">)</span>
+
+            <span class="c1"># Build a description if we don&#39;t have one as input</span>
+            <span class="k">if</span> <span class="n">request_description</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">schema_proper_name</span> <span class="o">=</span> <span class="n">schema_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Schema&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">response_description</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{schema_proper_name}</span><span class="s2"> request&quot;</span>
+                <span class="n">request</span> <span class="o">=</span> <span class="n">OpenApiResponse</span><span class="p">(</span><span class="n">response_description</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">media_types</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">request</span> <span class="o">=</span> <span class="n">request_obj</span>
+
+        <span class="c1"># if we know the target class, registry method there for later rendering</span>
+        <span class="k">if</span> <span class="n">target_class</span><span class="p">:</span>
+            <span class="n">swagger</span><span class="o">.</span><span class="n">add_class_request</span><span class="p">(</span><span class="n">target_class</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">path</span><span class="p">:</span>
+            <span class="n">swagger</span><span class="o">.</span><span class="n">add_path_request</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
+
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span>
+    <span class="k">return</span> <span class="n">decorate_openapi_request</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">rse_api</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">rse_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">rse_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../../rse_api.html">rse_api</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

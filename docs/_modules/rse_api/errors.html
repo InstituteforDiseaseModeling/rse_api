@@ -34,37 +34,34 @@
             
   <h1>Source code for rse_api.errors</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">util</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">Flask</span>
 
 
 <div class="viewcode-block" id="RSEApiException"><a class="viewcode-back" href="../../rse_api.html#rse_api.errors.RSEApiException">[docs]</a><span class="k">class</span> <span class="nc">RSEApiException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generic API Exception. We do this just to be able to track certain error types</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="register_common_error_handlers"><a class="viewcode-back" href="../../rse_api.html#rse_api.errors.register_common_error_handlers">[docs]</a><span class="k">def</span> <span class="nf">register_common_error_handlers</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+<div class="viewcode-block" id="register_common_error_handlers"><a class="viewcode-back" href="../../rse_api.html#rse_api.errors.register_common_error_handlers">[docs]</a><span class="k">def</span> <span class="nf">register_common_error_handlers</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">Flask</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Define the common error handlers</span>
+<span class="sd">    Registers a common set of error handlers including:</span>
+<span class="sd">    - NoResultFound will be registered as a 404 error</span>
+<span class="sd">    - Validation Errors will be registered as a 400</span>
+<span class="sd">    - RSEApiException will be registered as 400s</span>
 
-<span class="sd">    If sqlalchemy exists, error capturing for IntegrityError and NoResultFound will be defined</span>
+<span class="sd">    Args:</span>
+<span class="sd">        app: Flask app to add errors to</span>
 
-<span class="sd">    If marshmallow exists, error capturing for ValidationError will be defined</span>
-<span class="sd">    :param app:</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;sqlalchemy&#39;</span><span class="p">):</span>
         <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Registering sqlalchemy error handlers&#39;</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">sqlalchemy.exc</span> <span class="k">import</span> <span class="n">IntegrityError</span>
         <span class="kn">from</span> <span class="nn">sqlalchemy.orm.exc</span> <span class="k">import</span> <span class="n">NoResultFound</span>
-
-        <span class="nd">@app</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="n">IntegrityError</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">handle_integrity_error</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
-            <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-            <span class="n">err_msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">orig</span><span class="p">)</span>
-            <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Save Failed due to IntegrityError, most likely due to a missing relationship. See </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">orig</span><span class="p">))</span>
-            <span class="k">if</span> <span class="s1">&#39;UNIQUE constraint failed: configuration_parameters.key_string, &#39;</span> <span class="ow">in</span> <span class="n">err_msg</span><span class="p">:</span>
-                <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;The Key String, Parameter, and Release Version must be Unique!&quot;</span>
-
-            <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">message</span><span class="p">}),</span> <span class="mi">400</span>
 
         <span class="nd">@app</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="n">NoResultFound</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">handle_no_result_exception</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>

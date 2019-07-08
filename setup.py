@@ -20,7 +20,9 @@ extras_require={
     }
 requirements = [
     'flask>=1.0.x,<1.1',
-    'marshmallow>2,<3'
+    'marshmallow>2,<3',
+    'flask-cors',
+    'cachetools'
 ]
 setup_requirements = ['pytest-runner']
 test_requirements = ['pytest']

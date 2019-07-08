@@ -38,8 +38,15 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="n">CPUS</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+<span class="n">CRON_JOBS</span> <span class="o">=</span> <span class="p">[]</span>
+
 
 <div class="viewcode-block" id="dramatiq_parse_arguments"><a class="viewcode-back" href="../../rse_api.tasks.html#rse_api.tasks.dramatiq_parse_arguments">[docs]</a><span class="k">def</span> <span class="nf">dramatiq_parse_arguments</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copied from dramatiq. this allows us to use dramatiq cli commands from within our app cli</span>
+<span class="sd">    Returns:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
         <span class="n">prog</span><span class="o">=</span><span class="s2">&quot;dramatiq&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Run dramatiq workers.&quot;</span><span class="p">,</span>

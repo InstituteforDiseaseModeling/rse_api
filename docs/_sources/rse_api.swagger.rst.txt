@@ -1,0 +1,46 @@
+rse\_api.swagger package
+========================
+
+Submodules
+----------
+
+rse\_api.swagger.decorators module
+----------------------------------
+
+.. automodule:: rse_api.swagger.decorators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+rse\_api.swagger.swagger\_controller module
+-------------------------------------------
+
+.. automodule:: rse_api.swagger.swagger_controller
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+rse\_api.swagger.swagger\_registry module
+-----------------------------------------
+
+.. automodule:: rse_api.swagger.swagger_registry
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+rse\_api.swagger.swagger\_spec module
+-------------------------------------
+
+.. automodule:: rse_api.swagger.swagger_spec
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: rse_api.swagger
+    :members:
+    :undoc-members:
+    :show-inheritance:

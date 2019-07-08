@@ -32,6 +32,7 @@ help:
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
 
 clean-build: ## remove build artifacts
+    rm -rf docs_src/rse_api*.rst
 	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/

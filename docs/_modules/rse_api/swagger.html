@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>rse_api.query &#8212; rse_api 1.0.6 documentation</title>
+    <title>rse_api.swagger &#8212; rse_api 1.0.6 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -32,33 +32,29 @@
 
           <div class="body" role="main">
             
-  <h1>Source code for rse_api.query</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">request</span>
+  <h1>Source code for rse_api.swagger</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">rse_api.swagger.swagger_registry</span> <span class="k">import</span> <span class="n">get_swagger_registry</span>
 
 
-<div class="viewcode-block" id="get_pagination_from_request"><a class="viewcode-back" href="../../rse_api.html#rse_api.query.get_pagination_from_request">[docs]</a><span class="k">def</span> <span class="nf">get_pagination_from_request</span><span class="p">(</span><span class="n">page_default</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">per_page_default</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="register_swagger"><a class="viewcode-back" href="../../rse_api.swagger.html#rse_api.swagger.register_swagger">[docs]</a><span class="k">def</span> <span class="nf">register_swagger</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the pagination filter created from a request</span>
+<span class="sd">    Add register swagger to load controller and call swagger json at start of app</span>
 
-<span class="sd">    Page is assumed to be in the `page` query parameters</span>
-<span class="sd">    The number of items per page is assumed to be in the per_page query option</span>
-
-<span class="sd">    The turns will be a dictionary container the values for page and per_page. If no values were passed to the request</span>
-<span class="sd">    the values will be defaults of page_default and per_page_default</span>
 <span class="sd">    Args:</span>
-<span class="sd">        page_default: Page default if not present in request</span>
-<span class="sd">        per_page_default:  PerPage default if not present in request</span>
+<span class="sd">        app:</span>
 
 <span class="sd">    Returns:</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="n">page_default</span><span class="p">),</span>
-                   <span class="n">per_page</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;per_page&#39;</span><span class="p">,</span> <span class="n">per_page_default</span><span class="p">)</span>
-                   <span class="p">)</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">options</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">options</span></div>
+    <span class="kn">from</span> <span class="nn">.swagger_controller</span> <span class="k">import</span> <span class="n">get_swagger_json</span>
+
+    <span class="nd">@app</span><span class="o">.</span><span class="n">before_first_request</span>
+    <span class="k">def</span> <span class="nf">initialize_swagger</span><span class="p">():</span>
+        <span class="n">get_swagger_json</span><span class="p">()</span></div>
+
+
+<span class="kn">from</span> <span class="nn">.import</span> <span class="n">swagger_spec</span><span class="p">,</span> <span class="n">decorators</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="n">swagger_spec</span><span class="p">,</span> <span class="n">decorators</span><span class="p">]</span>
 </pre></div>
 
           </div>

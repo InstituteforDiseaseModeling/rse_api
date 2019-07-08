@@ -1,35 +1,32 @@
 from importlib import util
-from flask import jsonify
+from flask import jsonify, Flask
 
 
 class RSEApiException(Exception):
+    """
+    Generic API Exception. We do this just to be able to track certain error types
+
+    """
     pass
 
 
-def register_common_error_handlers(app):
+def register_common_error_handlers(app: Flask):
     """
-    Define the common error handlers
+    Registers a common set of error handlers including:
+    - NoResultFound will be registered as a 404 error
+    - Validation Errors will be registered as a 400
+    - RSEApiException will be registered as 400s
 
-    If sqlalchemy exists, error capturing for IntegrityError and NoResultFound will be defined
+    Args:
+        app: Flask app to add errors to
 
-    If marshmallow exists, error capturing for ValidationError will be defined
-    :param app:
-    :return: None
+    Returns:
+        None
     """
+
     if util.find_spec('sqlalchemy'):
         app.logger.debug('Registering sqlalchemy error handlers')
-        from sqlalchemy.exc import IntegrityError
         from sqlalchemy.orm.exc import NoResultFound
-
-        @app.errorhandler(IntegrityError)
-        def handle_integrity_error(e):
-            app.logger.exception(e)
-            err_msg = str(e.orig)
-            message = 'Save Failed due to IntegrityError, most likely due to a missing relationship. See {}'.format(str(e.orig))
-            if 'UNIQUE constraint failed: configuration_parameters.key_string, ' in err_msg:
-                message = "The Key String, Parameter, and Release Version must be Unique!"
-
-            return jsonify({'message': message}), 400
 
         @app.errorhandler(NoResultFound)
         def handle_no_result_exception(e):

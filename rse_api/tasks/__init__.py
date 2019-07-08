@@ -3,8 +3,15 @@ import multiprocessing
 import sys
 
 CPUS = multiprocessing.cpu_count()
+CRON_JOBS = []
+
 
 def dramatiq_parse_arguments():
+    """
+    Copied from dramatiq. this allows us to use dramatiq cli commands from within our app cli
+    Returns:
+
+    """
     parser = argparse.ArgumentParser(
         prog="dramatiq",
         description="Run dramatiq workers.",

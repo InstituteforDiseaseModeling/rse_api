@@ -43,6 +43,15 @@
 
 
 <div class="viewcode-block" id="dynamic_import_all"><a class="viewcode-back" href="../../rse_api.html#rse_api.utils.dynamic_import_all">[docs]</a><span class="k">def</span> <span class="nf">dynamic_import_all</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equivalent of doing an from x import * at runtime</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        module: Python module to import</span>
+
+<span class="sd">    Returns:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># get a handle on the module</span>
     <span class="n">mdl</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
 
@@ -67,15 +76,13 @@
 <span class="sd">    And the function is called with a package_path of &quot;test.models&quot;, load_modules will import test.models.package and</span>
 <span class="sd">    test.models.contributor</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        package_path: Prefix to package path of directory we are scanning</span>
+<span class="sd">        dir_path: Directory to scan</span>
+<span class="sd">        exclude: List of files to exclude. If value is None, the default list of &#39;__init__.py&#39; will be used</span>
 
-<span class="sd">    :param recurse: Should we recurse into other directories?</span>
-<span class="sd">    :param package_path: Prefix to package path of directory we are scanning</span>
-<span class="sd">    :type package_path: str</span>
-<span class="sd">    :param dir_path: Directory to scan</span>
-<span class="sd">    :type dir_path: str</span>
-<span class="sd">    :param exclude: List of files to exclude. If value is None, the default list of &#39;__init__.py&#39; will be used</span>
-<span class="sd">    :return: List of models loaded</span>
-<span class="sd">    :rtype: List[str]</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        List of files loaded</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">()</span>
     <span class="n">modules</span> <span class="o">=</span> <span class="p">[]</span>

@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 import os
 import signal
@@ -6,11 +7,9 @@ from typing import Callable, Optional
 import click
 from flask import Flask
 from flask.cli import AppGroup
-
 from rse_api.cli import add_cli
 from rse_api.decorators import singleton_function
 from rse_api.errors import register_common_error_handlers
-from rse_api.swagger.swagger_spec import register_swagger
 
 HAS_DRAMATIQ = util.find_spec('dramatiq') is not None
 HAS_RESTFUL = util.find_spec('flask_restful') is not None
@@ -24,7 +23,25 @@ __version__ = '1.0.6'
 
 
 @singleton_function
-def default_dramatiq_setup_result_backend(app, broker):
+def default_dramatiq_setup_result_backend(app: Flask, broker: 'dramatiq.broker.Broker') -> \
+        'dramatiq.results.backends.RedisBackend':
+    """
+    The default command used for setting up a Result Backend. By default we use Redis as our Result Backend.
+    The connection string for Redis is from the Flask Config Key REDIS_URI
+
+    If either Dramatiq or Redis packages are missing from the environment, this will return None
+
+    We will also set the
+    Args:
+        app: Flask app that this broker is part of
+        broker: Broker to attach the result backend to
+
+    Returns:
+        A Result backend
+
+    See Also:
+        - https://dramatiq.io/advanced.html?highlight=results#message-results
+    """
     result_backend = None
     if HAS_DRAMATIQ and HAS_REDIS:
         from dramatiq.results import Results
@@ -36,7 +53,19 @@ def default_dramatiq_setup_result_backend(app, broker):
 
 
 @singleton_function
-def default_dramatiq_setup_broker(app):
+def default_dramatiq_setup_broker(app: Flask) -> 'dramatiq.broker.Broker':
+    """
+    The default broker setup function. For the
+
+
+    If either Dramatiq or Pika(RabbitMq Client) packages are missing from the environment, this will return None
+
+    Args:
+        app:
+
+    Returns:
+
+    """
     # If we are generation documentation, don't try to setup dramatiq
     if HAS_DRAMATIQ and (HAS_RABBIT or HAS_REDIS):
         import dramatiq
@@ -63,6 +92,7 @@ def default_dramatiq_setup_broker(app):
         else:
             if HAS_RABBIT:
                 broker_url = app.config.get('RABBIT_URI', None)
+
                 from dramatiq.brokers.rabbitmq import URLRabbitmqBroker
                 app.logger.info('Connecting to Rabbit MQ @ {}'.format(broker_url))
                 if broker_url is None:
@@ -91,27 +121,37 @@ def get_restful_api(app):
 
 
 @singleton_function
-def get_application(setting_object_path: str=None, setting_environment_variable: Optional[str]=None,
+def get_application(name: str, setting_object_path: str=None, setting_environment_variable: Optional[str]=None,
                     strict_slashes: bool=False,
                     default_error_handlers: bool=True,
                     setup_broker_func: Optional[Callable] = default_dramatiq_setup_broker,
                     setup_results_backend_func: Optional[Callable] = None,
-                    template_folder='templates') -> Flask:
+                    template_folder='templates', app_version: str = '0.1',
+                    swagger: bool = True, swagger_cors: bool = True) -> Flask:
     """
     Returns a Flask Application object. This function is a singleton function
 
+    Args:
+        name: Name of application we are defining
+        setting_object_path:  Optional Python import path to the default settings objects
+        setting_environment_variable: Optional environment variable that stores path to setting files
+        strict_slashes: Should we use strict slashes(Ie a call to /projects will fail but a call to /projects will
+            succeed
+        default_error_handlers:
+        setup_broker_func: Default function to setup a broker. By default we attempt to use Rabbit. Set to None to
+            disable
+        setup_results_backend_func: Function to call to setup the Results Backend. Default is None
+        template_folder: Template folder
+        app_version: Version of app to be used in Swagger definition
+        swagger: Should we host a swagger.json that is generated at runtime from schemas defined using the schema_in,
+            schema_out, and openapi_* decorators?
+        swagger_cors: Should we enable CORS on that swagger.json endpoint?
 
-    :param setup_broker_func: Function callback to setup brokers for queues. By default a function that checks for dramatiq
-    is called and if deted
-    :param default_error_handlers: Should the default error handlers for SQlAlchemy and Marshmallow be added?
-    :param setting_object_path: Optional Python import path to the default settings objects
-    :param setting_environment_variable: Optional environment variable that stores path to setting files
-    :param strict_slashes: Should we use strict slashes(Ie a call to /projects will fail but a call to /projects will
-      succeed
-    :param template_folder: Template folder
-    :return: Flask app
+    Returns:
+        Flask APP
     """
-    app = Flask(__name__, template_folder=template_folder)
+
+    app = Flask(name, template_folder=template_folder)
 
     if HAS_RESTFUL:
         get_restful_api(app)
@@ -119,7 +159,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
         app.logger.debug('Loading Application settings from {}'.format(setting_object_path))
         app.config.from_object(setting_object_path)
     if setting_environment_variable:
-        app.logger.debug('Loading Application settings from the file {}'.format(os.environ[setting_environment_variable]))
+        app.logger.debug('Loading Application settings from the file {}'.format(setting_environment_variable))
         app.config.from_envvar(setting_environment_variable)
     app.url_map.strict_slashes = strict_slashes
     add_cli(app)
@@ -133,15 +173,36 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
         if callable(setup_results_backend_func):
             app.results_backend = setup_results_backend_func(app, app.broker)
 
-    register_swagger(app)
+    with app.app_context():
+        if swagger:
 
+            from .swagger import register_swagger, get_swagger_registry
+
+            get_swagger_registry(name, app_version)
+            app.config['swagger_cors'] = swagger_cors
+            register_swagger(app)
+            #if swagger_cors:
+            #    app.cors = CORS(app, resources={r"/swagger.json": {"origins": "*"}})
+
+        # register our helath check and show all our routes
+        from .controllers import health_check_controller
     return app
 
 
 if HAS_DRAMATIQ:
-    from rse_api.tasks import dramatiq_parse_arguments
+    from rse_api.tasks import dramatiq_parse_arguments, CRON_JOBS
+
 
     def start_dramatiq_workers(app):
+        """
+        Utility function to be used by cli to start workers
+
+        Args:
+            app: Flask app continaing the workers
+
+        Returns:
+            None
+        """
         import dramatiq
         from dramatiq import cli as dm
         args = dramatiq_parse_arguments()
@@ -154,9 +215,18 @@ if HAS_DRAMATIQ:
 
 if HAS_APSCHEDULER:
     from apscheduler.schedulers.blocking import BlockingScheduler
-    from rse_api.decorators import singleton_function, CRON_JOBS
+    from rse_api.decorators import singleton_function
 
     def run_cron_workers(scheduler=BlockingScheduler):
+        """
+        CLI Function that runs only cron scheduled workers
+
+        Args:
+            scheduler: What scheduler to user. By default we use the BlockingScheduler
+
+        Returns:
+            None
+        """
         logging.basicConfig(
             format="[%(asctime)s] [PID %(process)d] [%(threadName)s] [%(name)s] [%(levelname)s] %(message)s",
             level=logging.DEBUG,
@@ -180,7 +250,20 @@ if HAS_APSCHEDULER:
 
 
 @singleton_function
-def get_worker_cli(app,):
+def get_worker_cli(app: Flask) -> AppGroup:
+    """
+    Configures the workers CLI command group. By default this includes the commands
+
+    - start --corn=True - Starts all workers(cron and actors)
+    - list - List all workers
+    - cron  - Run only cron workers
+
+    Args:
+        app: App to register cli on
+
+    Returns:
+        Worker CLI AppGroup
+    """
     # Get flask db should have been called before this with any setup needed
     worker_cli = AppGroup('workers', help="Commands related to workers")
 
