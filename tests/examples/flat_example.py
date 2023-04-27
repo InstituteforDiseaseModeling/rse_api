@@ -68,9 +68,8 @@ class Parameters(Resource):
     @schema_in_out(ParameterSchema(), ParameterSchema())
     def put(self, data):
         data = ParameterSchema(strict=True).load(data,
-                                             instance=ParameterModel.find_one(id),
-                                             session=ParameterModel.query.session,
-                                             partial=True)
+                                                 instance=ParameterModel.find_one(id),
+                                                 session=ParameterModel.query.session,
+                                                 partial=True)
         ParameterModel.query.session.add(data)
         ParameterModel.query.session.commit()
-

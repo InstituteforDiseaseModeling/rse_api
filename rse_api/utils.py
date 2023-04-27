@@ -3,7 +3,6 @@ import os
 from logging import getLogger
 from typing import List
 
-
 default_exclude = ['__init__.py']
 
 
@@ -20,7 +19,7 @@ def dynamic_import_all(module):
     return names
 
 
-def load_modules(package_path: str, dir_path: str, exclude: List[str]=None) -> List[str]:
+def load_modules(package_path: str, dir_path: str, exclude: List[str] = None) -> List[str]:
     """
     Scans a specific directory path for list of possible model files. It then will import each file as part of the
     specified package_path. For example, if a directory contains the following files

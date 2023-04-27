@@ -8,7 +8,7 @@ SETTING_OBJECT = f"{APP_NAME}.default_settings"
 # Initialize our Flask application. We provide the path to our default settings object
 application = get_application(SETTING_OBJECT)
 
-current_dir = os.path.dirname( os.path.realpath(__file__))
+current_dir = os.path.dirname(os.path.realpath(__file__))
 
 # setup controllers
 load_modules(f"{APP_NAME}.controllers", os.path.join(current_dir, 'controllers'))

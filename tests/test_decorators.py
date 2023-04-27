@@ -1,6 +1,5 @@
 import time
 import unittest
-import os
 from flask import Response, jsonify
 from marshmallow import Schema, validate
 from marshmallow.fields import String, Integer
@@ -19,9 +18,6 @@ class NameOnlySchema(Schema):
     name = String(required=True, validate=validate.Length(min=5))
 
 
-
-
-
 class TestDecorator(unittest.TestCase):
 
     def test_singleton_function(self):
@@ -32,6 +28,7 @@ class TestDecorator(unittest.TestCase):
 
         def changes_time():
             return time.time()
+
         x = one_time()
         x2 = changes_time()
         x3 = one_time()
@@ -54,7 +51,8 @@ class TestDecorator(unittest.TestCase):
 
         client = app.test_client()
 
-        result: Response = client.post('/test_schema_in', data=PersonSchema().dumps(person).data, content_type='application/json')
+        result: Response = client.post('/test_schema_in', data=PersonSchema().dumps(person).data,
+                                       content_type='application/json')
 
         self.assertEqual(result.status_code, 200)
 
@@ -88,13 +86,13 @@ class TestDecorator(unittest.TestCase):
         @app.route('/test_schema_in_strict', methods=['POST'])
         @schema_in(PersonSchema(strict=True))
         def schema_strict(data):
-
             self.assertEqual(data['name'], person['name'])
             return jsonify(data)
 
         client = app.test_client()
 
-        result: Response = client.post('/test_schema_in_strict', data=PersonSchema().dumps(person).data, content_type='application/json')
+        result: Response = client.post('/test_schema_in_strict', data=PersonSchema().dumps(person).data,
+                                       content_type='application/json')
 
         self.assertEqual(result.status_code, 400)
         message = result.json
@@ -130,7 +128,8 @@ class TestDecorator(unittest.TestCase):
 
         client = app.test_client()
 
-        result: Response = client.post('/test_schema_in_out', data=PersonSchema().dumps(person).data, content_type='application/json')
+        result: Response = client.post('/test_schema_in_out', data=PersonSchema().dumps(person).data,
+                                       content_type='application/json')
         data = result.json
         self.assertEqual(result.status_code, 200)
         self.assertEqual(list(data.keys()), ['name'])

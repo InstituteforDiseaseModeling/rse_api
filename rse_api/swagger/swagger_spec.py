@@ -229,7 +229,7 @@ class SwaggerSpec:
                 # try to parse parameters from url
                 parameters = []
 
-            if len(parameters) is 0 or autogen_url_parameters:
+            if len(parameters) == 0 or autogen_url_parameters:
                 parameters += self.parameters_from_url(url, obj_string)
 
             responses = {}
@@ -246,8 +246,7 @@ class SwaggerSpec:
                                 "items": swagger_schema
                             })
                         }
-                    )
-                                          )
+                    ))
                     if obj_string not in self.definitions:
                         self.definitions[obj_string] = out_schema, self.schema_to_definition(obj_string, out_schema)
                 else:
@@ -293,14 +292,14 @@ class SwaggerSpec:
             url = re.sub(self.url_replace, r'{\2}', url)
 
             responses['default'] = dict(description="unexpected error",
-                             content=dict(
-                                 {
-                                     'application/json': dict(
-                                         schema={"$ref": f"{REFERENCE_PATH}Error"}
-                                     )
-                                 }
-                             )
-                             )
+                                        content=dict(
+                                            {
+                                                'application/json': dict(
+                                                    schema={"$ref": f"{REFERENCE_PATH}Error"}
+                                                )
+                                            }
+                                        )
+                                        )
             path_method = dict(
                 description=description,
                 operationId=operation_id,
@@ -328,10 +327,9 @@ class SwaggerSpec:
                             if 'out_schema' in api_details and 'in_schema' in api_details:
                                 many = (api_details['detect_many'] and len(rule.arguments) == 0) or api_details['many']
                                 path_props = dict(in_schema=api_details['in_schema'],
-                                            out_schema=api_details['out_schema'],
-                                            many=many)
-                                self.add_path_method(rule.rule, method, in_schema=api_details['in_schema'],
-                                                     out_schema=api_details['out_schema'], many=many)
+                                                  out_schema=api_details['out_schema'],
+                                                  many=many)
+                                self.add_path_method(rule.rule, method, **path_props)
                             elif 'out_schema' in api_details:
                                 many = (api_details['detect_many'] and len(rule.arguments) == 0) or api_details['many']
                                 self.add_path_method(rule.rule, method, out_schema=api_details['out_schema'],
@@ -353,7 +351,7 @@ class SwaggerSpec:
         ))
         spec['components']['schemas']['Error'] = {
             'type': 'object',
-            'properties': dict(code={'type':'integer'}, message={'type':'string'}),
+            'properties': dict(code={'type': 'integer'}, message={'type': 'string'}),
             'required': ['code', 'message']
         }
 

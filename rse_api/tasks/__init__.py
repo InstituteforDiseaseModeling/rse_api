@@ -4,6 +4,7 @@ import sys
 
 CPUS = multiprocessing.cpu_count()
 
+
 def dramatiq_parse_arguments():
     parser = argparse.ArgumentParser(
         prog="dramatiq",

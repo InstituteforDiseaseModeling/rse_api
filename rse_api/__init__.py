@@ -90,9 +90,9 @@ def get_restful_api(app):
 
 
 @singleton_function
-def get_application(setting_object_path: str=None, setting_environment_variable: Optional[str]=None,
-                    strict_slashes: bool=False,
-                    default_error_handlers: bool=True,
+def get_application(setting_object_path: str = None, setting_environment_variable: Optional[str] = None,
+                    strict_slashes: bool = False,
+                    default_error_handlers: bool = True,
                     setup_broker_func: Optional[Callable] = default_dramatiq_setup_broker,
                     setup_results_backend_func: Optional[Callable] = None,
                     template_folder='templates') -> Flask:
@@ -118,7 +118,8 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
         app.logger.debug('Loading Application settings from {}'.format(setting_object_path))
         app.config.from_object(setting_object_path)
     if setting_environment_variable:
-        app.logger.debug('Loading Application settings from the file {}'.format(os.environ[setting_environment_variable]))
+        app.logger.debug(
+            'Loading Application settings from the file {}'.format(os.environ[setting_environment_variable]))
         app.config.from_envvar(setting_environment_variable)
     app.url_map.strict_slashes = strict_slashes
     add_cli(app)
@@ -132,7 +133,7 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
         if callable(setup_results_backend_func):
             app.results_backend = setup_results_backend_func(app, app.broker)
 
-    #register_swagger(app)
+    # register_swagger(app)
 
     return app
 
@@ -140,7 +141,8 @@ def get_application(setting_object_path: str=None, setting_environment_variable:
 if HAS_DRAMATIQ:
     from rse_api.tasks import dramatiq_parse_arguments
 
-    def start_dramatiq_workers(app, processes = None):
+
+    def start_dramatiq_workers(app, processes=None):
         import dramatiq
         from dramatiq import cli as dm
         args = dramatiq_parse_arguments()
@@ -157,6 +159,7 @@ if HAS_DRAMATIQ:
 if HAS_APSCHEDULER:
     from apscheduler.schedulers.blocking import BlockingScheduler
     from rse_api.decorators import singleton_function, CRON_JOBS
+
 
     def run_cron_workers(scheduler=BlockingScheduler):
         logging.basicConfig(
@@ -182,7 +185,7 @@ if HAS_APSCHEDULER:
 
 
 @singleton_function
-def get_worker_cli(app,):
+def get_worker_cli(app, ):
     # Get flask db should have been called before this with any setup needed
     worker_cli = AppGroup('workers', help="Commands related to workers")
 
@@ -207,7 +210,6 @@ def get_worker_cli(app,):
             [print(worker) for worker in workers]
 
     if HAS_APSCHEDULER:
-
         @worker_cli.command('cron', help="Run any scheduled workers")
         def run_cron_only():
             run_cron_workers()
