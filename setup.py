@@ -11,17 +11,21 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
+with open('requirements.txt') as dev_requirement_file:
+    requirements = dev_requirement_file.read().split("\n")
+
 with open('requirements_dev.txt') as dev_requirement_file:
     dev_requirements = dev_requirement_file.read().split("\n")
 
-extras_require={
-        'full': ['dramatiq==1.4.3', 'apscheduler>=3.5.3'],
-        'dev': dev_requirements
-    }
-requirements = [
-    'flask>=1.0,<1.2',
-    'marshmallow>2,<2.9'
-]
+with open('requirements_docs.txt') as dev_requirement_file:
+    doc_requirements = dev_requirement_file.read().split("\n")
+
+extras_require = {
+    'full': ['dramatiq==1.4.3', 'apscheduler>=3.5.3'],
+    'dev': dev_requirements,
+    'doc': doc_requirements + dev_requirements
+}
+
 setup_requirements = ['pytest-runner']
 test_requirements = ['pytest']
 

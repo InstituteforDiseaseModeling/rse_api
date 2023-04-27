@@ -22,12 +22,12 @@ You need to first setup pip to publish to stagin and production. To do this, edi
 index-servers = production staging
 
 [staging]
-repository: https://packages.idmod.org/api/pypi/idm-pypi-staging
+repository: https://packages.idmod.org/api/pypi/idm-pypi-staging/
 username: email
 password: password
 
 [production]
-repository: https://packages.idmod.org/api/pypi/idm-pypi-production
+repository: https://packages.idmod.org/api/pypi/idm-pypi-production/
 username: email
 password: password
 ````
