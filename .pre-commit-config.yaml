@@ -1,0 +1,10 @@
+- repo: https://github.com/pre-commit/mirrors-bumpversion
+  rev: v0.5.3
+  hooks:
+    - id: bumpversion
+      args:
+        - --commit
+        - --tag
+        - --tag-name
+        - '{new_version}'
+        - '{filename}'
