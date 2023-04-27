@@ -19,8 +19,8 @@ extras_require={
         'dev': dev_requirements
     }
 requirements = [
-    'flask>=1.0.x,<1.1',
-    'marshmallow>2,<3'
+    'flask>=1.0,<1.2',
+    'marshmallow>2,<2.9'
 ]
 setup_requirements = ['pytest-runner']
 test_requirements = ['pytest']
