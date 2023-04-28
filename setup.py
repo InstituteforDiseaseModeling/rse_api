@@ -19,11 +19,11 @@ for fn in ["", "_dev", "_docs", "_extras"]:
             fn.replace("_", "") if fn else "default"
         ] = dev_requirement_file.read().split("\n")
 
-extras_require = {
-    "full": requirements["extras"] + requirements["default"],
-    "dev": requirements["dev"] + requirements["default"],
-    "doc": requirements["docs"] + requirements["dev"],
-}
+extras_require = dict(
+    full=requirements["extras"] + requirements["default"],
+    dev=requirements["dev"] + requirements["default"],
+    docs=requirements["docs"] + requirements["dev"],
+)
 
 setup_requirements = ["pytest-runner"]
 test_requirements = ["pytest"]
@@ -45,6 +45,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     description="rse_api has common tool for standing up RESTful api services in python",
     install_requires=requirements["default"],
