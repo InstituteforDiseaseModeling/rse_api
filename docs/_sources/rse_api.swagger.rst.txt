@@ -8,15 +8,14 @@ rse\_api.swagger.swagger\_spec module
 -------------------------------------
 
 .. automodule:: rse_api.swagger.swagger_spec
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------
 
 .. automodule:: rse_api.swagger
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

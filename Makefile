@@ -88,10 +88,11 @@ do-production-upload:
 
 prepare-version:
 	#TODO check for version info in HISTORY.rst and exit if not found
-	echo Version: $(VERSION)
+	echo Version: $(p)
 	sed -i -e 's|$(shell git describe --tags --abbrev=0)|$(VERSION)|g' setup.py
 	sed -i -e 's|$(shell git describe --tags --abbrev=0)|$(VERSION)|g' rse_api/__init__.py
 	git add setup.py
+	pre-commit run --all-files
 	git commit -m "Increment Version from $(shell git describe --tags --abbrev=0) to $(VERSION)"
 
 release-production: docs next-version prepare-version dist do-production-upload tag-next## package and upload a release

@@ -1,19 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>rse_api.swagger package &#8212; rse_api 1.0.6 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>rse_api.swagger package &#8212; rse_api 1.0.9 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="rse_api.tasks package" href="rse_api.tasks.html" />
@@ -34,131 +33,141 @@
 
           <div class="body" role="main">
 
-  <div class="section" id="rse-api-swagger-package">
+  <section id="rse-api-swagger-package">
 <h1>rse_api.swagger package<a class="headerlink" href="#rse-api-swagger-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-rse_api.swagger.swagger_spec">
+</section>
+<section id="module-rse_api.swagger.swagger_spec">
 <span id="rse-api-swagger-swagger-spec-module"></span><h2>rse_api.swagger.swagger_spec module<a class="headerlink" href="#module-rse_api.swagger.swagger_spec" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec">
-<em class="property">class </em><code class="descclassname">rse_api.swagger.swagger_spec.</code><code class="descname">SwaggerSpec</code><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rse_api.swagger.swagger_spec.</span></span><span class="sig-name descname"><span class="pre">SwaggerSpec</span></span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.add_class_to_map">
-<code class="descname">add_class_to_map</code><span class="sig-paren">(</span><em>cls</em>, <em>url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.add_class_to_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.add_class_to_map" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.add_class_to_map">
+<span class="sig-name descname"><span class="pre">add_class_to_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.add_class_to_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.add_class_to_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.add_definition">
-<code class="descname">add_definition</code><span class="sig-paren">(</span><em>obj_class: marshmallow.schema.Schema</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.add_definition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.add_definition" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.add_definition">
+<span class="sig-name descname"><span class="pre">add_definition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">marshmallow.schema.Schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.add_definition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.add_definition" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.add_path_method">
-<code class="descname">add_path_method</code><span class="sig-paren">(</span><em>url</em>, <em>method</em>, <em>operation_id=None</em>, <em>parameters=None</em>, <em>in_schema=None</em>, <em>out_schema=None</em>, <em>description=None</em>, <em>many=True</em>, <em>errors=None</em>, <em>autogen_url_parameters=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.add_path_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.add_path_method" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.add_path_method">
+<span class="sig-name descname"><span class="pre">add_path_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autogen_url_parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.add_path_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.add_path_method" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.add_schema_function">
-<code class="descname">add_schema_function</code><span class="sig-paren">(</span><em>swagger_data: Dict[str, Any]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.add_schema_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.add_schema_function" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.add_schema_function">
+<span class="sig-name descname"><span class="pre">add_schema_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">swagger_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.add_schema_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.add_schema_function" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.generate_swagger_spec">
-<code class="descname">generate_swagger_spec</code><span class="sig-paren">(</span><em>file: Union[str</em>, <em>TextIO] = None</em>, <em>out_format: rse_api.swagger.swagger_spec.SwaggerSpecFormats = &lt;SwaggerSpecFormats.JSON: 'json'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.generate_swagger_spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.generate_swagger_spec" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.generate_swagger_spec">
+<span class="sig-name descname"><span class="pre">generate_swagger_spec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">TextIO</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rse_api.swagger.swagger_spec.SwaggerSpecFormats" title="rse_api.swagger.swagger_spec.SwaggerSpecFormats"><span class="pre">rse_api.swagger.swagger_spec.SwaggerSpecFormats</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SwaggerSpecFormats.JSON</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.generate_swagger_spec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.generate_swagger_spec" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.parameters_from_url">
-<code class="descname">parameters_from_url</code><span class="sig-paren">(</span><em>url</em>, <em>obj_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.parameters_from_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.parameters_from_url" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.get_default_operation_id">
+<span class="sig-name descname"><span class="pre">get_default_operation_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.get_default_operation_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.get_default_operation_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.process_class">
-<code class="descname">process_class</code><span class="sig-paren">(</span><em>class_name</em>, <em>urls</em>, <em>exclude_put_without_id=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.process_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.process_class" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.get_in_schema">
+<span class="sig-name descname"><span class="pre">get_in_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_body</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.get_in_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.get_in_schema" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.schema_to_definition">
-<code class="descname">schema_to_definition</code><span class="sig-paren">(</span><em>definition_name</em>, <em>schema</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.schema_to_definition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.schema_to_definition" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.parameters_from_url">
+<span class="sig-name descname"><span class="pre">parameters_from_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.parameters_from_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.parameters_from_url" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.set_base_path">
-<code class="descname">set_base_path</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_base_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_base_path" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.process_class">
+<span class="sig-name descname"><span class="pre">process_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">urls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_put_without_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.process_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.process_class" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.set_contact_info">
-<code class="descname">set_contact_info</code><span class="sig-paren">(</span><em>name</em>, <em>email</em>, <em>url=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_contact_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_contact_info" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.schema_to_definition">
+<span class="sig-name descname"><span class="pre">schema_to_definition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">definition_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.schema_to_definition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.schema_to_definition" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.set_description">
-<code class="descname">set_description</code><span class="sig-paren">(</span><em>description</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_description" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.set_base_path">
+<span class="sig-name descname"><span class="pre">set_base_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_base_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_base_path" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.set_host">
-<code class="descname">set_host</code><span class="sig-paren">(</span><em>servers: List[str]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_host" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.set_contact_info">
+<span class="sig-name descname"><span class="pre">set_contact_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_contact_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_contact_info" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.set_terms_of_service">
-<code class="descname">set_terms_of_service</code><span class="sig-paren">(</span><em>tos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_terms_of_service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_terms_of_service" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.set_description">
+<span class="sig-name descname"><span class="pre">set_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">description</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_description" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.set_title">
-<code class="descname">set_title</code><span class="sig-paren">(</span><em>title</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_title" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.set_host">
+<span class="sig-name descname"><span class="pre">set_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">servers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_host"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_host" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpec.set_version">
-<code class="descname">set_version</code><span class="sig-paren">(</span><em>version</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_version" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.set_terms_of_service">
+<span class="sig-name descname"><span class="pre">set_terms_of_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_terms_of_service"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_terms_of_service" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.set_title">
+<span class="sig-name descname"><span class="pre">set_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_title"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_title" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpec.set_version">
+<span class="sig-name descname"><span class="pre">set_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">version</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpec.set_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpec.set_version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpecFormats">
-<em class="property">class </em><code class="descclassname">rse_api.swagger.swagger_spec.</code><code class="descname">SwaggerSpecFormats</code><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpecFormats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpecFormats" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpecFormats">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rse_api.swagger.swagger_spec.</span></span><span class="sig-name descname"><span class="pre">SwaggerSpecFormats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#SwaggerSpecFormats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpecFormats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>An enumeration.</p>
-<dl class="attribute">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpecFormats.JSON">
-<code class="descname">JSON</code><em class="property"> = 'json'</em><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpecFormats.JSON" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpecFormats.JSON">
+<span class="sig-name descname"><span class="pre">JSON</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'json'</span></em><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpecFormats.JSON" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="rse_api.swagger.swagger_spec.SwaggerSpecFormats.YAML">
-<code class="descname">YAML</code><em class="property"> = 'yaml'</em><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpecFormats.YAML" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.SwaggerSpecFormats.YAML">
+<span class="sig-name descname"><span class="pre">YAML</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'yaml'</span></em><a class="headerlink" href="#rse_api.swagger.swagger_spec.SwaggerSpecFormats.YAML" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="rse_api.swagger.swagger_spec.find_rule_by_url">
-<code class="descclassname">rse_api.swagger.swagger_spec.</code><code class="descname">find_rule_by_url</code><span class="sig-paren">(</span><em>app: flask.app.Flask</em>, <em>url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#find_rule_by_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.find_rule_by_url" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.find_rule_by_url">
+<span class="sig-prename descclassname"><span class="pre">rse_api.swagger.swagger_spec.</span></span><span class="sig-name descname"><span class="pre">find_rule_by_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flask.app.Flask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#find_rule_by_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.find_rule_by_url" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="rse_api.swagger.swagger_spec.find_view_func_by_url">
-<code class="descclassname">rse_api.swagger.swagger_spec.</code><code class="descname">find_view_func_by_url</code><span class="sig-paren">(</span><em>app: flask.app.Flask</em>, <em>url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#find_view_func_by_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.find_view_func_by_url" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.find_view_func_by_url">
+<span class="sig-prename descclassname"><span class="pre">rse_api.swagger.swagger_spec.</span></span><span class="sig-name descname"><span class="pre">find_view_func_by_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flask.app.Flask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#find_view_func_by_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.find_view_func_by_url" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="rse_api.swagger.swagger_spec.get_swagger">
-<code class="descclassname">rse_api.swagger.swagger_spec.</code><code class="descname">get_swagger</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; rse_api.swagger.swagger_spec.SwaggerSpec<a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#get_swagger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.get_swagger" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="rse_api.swagger.swagger_spec.get_swagger">
+<span class="sig-prename descclassname"><span class="pre">rse_api.swagger.swagger_spec.</span></span><span class="sig-name descname"><span class="pre">get_swagger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#rse_api.swagger.swagger_spec.SwaggerSpec" title="rse_api.swagger.swagger_spec.SwaggerSpec"><span class="pre">rse_api.swagger.swagger_spec.SwaggerSpec</span></a></span></span><a class="reference internal" href="_modules/rse_api/swagger/swagger_spec.html#get_swagger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rse_api.swagger.swagger_spec.get_swagger" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-<div class="section" id="module-rse_api.swagger">
+</section>
+<section id="module-rse_api.swagger">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rse_api.swagger" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -177,7 +186,7 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">rse_api</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
@@ -205,17 +214,15 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -232,8 +239,8 @@
       &copy;.
 
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
 
       |
       <a href="_sources/rse_api.swagger.rst.txt"
