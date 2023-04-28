@@ -3,61 +3,63 @@
 
 """The setup script."""
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-with open('README.rst') as readme_file:
+with open("README.rst") as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
+with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-with open('requirements.txt') as dev_requirement_file:
+with open("requirements.txt") as dev_requirement_file:
     requirements = dev_requirement_file.read().split("\n")
 
-with open('requirements_dev.txt') as dev_requirement_file:
+with open("requirements_dev.txt") as dev_requirement_file:
     dev_requirements = dev_requirement_file.read().split("\n")
 
-with open('requirements_docs.txt') as dev_requirement_file:
+with open("requirements_docs.txt") as dev_requirement_file:
     doc_requirements = dev_requirement_file.read().split("\n")
 
 extras_require = {
-    'full': ['dramatiq==1.4.3', 'apscheduler>=3.5.3'],
-    'dev': dev_requirements,
-    'doc': doc_requirements + dev_requirements
+    "full": ["dramatiq==1.4.3", "apscheduler>=3.5.3"],
+    "dev": dev_requirements,
+    "doc": doc_requirements + dev_requirements,
 }
 
-setup_requirements = ['pytest-runner']
-test_requirements = ['pytest']
+setup_requirements = ["pytest-runner"]
+test_requirements = ["pytest"]
 
 setup(
     author="Clinton Collins, "
-           "Benoit Raybaud, "
-           "Clark Kirkman IV,"
-           "Zhaowei Du"
-           "David Kong,"
-           "Qinghua Long",
-    author_email='ccollins@idmod.org, '
-                 'braybaud@idmod.org, '
-                 'ckirkman@idmod.org, '
-                 'zdu@idmod.org'
-                 'dkong@idmod.org, '
-                 'qlong@idmod.org',
+    "Benoit Raybaud, "
+    "Clark Kirkman IV,"
+    "Zhaowei Du"
+    "David Kong,"
+    "Qinghua Long",
+    author_email="ccollins@idmod.org, "
+    "braybaud@idmod.org, "
+    "ckirkman@idmod.org, "
+    "zdu@idmod.org"
+    "dkong@idmod.org, "
+    "qlong@idmod.org",
     classifiers=[
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
     ],
     description="rse_api has common tool for standing up RESTful api services in python",
     install_requires=requirements,
-    long_description=readme + '\n\n' + history,
+    long_description=readme + "\n\n" + history,
     include_package_data=True,
-    keywords='rse_api',
-    name='rse_api',
-    packages=find_packages(include=['rse_api', 'rse_api.controllers', 'rse_api.tasks'], exclude=["tests"]),
+    keywords="rse_api",
+    name="rse_api",
+    packages=find_packages(
+        include=["rse_api", "rse_api.controllers", "rse_api.tasks"], exclude=["tests"]
+    ),
     setup_requires=setup_requirements,
     extras_require=extras_require,
-    test_suite='tests',
+    test_suite="tests",
     tests_require=test_requirements,
-    url='https://github.com/InstituteforDiseaseModeling/rse_api',
-    version='1.0.9',
+    url="https://github.com/InstituteforDiseaseModeling/rse_api",
+    version="1.0.9",
     zip_safe=False,
 )

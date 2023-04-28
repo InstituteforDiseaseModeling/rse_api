@@ -1,5 +1,6 @@
-import dramatiq
 from threading import local
+
+import dramatiq
 
 
 class AppContextMiddleware(dramatiq.Middleware):

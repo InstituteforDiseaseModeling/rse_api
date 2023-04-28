@@ -1,18 +1,24 @@
-import sqlalchemy
 from typing import List, Union
-from flask import request, jsonify
-from flask.views import MethodView
 
+import sqlalchemy
+from flask import jsonify, request
+from flask.views import MethodView
 from rse_db.utils import get_db
-from rse_api.query import get_pagination_from_request
+
 from rse_api.decorators import json_only
 from rse_api.errors import RSEApiException
+from rse_api.query import get_pagination_from_request
 
 
 class SimpleController(MethodView):
-    def __init__(self, model, many_schema, single_schema=None,
-                 exclude_on_post: List[str] = ['id'],
-                 order_by: Union[str, sqlalchemy.Column] = 'id'):
+    def __init__(
+        self,
+        model,
+        many_schema,
+        single_schema=None,
+        exclude_on_post: List[str] = ["id"],
+        order_by: Union[str, sqlalchemy.Column] = "id",
+    ):
         """
         Provides a controller to do basic crud operations
 
@@ -36,30 +42,37 @@ class SimpleController(MethodView):
         self.order_by = order_by
 
     def find_all(self):
-        result = self.model.query.order_by(self.order_by).paginate(**get_pagination_from_request())
+        result = self.model.query.order_by(self.order_by).paginate(
+            **get_pagination_from_request()
+        )
         resp = jsonify(self.many_schema().dump(result.items, many=True).data)
-        resp.headers['X-Total-Pages'] = result.pages
-        resp.headers['X-Current-Page'] = result.page
-        resp.headers['X-Per-Pages'] = result.per_page
-        resp.headers['X-Total'] = result.total
+        resp.headers["X-Total-Pages"] = result.pages
+        resp.headers["X-Current-Page"] = result.page
+        resp.headers["X-Per-Pages"] = result.per_page
+        resp.headers["X-Total"] = result.total
         return resp
 
     def find_one(self, id):
         return self.model.query.filter(self.model.id == id).one()
 
     def get(self, id):
-        return self.find_all() if id is None else jsonify(
-            self.single_schema().dump(self.find_one(id), many=False).data)
+        return (
+            self.find_all()
+            if id is None
+            else jsonify(self.single_schema().dump(self.find_one(id), many=False).data)
+        )
 
     @json_only
     def put(self, id):
         if id is None:
             raise RSEApiException("You must specify an id")
 
-        result = self.single_schema(strict=True).load(request.json,
-                                                      instance=self.find_one(id),
-                                                      session=self.db.session,
-                                                      partial=True)
+        result = self.single_schema(strict=True).load(
+            request.json,
+            instance=self.find_one(id),
+            session=self.db.session,
+            partial=True,
+        )
         session = self.db.object_session(result.data)
         session.add(result.data)
         session.commit()
@@ -68,7 +81,9 @@ class SimpleController(MethodView):
     @json_only
     def post(self, id=None):
         # check if we have a version
-        sch = self.single_schema(strict=True, exclude=self.exclude_on_post, session=self.db.session)
+        sch = self.single_schema(
+            strict=True, exclude=self.exclude_on_post, session=self.db.session
+        )
         result = sch.load(request.json, session=self.db.session)
         session = self.db.session
         session.add(result.data)
@@ -78,12 +93,12 @@ class SimpleController(MethodView):
     def delete(self, id):
         if id is None:
             raise RSEApiException("You must specify an id")
-        result = self.single_schema(strict=True).load({}, instance=self.find_one(id),
-                                                      session=self.db.session,
-                                                      partial=True)
+        result = self.single_schema(strict=True).load(
+            {}, instance=self.find_one(id), session=self.db.session, partial=True
+        )
         if result is None:
             raise FileNotFoundError("Cannot Find item with id {}".format(id))
         session = self.db.object_session(result.data)
         session.delete(result.data)
         session.commit()
-        return '', 204
+        return "", 204

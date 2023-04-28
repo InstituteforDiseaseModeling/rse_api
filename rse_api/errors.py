@@ -1,4 +1,5 @@
 from importlib import util
+
 from flask import jsonify
 
 
@@ -16,8 +17,8 @@ def register_common_error_handlers(app):
     :param app:
     :return: None
     """
-    if util.find_spec('sqlalchemy'):
-        app.logger.debug('Registering sqlalchemy error handlers')
+    if util.find_spec("sqlalchemy"):
+        app.logger.debug("Registering sqlalchemy error handlers")
         from sqlalchemy.exc import IntegrityError
         from sqlalchemy.orm.exc import NoResultFound
 
@@ -25,19 +26,26 @@ def register_common_error_handlers(app):
         def handle_integrity_error(e):
             app.logger.exception(e)
             err_msg = str(e.orig)
-            message = 'Save Failed due to IntegrityError, most likely due to a missing relationship. See {}'.format(str(e.orig))
-            if 'UNIQUE constraint failed: configuration_parameters.key_string, ' in err_msg:
-                message = "The Key String, Parameter, and Release Version must be Unique!"
+            message = "Save Failed due to IntegrityError, most likely due to a missing relationship. See {}".format(
+                str(e.orig)
+            )
+            if (
+                "UNIQUE constraint failed: configuration_parameters.key_string, "
+                in err_msg
+            ):
+                message = (
+                    "The Key String, Parameter, and Release Version must be Unique!"
+                )
 
-            return jsonify({'message': message}), 400
+            return jsonify({"message": message}), 400
 
         @app.errorhandler(NoResultFound)
         def handle_no_result_exception(e):
             app.logger.exception(e)
-            return jsonify({'message': 'Cannot find the requested resource'}), 404
+            return jsonify({"message": "Cannot find the requested resource"}), 404
 
-    if util.find_spec('marshmallow'):
-        app.logger.debug('Registering marshmallow error handlers')
+    if util.find_spec("marshmallow"):
+        app.logger.debug("Registering marshmallow error handlers")
         from marshmallow import ValidationError
 
         @app.errorhandler(ValidationError)
@@ -45,11 +53,11 @@ def register_common_error_handlers(app):
             app.logger.exception(e)
             if isinstance(e.messages, list) and len(e.field_names) > 0:
                 e.messages = {field: e.messages for field in e.field_names}
-            return jsonify({'messages': e.messages}), 400
+            return jsonify({"messages": e.messages}), 400
 
     @app.errorhandler(RSEApiException)
     def rse_api_exception(e):
         app.logger.exception(e)
         if isinstance(e.args, tuple):
-            e.message = ' '.join(e.args)
-        return jsonify({'message': e.message}), 400
+            e.message = " ".join(e.args)
+        return jsonify({"message": e.message}), 400

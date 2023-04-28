@@ -4,6 +4,7 @@ from functools import wraps
 from importlib import util
 from logging import getLogger
 from typing import Callable
+
 from flask import jsonify
 from flask.views import MethodView
 from marshmallow import Schema
@@ -11,8 +12,8 @@ from marshmallow import Schema
 from .errors import RSEApiException
 from .routing import register_api
 
-HAS_APSCHEDULER = util.find_spec('apscheduler') is not None
-HAS_DRAMATIQ = util.find_spec('dramatiq') is not None
+HAS_APSCHEDULER = util.find_spec("apscheduler") is not None
+HAS_DRAMATIQ = util.find_spec("dramatiq") is not None
 
 
 def json_only(func: Callable) -> Callable:
@@ -26,8 +27,9 @@ def json_only(func: Callable) -> Callable:
     @wraps(func)
     def wrapper(*args, **kwargs):
         from flask import request
+
         if not request.is_json:
-            raise RSEApiException('Only JSON Requests are accepted')
+            raise RSEApiException("Only JSON Requests are accepted")
         return func(*args, **kwargs)
 
     return wrapper
@@ -42,10 +44,10 @@ def singleton_function(func: Callable) -> Callable:
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if not hasattr(func, 'has_ran'):
-            setattr(func, 'cache_value', func(*args, **kwargs))
-            setattr(func, 'has_ran', True)
-        return getattr(func, 'cache_value')
+        if not hasattr(func, "has_ran"):
+            setattr(func, "cache_value", func(*args, **kwargs))
+            setattr(func, "has_ran", True)
+        return getattr(func, "cache_value")
 
     return wrapper
 
@@ -56,7 +58,9 @@ def register_crud(endpoint, url=None) -> Callable:
 
     def decorator_register(func: Callable) -> Callable:
         if not issubclass(func, MethodView):
-            raise RSEApiException("You can only register MethodView derived classes using this decorator")
+            raise RSEApiException(
+                "You can only register MethodView derived classes using this decorator"
+            )
 
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -69,8 +73,10 @@ def register_crud(endpoint, url=None) -> Callable:
 
 
 def register_resource(urls):
-    from rse_api import get_restful_api
     from flask_restful import Resource
+
+    from rse_api import get_restful_api
+
     api = get_restful_api()
     if type(urls) is tuple:
         urls = list(urls)
@@ -82,8 +88,10 @@ def register_resource(urls):
 
     def decorator_register_resource(func: Callable) -> Callable:
         if not issubclass(func, Resource):
-            raise RSEApiException(f"You can only register Resource derived classes using this decorator."
-                                  f" Please check {func.__name__}")
+            raise RSEApiException(
+                f"You can only register Resource derived classes using this decorator."
+                f" Please check {func.__name__}"
+            )
 
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -100,8 +108,14 @@ def register_resource(urls):
     return decorator_register_resource
 
 
-def schema_in(schema: Schema, many: bool = False, instance_loader_func: Callable = None,
-              partial: bool = False, description=None, example=None) -> Callable:
+def schema_in(
+    schema: Schema,
+    many: bool = False,
+    instance_loader_func: Callable = None,
+    partial: bool = False,
+    description=None,
+    example=None,
+) -> Callable:
     """
     Decorator that converts the flask json input data into a parsed data from a supplied schema object
 
@@ -208,7 +222,6 @@ def schema_in(schema: Schema, many: bool = False, instance_loader_func: Callable
         from flask import request
 
         # from rse_api.swagger.swagger_spec import get_swagger
-
         # swagger = get_swagger()
         # swagger_function = dict(function=func, partial=partial, many=many, in_schema=schema,
         #                        has_instance_loader_func=callable(instance_loader_func), description=description,
@@ -220,11 +233,20 @@ def schema_in(schema: Schema, many: bool = False, instance_loader_func: Callable
         def wrapper_schema_in(*args, **kwargs):
             body = request.json
             if callable(instance_loader_func):
-                result = schema.load(body, many=many, instance=instance_loader_func(*args, **kwargs), partial=partial)
+                result = schema.load(
+                    body,
+                    many=many,
+                    instance=instance_loader_func(*args, **kwargs),
+                    partial=partial,
+                )
             else:
                 result = schema.load(body, many=many)
-            if hasattr(result, 'data'):
-                args = tuple(list(args) + [result.data]) if args is not None else (result.data,)
+            if hasattr(result, "data"):
+                args = (
+                    tuple(list(args) + [result.data])
+                    if args is not None
+                    else (result.data,)
+                )
             else:
                 args = tuple(list(args) + [result]) if args is not None else (result,)
             return func(*args, **kwargs)
@@ -234,7 +256,9 @@ def schema_in(schema: Schema, many: bool = False, instance_loader_func: Callable
     return decorate_schema_in
 
 
-def schema_out(schema: Schema, detect_many=True, many=False, description=None, example=None) -> Callable:
+def schema_out(
+    schema: Schema, detect_many=True, many=False, description=None, example=None
+) -> Callable:
     """
     Decorator that attempts to convert the output of the wrapped function with a Flask JSON Response using the
     supplied Marshmallow schema
@@ -258,7 +282,7 @@ def schema_out(schema: Schema, detect_many=True, many=False, description=None, e
             result = func(*args, **kwargs)
             imany = (detect_many and type(result) is list) or many
             result = schema.dump(result, many=imany)
-            if hasattr(result, 'data'):
+            if hasattr(result, "data"):
                 return jsonify(result.data)
             else:
                 return jsonify(result)
@@ -268,9 +292,18 @@ def schema_out(schema: Schema, detect_many=True, many=False, description=None, e
     return decorate_schema_out
 
 
-def schema_in_out(schemaIn: Schema, schemaOut: Schema, schema_in_many=False, schema_out_many=False,
-                  schema_out_detect_many: bool = True, schema_in_loader_func: Callable = None,
-                  schema_in_partial: bool = False, description=None, in_example=None, out_example=None) -> Callable:
+def schema_in_out(
+    schemaIn: Schema,
+    schemaOut: Schema,
+    schema_in_many=False,
+    schema_out_many=False,
+    schema_out_detect_many: bool = True,
+    schema_in_loader_func: Callable = None,
+    schema_in_partial: bool = False,
+    description=None,
+    in_example=None,
+    out_example=None,
+) -> Callable:
     """
     Decorator for methods that take a schema result and return a object that will be serialized to a specific schema
 
@@ -297,7 +330,12 @@ def schema_in_out(schemaIn: Schema, schemaOut: Schema, schema_in_many=False, sch
         # swagger.add_schema_function(swagger_function)
 
         @wraps(func)
-        @schema_in(schemaIn, schema_in_many, instance_loader_func=schema_in_loader_func, partial=schema_in_partial)
+        @schema_in(
+            schemaIn,
+            schema_in_many,
+            instance_loader_func=schema_in_loader_func,
+            partial=schema_in_partial,
+        )
         @schema_out(schemaOut, many=schema_out_many, detect_many=schema_out_detect_many)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
@@ -313,14 +351,14 @@ def timeit_logged(func: Callable) -> Callable:
     :param func: Function that should be timed
     :return: Wrapped function
     """
-    logger = getLogger('timing')
+    logger = getLogger("timing")
 
     @wraps(func)
     def timed(*args, **kwargs):
         start = time.time()
         result = func(*args, **kwargs)
         end = time.time()
-        logger.debug('%r  %2.2f ms' % (func.__name__, (end - start) * 1000))
+        logger.debug("%r  %2.2f ms" % (func.__name__, (end - start) * 1000))
         return result
 
     return timed
@@ -338,8 +376,9 @@ def actor(*args, **kwargs) -> Callable:
     import dramatiq
 
     def decorate_wrap_actor(func: Callable):
-        if os.environ.get('FLASK_ENV', 'production') == 'documentation':
+        if os.environ.get("FLASK_ENV", "production") == "documentation":
             from dramatiq.brokers.stub import StubBroker
+
             broker = StubBroker()
             dramatiq.set_broker(broker)
 
@@ -354,7 +393,6 @@ if HAS_APSCHEDULER and HAS_DRAMATIQ:
 
     CRON_JOBS = []  # Global Cron Jobs
 
-
     def cron(crontab: str) -> Callable:
         """Wrap a Dramatiq actor in a cron schedule.
 
@@ -363,7 +401,7 @@ if HAS_APSCHEDULER and HAS_DRAMATIQ:
         trigger = CronTrigger.from_crontab(crontab)
 
         def decorator(actor: Callable) -> Callable:
-            if not hasattr(actor, 'fn') and callable(actor):
+            if not hasattr(actor, "fn") and callable(actor):
                 actor = dramatiq.actor(actor)
             module_path = actor.fn.__module__
             func_name = actor.fn.__name__

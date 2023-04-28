@@ -1,7 +1,9 @@
 from flask import request
 
 
-def get_pagination_from_request(page_default: int = 1, per_page_default: int = 100) -> dict:
+def get_pagination_from_request(
+    page_default: int = 1, per_page_default: int = 100
+) -> dict:
     """
     Returns the pagination filter created from a request
 
@@ -13,8 +15,8 @@ def get_pagination_from_request(page_default: int = 1, per_page_default: int = 1
     :return:
     """
     options = {
-        "page": request.args.get('page', page_default),
-        "per_page": request.args.get('per_page', per_page_default)
+        "page": request.args.get("page", page_default),
+        "per_page": request.args.get("per_page", per_page_default),
     }
     for k in options.keys():
         if isinstance(options[k], str):

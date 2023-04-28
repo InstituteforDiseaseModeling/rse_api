@@ -1,11 +1,18 @@
 import time
 import unittest
+
 from flask import Response, jsonify
 from marshmallow import Schema, validate
-from marshmallow.fields import String, Integer
+from marshmallow.fields import Integer, String
 
-from rse_api.decorators import schema_in, schema_out, json_only, schema_in_out, singleton_function
 from rse_api import get_application
+from rse_api.decorators import (
+    json_only,
+    schema_in,
+    schema_in_out,
+    schema_out,
+    singleton_function,
+)
 from tests.utils import requires_fixture
 
 
@@ -19,9 +26,7 @@ class NameOnlySchema(Schema):
 
 
 class TestDecorator(unittest.TestCase):
-
     def test_singleton_function(self):
-
         @singleton_function
         def one_time():
             return time.time()
@@ -39,99 +44,112 @@ class TestDecorator(unittest.TestCase):
         self.assertNotEqual(x2, x4)
         self.assertEqual(x, x3)
 
-    @requires_fixture('person')
+    @requires_fixture("person")
     def test_schema_in(self, person):
         app = get_application()
 
-        @app.route('/test_schema_in', methods=['POST'])
+        @app.route("/test_schema_in", methods=["POST"])
         @schema_in(PersonSchema())
         def schema_in_only_data_arg(data):
-            self.assertEqual(data['name'], person['name'])
+            self.assertEqual(data["name"], person["name"])
             return jsonify(data)
 
         client = app.test_client()
 
-        result: Response = client.post('/test_schema_in', data=PersonSchema().dumps(person).data,
-                                       content_type='application/json')
+        result: Response = client.post(
+            "/test_schema_in",
+            data=PersonSchema().dumps(person).data,
+            content_type="application/json",
+        )
 
         self.assertEqual(result.status_code, 200)
 
-    @requires_fixture('person')
+    @requires_fixture("person")
     def test_json_only(self, person):
         app = get_application()
 
-        del person['name']
+        del person["name"]
 
-        @app.route('/test_json_only', methods=['POST'])
+        @app.route("/test_json_only", methods=["POST"])
         @json_only
         def schema_json_only(data):
-            self.assertEqual(data['name'], person['name'])
+            self.assertEqual(data["name"], person["name"])
             return jsonify(data)
 
         client = app.test_client()
 
-        result: Response = client.post('/test_json_only', data=PersonSchema().dumps(person).data)
+        result: Response = client.post(
+            "/test_json_only", data=PersonSchema().dumps(person).data
+        )
 
         self.assertEqual(result.status_code, 400)
         message = result.json
-        self.assertIn('message', message)
-        self.assertIn('Only JSON Requests are accepted', message['message'])
+        self.assertIn("message", message)
+        self.assertIn("Only JSON Requests are accepted", message["message"])
 
-    @requires_fixture('person')
+    @requires_fixture("person")
     def test_schema_in_strict(self, person):
         app = get_application()
 
-        del person['name']
+        del person["name"]
 
-        @app.route('/test_schema_in_strict', methods=['POST'])
+        @app.route("/test_schema_in_strict", methods=["POST"])
         @schema_in(PersonSchema(strict=True))
         def schema_strict(data):
-            self.assertEqual(data['name'], person['name'])
+            self.assertEqual(data["name"], person["name"])
             return jsonify(data)
 
         client = app.test_client()
 
-        result: Response = client.post('/test_schema_in_strict', data=PersonSchema().dumps(person).data,
-                                       content_type='application/json')
+        result: Response = client.post(
+            "/test_schema_in_strict",
+            data=PersonSchema().dumps(person).data,
+            content_type="application/json",
+        )
 
         self.assertEqual(result.status_code, 400)
         message = result.json
-        self.assertIn('messages', message)
-        self.assertIn('name', message['messages'])
+        self.assertIn("messages", message)
+        self.assertIn("name", message["messages"])
 
-    @requires_fixture('person')
+    @requires_fixture("person")
     def test_schema_out(self, person):
         app = get_application()
 
-        @app.route('/test_schema_out', methods=['GET'])
+        @app.route("/test_schema_out", methods=["GET"])
         @schema_out(PersonSchema())
         def schema_out_fn():
             return person
 
         client = app.test_client()
 
-        result: Response = client.get('/test_schema_out', content_type='application/json')
+        result: Response = client.get(
+            "/test_schema_out", content_type="application/json"
+        )
         self.assertEqual(result.status_code, 200)
         data = result.json
         for k, v in data.items():
             self.assertEqual(person[k], v)
 
-    @requires_fixture('person')
+    @requires_fixture("person")
     def test_schema_in_out(self, person):
         app = get_application()
 
-        @app.route('/test_schema_in_out', methods=['POST'])
+        @app.route("/test_schema_in_out", methods=["POST"])
         @schema_in_out(PersonSchema(), NameOnlySchema())
         def schema_in_out_fn(data):
-            data['name'] = data['name'].replace(" ", "_")
+            data["name"] = data["name"].replace(" ", "_")
             return data
 
         client = app.test_client()
 
-        result: Response = client.post('/test_schema_in_out', data=PersonSchema().dumps(person).data,
-                                       content_type='application/json')
+        result: Response = client.post(
+            "/test_schema_in_out",
+            data=PersonSchema().dumps(person).data,
+            content_type="application/json",
+        )
         data = result.json
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(list(data.keys()), ['name'])
+        self.assertEqual(list(data.keys()), ["name"])
         for k, v in data.items():
             self.assertEqual(person[k].replace(" ", "_"), v)

@@ -1,10 +1,10 @@
-from flask_restful import Resource, Api
-from marshmallow import fields, validate, ValidationError, validates_schema
+from flask_restful import Api, Resource
+from marshmallow import ValidationError, fields, validate, validates_schema
 from marshmallow_sqlalchemy import ModelSchema
-from sqlalchemy import Column, String, Integer
-
-from rse_api.decorators import schema_out, register_resource, schema_in_out
 from rse_db.utils import get_declarative_base
+from sqlalchemy import Column, Integer, String
+
+from rse_api.decorators import register_resource, schema_in_out, schema_out
 
 Base = get_declarative_base()
 
@@ -42,34 +42,32 @@ class ParameterSchema(ModelSchema):
 
     @validates_schema
     def check_min_less_than_max(self, data):
-        if data['min'] >= data['max']:
+        if data["min"] >= data["max"]:
             message = "The Max must be larger than the min"
-            raise ValidationError({
-                'min': message,
-                'max': message
-            })
+            raise ValidationError({"min": message, "max": message})
 
     class Meta:
         model = ParameterModel
 
 
 # Resource to handle HTTP interactions
-@register_resource('/parameters')
+@register_resource("/parameters")
 class Parameters(Resource):
-
     @schema_out(ParameterSchema())
     def get(self, id):
         return ParameterModel.find_one(id)
 
-    @schema_in_out(ParameterSchema(exclude=['id']), ParameterSchema())
+    @schema_in_out(ParameterSchema(exclude=["id"]), ParameterSchema())
     def post(self, data):
         return ParameterModel.save(data)
 
     @schema_in_out(ParameterSchema(), ParameterSchema())
     def put(self, data):
-        data = ParameterSchema(strict=True).load(data,
-                                                 instance=ParameterModel.find_one(id),
-                                                 session=ParameterModel.query.session,
-                                                 partial=True)
+        data = ParameterSchema(strict=True).load(
+            data,
+            instance=ParameterModel.find_one(id),
+            session=ParameterModel.query.session,
+            partial=True,
+        )
         ParameterModel.query.session.add(data)
         ParameterModel.query.session.commit()

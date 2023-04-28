@@ -1,4 +1,12 @@
-def register_api(view, endpoint, url=None, pk='id', pk_type='int', methods=['GET', 'PUT', 'DELETE', 'POST'], app=None):
+def register_api(
+    view,
+    endpoint,
+    url=None,
+    pk="id",
+    pk_type="int",
+    methods=["GET", "PUT", "DELETE", "POST"],
+    app=None,
+):
     """
     Registers a class as an api endpoint
 
@@ -16,23 +24,37 @@ def register_api(view, endpoint, url=None, pk='id', pk_type='int', methods=['GET
     view_func = view.as_view(endpoint)
     if url is None:
         url = endpoint
-    if url[0] != '/':
-        url = '/' + url
-    if url[-1] == '/':
+    if url[0] != "/":
+        url = "/" + url
+    if url[-1] == "/":
         url = url[0:-1]
 
     if app is None:
         # We have to import here to avoid circular dependency at load time
         from rse_api import get_application
+
         app = get_application()
     # these are the main listing methods
-    if 'GET' in methods:
-        app.add_url_rule(url, strict_slashes=False, defaults={pk: None},
-                         view_func=view_func, methods=['GET', ])
-    if 'POST' in methods:
-        app.add_url_rule(url, strict_slashes=False, view_func=view_func, methods=['POST', ])
-    app.logger.info('Register URL %s/<%s:%s>' % (url, pk_type, pk))
+    if "GET" in methods:
+        app.add_url_rule(
+            url,
+            strict_slashes=False,
+            defaults={pk: None},
+            view_func=view_func,
+            methods=[
+                "GET",
+            ],
+        )
+    if "POST" in methods:
+        app.add_url_rule(
+            url,
+            strict_slashes=False,
+            view_func=view_func,
+            methods=[
+                "POST",
+            ],
+        )
+    app.logger.info("Register URL %s/<%s:%s>" % (url, pk_type, pk))
     # ensure post is not a method at this point
-    fm = [f for f in methods.copy() if f != 'POST']
-    app.add_url_rule('%s/<%s:%s>' % (url, pk_type, pk), view_func=view_func,
-                     methods=fm)
+    fm = [f for f in methods.copy() if f != "POST"]
+    app.add_url_rule("%s/<%s:%s>" % (url, pk_type, pk), view_func=view_func, methods=fm)
