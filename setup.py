@@ -5,6 +5,7 @@
 
 from setuptools import find_packages, setup
 
+
 with open("README.rst") as readme_file:
     readme = readme_file.read()
 
@@ -51,6 +52,7 @@ setup(
     install_requires=requirements["default"],
     long_description=readme + "\n\n" + history,
     include_package_data=True,
+    license="MIT License",
     keywords="rse_api",
     name="rse_api",
     packages=find_packages(
