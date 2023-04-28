@@ -244,18 +244,9 @@ class SwaggerSpec:
                     description = f"Delete a {obj_string} based on id"
 
             if operation_id is None:
-                if method == "get" and out_schema and many:
-                    operation_id = f"findAll{obj_string}s"
-                elif method == "get" and out_schema:
-                    operation_id = f"find{obj_string}sById"
-                elif method == "post":
-                    operation_id = f"add{obj_string}ById"
-                elif method == "put" and in_schema and not many:
-                    operation_id = (
-                        f"update{obj_string} based on an id and user supplied input."
-                    )
-                elif method == "delete" and not many:
-                    operation_id = f"remove{obj_string} based on id"
+                operation_id = self.get_default_operation_id(
+                    in_schema, many, method, obj_string, operation_id, out_schema
+                )
 
             if parameters is None:
                 # try to parse parameters from url
@@ -293,30 +284,9 @@ class SwaggerSpec:
 
             request_body = None
             if in_schema:
-                action = "add" if method == "post" else "update"
-                obj_prefix = "new" if method == "post" else "partial"
-
-                swagger_obj_name = obj_string
-                if obj_string in self.definitions:
-                    if len(in_schema.exclude) != len(
-                        self.definitions[obj_string][0].exclude
-                    ):
-                        swagger_obj_name = f"{obj_prefix}{obj_string}"
-
-                swagger_schema = {"$ref": f"{REFERENCE_PATH}{swagger_obj_name}"}
-
-                request_body = {
-                    "description": f"{obj_string} to {action}",
-                    "required": True,
-                    "content": {"application/json": {"schema": swagger_schema}},
-                }
-
-                if swagger_obj_name not in self.definitions:
-                    self.definitions[
-                        swagger_obj_name
-                    ] = in_schema, self.schema_to_definition(
-                        swagger_obj_name, in_schema
-                    )
+                request_body = self.get_in_schema(
+                    in_schema, method, obj_string, request_body
+                )
 
             # check url to make sure we shouldn't replace part of it
             url = re.sub(self.url_replace, r"{\2}", url)
@@ -341,6 +311,40 @@ class SwaggerSpec:
                 path_method["requestBody"] = request_body
 
             self.paths[url][method] = path_method
+
+    def get_in_schema(self, in_schema, method, obj_string, request_body):
+        action = "add" if method == "post" else "update"
+        obj_prefix = "new" if method == "post" else "partial"
+        swagger_obj_name = obj_string
+        if obj_string in self.definitions:
+            if len(in_schema.exclude) != len(self.definitions[obj_string][0].exclude):
+                swagger_obj_name = f"{obj_prefix}{obj_string}"
+        swagger_schema = {"$ref": f"{REFERENCE_PATH}{swagger_obj_name}"}
+        request_body = {
+            "description": f"{obj_string} to {action}",
+            "required": True,
+            "content": {"application/json": {"schema": swagger_schema}},
+        }
+        if swagger_obj_name not in self.definitions:
+            self.definitions[swagger_obj_name] = in_schema, self.schema_to_definition(
+                swagger_obj_name, in_schema
+            )
+        return request_body
+
+    def get_default_operation_id(
+        self, in_schema, many, method, obj_string, operation_id, out_schema
+    ):
+        if method == "get" and out_schema and many:
+            operation_id = f"findAll{obj_string}s"
+        elif method == "get" and out_schema:
+            operation_id = f"find{obj_string}sById"
+        elif method == "post":
+            operation_id = f"add{obj_string}ById"
+        elif method == "put" and in_schema and not many:
+            operation_id = f"update{obj_string} based on an id and user supplied input."
+        elif method == "delete" and not many:
+            operation_id = f"remove{obj_string} based on id"
+        return operation_id
 
     def process_class(self, class_name, urls, exclude_put_without_id=True):
         if class_name in self.function_map:

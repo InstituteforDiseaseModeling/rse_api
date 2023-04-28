@@ -162,7 +162,6 @@ if HAS_DRAMATIQ:
     from rse_api.tasks import dramatiq_parse_arguments
 
     def start_dramatiq_workers(app, processes=None):
-        import dramatiq
         from dramatiq import cli as dm
 
         args = dramatiq_parse_arguments()

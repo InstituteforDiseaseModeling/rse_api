@@ -23,7 +23,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(".."))
 
-import rse_api
+import rse_api  # noqa
 
 # -- General configuration ---------------------------------------------
 
