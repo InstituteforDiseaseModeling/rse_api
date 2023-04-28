@@ -44,6 +44,7 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
     description="rse_api has common tool for standing up RESTful api services in python",
     install_requires=requirements["default"],
