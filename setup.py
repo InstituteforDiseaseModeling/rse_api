@@ -11,19 +11,18 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-with open("requirements.txt") as dev_requirement_file:
-    requirements = dev_requirement_file.read().split("\n")
+requirements = dict()
 
-with open("requirements_dev.txt") as dev_requirement_file:
-    dev_requirements = dev_requirement_file.read().split("\n")
-
-with open("requirements_docs.txt") as dev_requirement_file:
-    doc_requirements = dev_requirement_file.read().split("\n")
+for fn in ["", "_dev", "_docs", "_extras"]:
+    with open("requirements{}.txt".format(fn)) as dev_requirement_file:
+        requirements[
+            fn.replace("_", "") if fn else "default"
+        ] = dev_requirement_file.read().split("\n")
 
 extras_require = {
-    "full": ["dramatiq==1.4.3", "apscheduler>=3.5.3"],
-    "dev": dev_requirements,
-    "doc": doc_requirements + dev_requirements,
+    "full": requirements["extras"] + requirements["default"],
+    "dev": requirements["dev"] + requirements["default"],
+    "doc": requirements["docs"] + requirements["dev"],
 }
 
 setup_requirements = ["pytest-runner"]
@@ -47,7 +46,7 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     description="rse_api has common tool for standing up RESTful api services in python",
-    install_requires=requirements,
+    install_requires=requirements["default"],
     long_description=readme + "\n\n" + history,
     include_package_data=True,
     keywords="rse_api",

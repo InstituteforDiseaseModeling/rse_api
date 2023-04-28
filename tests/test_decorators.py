@@ -35,8 +35,11 @@ class TestDecorator(unittest.TestCase):
             return time.time()
 
         x = one_time()
+        time.sleep(0.02)
         x2 = changes_time()
+        time.sleep(0.02)
         x3 = one_time()
+        time.sleep(0.02)
         x4 = changes_time()
         self.assertNotEqual(x, x2)
         self.assertNotEqual(x2, x3)
