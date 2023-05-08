@@ -6,12 +6,3 @@ rse_api is a library meant to stand-up REST services quickly and consolidate com
 Rse_API
 
 * Documentation: https://institutefordiseasemodeling.github.io/rse_api
-
-
-Features
---------
-
-* TODO
-
-Credits
--------
